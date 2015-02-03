@@ -1,0 +1,29 @@
+{
+  "name": "nutella_lib",
+  "main": "nutella_lib.js",
+  "version": "0.2.0",
+  "authors": [
+    "Alessandro Gnoli <tebemis@gmail.com>"
+  ],
+  "description": "Nutella library for JavaScript",
+  "moduleType": [
+    "amd",
+    "node"
+  ],
+  "keywords": [
+    "nutella",
+    "framework"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/nutella-framework/nutella_lib.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "simple-js-mqtt-client": ">=0.4.0"
+  }
+}
