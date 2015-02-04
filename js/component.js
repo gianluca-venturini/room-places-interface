@@ -3,7 +3,7 @@ var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
 var AddResource = React.createClass({
 	getInitialState: function() {
-		return {name: "", type: "IPAD"};
+		return {name: "", model: "IPAD"};
  	},
  	handleSubmit: function(e) {
  		e.preventDefault();
@@ -16,18 +16,21 @@ var AddResource = React.createClass({
  		// Clean the form
  		this.setState({name: ""});
  	},
-	handleChange: function(e) {
+	handleChangeName: function(e) {
 		this.setState({name: event.target.value});
+	},
+	handleChangeModel: function(e) {
+		this.setState({model: event.target.value});
 	},
 	render: function() {
 		return(
 			<tr>
 				<td>
 					<form onSubmit={this.handleSubmit}>
-						<input type="text" value={this.state.name} placeholder="Name" onChange={this.handleChange} ref="name"/>
-						<select value={this.state.type} ref="model">
-							<option value="IMAC">Mac</option>
-							<option value="IPHONE">iPnone</option>
+						<input type="text" value={this.state.name} placeholder="Name" onChange={this.handleChangeName} ref="name"/>
+						<select value={this.state.model} onChange={this.handleChangeModel} ref="model">
+							<option value="IMAC">iMac</option>
+							<option value="IPHONE">iPhone</option>
 							<option value="IPAD">iPad</option>
 							<option value="IBEACON">iBeacon</option>
 						</select>
@@ -39,11 +42,86 @@ var AddResource = React.createClass({
 	}
 });
 
+var AddKeyValue = React.createClass({
+	render: function() {
+		return(
+			<form onSubmit={this.handleSubmit}>
+			<tr>
+				<td>
+					<input type="text" placeholder="Key" ref="key"/>
+				</td>
+				<td>
+					<input type="text" placeholder="Value" ref="value"/>	
+				</td>
+			</tr>
+			</form>
+		);
+	}
+});
+
+var KeyValue = React.createClass({
+	getInitialState: function() {
+		return {keyModification: false, valueModification: false, key: this.props._key, value: this.props.value};
+ 	},
+ 	handleKeyChanged: function(event) {
+ 		this.setState({key: event.target.value});
+ 	},
+ 	handleValueChanged: function(event) {
+ 		this.setState({value: event.target.value});
+ 	},
+ 	handleKeyClicked: function() {
+ 		this.setState({keyModification: true}, function() {
+ 			this.refs.key.getDOMNode().focus();
+ 		});
+ 	},
+ 	handleValueClicked: function() {
+ 		this.setState({valueModification: true}, function() {
+ 			this.refs.value.getDOMNode().focus();
+ 		});
+ 	},
+ 	handleSubmit: function(event) {
+ 		event.preventDefault();
+ 		this.setState({keyModification: false, valueModification: false});
+ 	},
+	render: function() {
+		var key;
+		var value;
+		if(this.state.keyModification)
+			key = <form onSubmit={this.handleSubmit}><input type="text" placeholder="Key" ref="key" value={this.state.key} onChange={this.handleKeyChanged} onBlur={this.handleSubmit} /></form>
+		else
+			key = <div onClick={this.handleKeyClicked}>{this.state.key}</div>
+
+		if(this.state.valueModification)
+			value = <form onSubmit={this.handleSubmit}><input type="text" placeholder="Key" ref="value" value={this.state.value} onChange={this.handleValueChanged} onBlur={this.handleSubmit} /></form>
+		else
+			value = <div onClick={this.handleValueClicked}>{this.state.value}</div>
+
+		return(
+			<tr>
+				<td>{key}</td>
+				<td>{value}</td>
+			</tr>
+		);
+	}
+});
+
 var Resource = React.createClass({
+	getInitialState: function() {
+		return {collapse: false, keyValues: [{key: "key1", value: "value1"}, {key: "key2", value: "value2"}, {key: "key3", value: "value3"}]};
+ 	},
 	handleDelete: function() {
 		this.props.handleDelete(this.props.rid);
 	},
+	handleCollapse: function() {
+		this.setState({collapse: !this.state.collapse});
+	},
 	render: function() {
+		var keyValues = this.state.keyValues.map(function (keyValue, index) {
+			return (
+				<KeyValue key={keyValue.key} _key={keyValue.key} value={keyValue.value}/>
+			);
+		});
+
 		return(
 			<tr>
 				<td>
@@ -51,19 +129,17 @@ var Resource = React.createClass({
 					<button className="col-md-2 col-md-offset-4 btn btn-default" type="button" aria-label="Left Align" onClick={this.handleDelete}>
 						<span className="glyphicon glyphicon-remove" aria-hidden="true" />
 					</button>
-					<button className="col-md-2 btn btn-default" type="button" data-toggle="collapse" data-target={"#collapse_"+this.props.rid} aria-expanded="true" aria-controls={"collapse_"+this.props.rid}>
-						<span className="glyphicon glyphicon-triangle-bottom" aria-hidden="true" />
+					<button className="col-md-2 btn btn-default" type="button" data-toggle="collapse" data-target={"#collapse_"+this.props.rid} aria-expanded="true" aria-controls={"collapse_"+this.props.rid} onClick={this.handleCollapse}>
+						<span className={this.state.collapse ? "glyphicon glyphicon-triangle-top" : "glyphicon glyphicon-triangle-bottom"} aria-hidden="true" />
 					</button>
 					<div className="collapse" id={"collapse_"+this.props.rid}>
-						<div className="well">
-							<div>Ciao</div>
-							<div>Ciao</div>
-							<div>Ciao</div>
-							<div>Ciao</div>
-							<div>Ciao</div>
-							<div>Ciao</div>
-							<div>Ciao</div>
-						</div>
+						<table className="table table-bordered table-striped">
+							<ReactCSSTransitionGroup transitionName="example" component="tbody">
+								<tr><th>Key</th><th>Values</th></tr>
+								{keyValues}
+								<AddKeyValue />
+							</ReactCSSTransitionGroup>
+						</table>
 					</div>
 				</td>
 			</tr>
