@@ -43,25 +43,43 @@ var AddResource = React.createClass({
 });
 
 var AddKeyValue = React.createClass({
+	getInitialState: function() {
+		return {key: "", value: ""};
+	},
+	handleChangeKey: function(e) {
+		this.setState({key: event.target.value});
+	},
+	handleChangeValue: function(e) {
+		this.setState({value: event.target.value});
+	},
+	handleSubmit: function(event) {
+		event.preventDefault();
+
+		var key = this.state.key;
+		var value = this.state.value;
+
+		if(key != "" && value != "") {
+			nutella.publish("location/resource/update", {rid: this.props.rid, parameters: [{key: key, value: value}]});
+			this.setState({key: "", value: ""});
+		}
+	},
 	render: function() {
 		return(
-			<form onSubmit={this.handleSubmit}>
 			<tr>
 				<td>
-					<input type="text" placeholder="Key" ref="key"/>
+					<form onSubmit={this.handleSubmit}><input type="text" value={this.state.key} placeholder="Key" onChange={this.handleChangeKey} onBlur={this.handleSubmit} ref="key"/></form>
 				</td>
 				<td>
-					<input type="text" placeholder="Value" ref="value"/>	
+					<form onSubmit={this.handleSubmit}><input type="text" value={this.state.value} placeholder="Value" onChange={this.handleChangeValue} onBlur={this.handleSubmit} ref="value"/></form>
 				</td>
 			</tr>
-			</form>
 		);
 	}
 });
 
 var KeyValue = React.createClass({
 	getInitialState: function() {
-		return {keyModification: false, valueModification: false, key: this.props._key, value: this.props.value};
+		return {keyModification: false, valueModification: false, key: this.props._key, value: this.props.value, previousKey: this.props._key};
  	},
  	handleKeyChanged: function(event) {
  		this.setState({key: event.target.value});
@@ -81,7 +99,19 @@ var KeyValue = React.createClass({
  	},
  	handleSubmit: function(event) {
  		event.preventDefault();
- 		this.setState({keyModification: false, valueModification: false});
+
+		if(this.state.key == "" || this.state.value == "")
+			return;
+
+		if(this.state.key != this.state.previousKey) {
+			nutella.publish("location/resource/update", {rid: this.props.rid, parameters: [{key: this.state.previousKey, delete: true}]});
+			nutella.publish("location/resource/update", {rid: this.props.rid, parameters: [{key: this.state.key, value: this.state.value}]});
+		}
+		else {
+			nutella.publish("location/resource/update", {rid: this.props.rid, parameters: [{key: this.state.key, value: this.state.value}]});
+		}
+
+ 		this.setState({keyModification: false, valueModification: false, previousKey: this.state.key});
  	},
 	render: function() {
 		var key;
@@ -107,7 +137,7 @@ var KeyValue = React.createClass({
 
 var Resource = React.createClass({
 	getInitialState: function() {
-		return {collapse: false, keyValues: [{key: "key1", value: "value1"}, {key: "key2", value: "value2"}, {key: "key3", value: "value3"}]};
+		return {collapse: false};
  	},
 	handleDelete: function() {
 		this.props.handleDelete(this.props.rid);
@@ -116,9 +146,10 @@ var Resource = React.createClass({
 		this.setState({collapse: !this.state.collapse});
 	},
 	render: function() {
-		var keyValues = this.state.keyValues.map(function (keyValue, index) {
+		var self = this;
+		var keyValues = this.props.keyValues.map(function (keyValue, index) {
 			return (
-				<KeyValue key={keyValue.key} _key={keyValue.key} value={keyValue.value}/>
+				<KeyValue key={keyValue.key+"-"+keyValue.value} _key={keyValue.key} value={keyValue.value} rid={self.props.rid}/>
 			);
 		});
 
@@ -135,9 +166,9 @@ var Resource = React.createClass({
 					<div className="collapse" id={"collapse_"+this.props.rid}>
 						<table className="table table-bordered table-striped">
 							<ReactCSSTransitionGroup transitionName="example" component="tbody">
-								<tr><th>Key</th><th>Values</th></tr>
+								<tr><th>Key</th><th>Value</th></tr>
 								{keyValues}
-								<AddKeyValue />
+								<AddKeyValue rid={this.props.rid}/>
 							</ReactCSSTransitionGroup>
 						</table>
 					</div>
@@ -148,15 +179,21 @@ var Resource = React.createClass({
 });
 
 var ResourceEstimote = React.createClass({
-	handleAdd: function() {
-		this.props.handleAdd(this.props.rid);
+	handleDynamicAdd: function() {
+		this.props.handleDynamicAdd(this.props.rid);
+	},
+	handleStaticAdd: function() {
+		this.props.handleStaticAdd(this.props.rid);
 	},
 	render: function() {
 		return(
 			<tr>
 				<td>
 					<div className="col-md-4">{this.props.rid}</div>
-					<button className="col-md-2 col-md-offset-6 btn btn-default" type="button" aria-label="Left Align" onClick={this.handleAdd}>
+					<button className="col-md-2 col-md-offset-4 btn btn-default" type="button" aria-label="Left Align" onClick={this.handleStaticAdd}>
+						<span className="glyphicon glyphicon-plus" aria-hidden="true" />
+					</button>
+					<button className="col-md-2 btn btn-default" type="button" aria-label="Left Align" onClick={this.handleDynamicAdd}>
 						<span className="glyphicon glyphicon-plus" aria-hidden="true" />
 					</button>
 				</td>
@@ -189,6 +226,19 @@ var ResourceTable = React.createClass({
  			self.setState({resourceData: data});
  		});
 
+		// Wait for updated resources
+		nutella.subscribe("location/resources/updated", function(message) {
+			var data = self.state.resourceData;
+			data = data.filter(function(d) {
+				return $.inArray(d.rid, message.resources.map(function(r) {
+						return r.rid;
+					})) == -1;
+			});
+			data = data.concat(message.resources)
+			console.log(data);
+			self.setState({resourceData: data});
+		});
+
  		// Wait for removed resources
  		nutella.subscribe("location/resources/removed", function(message) {
  			var data = self.state.resourceData;
@@ -214,11 +264,17 @@ var ResourceTable = React.createClass({
  		data = data.filter(function(d) { return d.rid != rid; });
  		this.setState({resourceData: data});
 	},
-	handleResourceEstimoteAdd: function(rid) {
+	handleResourceEstimoteDynamicAdd: function(rid) {
 		nutella.publish("location/resource/add", {rid: rid,
 				model: "IBEACON",
 				type: "DYNAMIC"
 			});
+	},
+	handleResourceEstimoteStaticAdd: function(rid) {
+		nutella.publish("location/resource/add", {rid: rid,
+			model: "IBEACON",
+			type: "STATIC"
+		});
 	},
 	render: function() {
 		var self = this;
@@ -226,26 +282,34 @@ var ResourceTable = React.createClass({
 		var staticResourcesData = this.state.resourceData.filter(function(resource) { return resource.type == "STATIC"});
 		var dynamicResourcesData = this.state.resourceData.filter(function(resource) { return resource.type == "DYNAMIC"});
 		var estimoteResourcesData = this.state.estimoteData.filter(function(resource) { 
-				return $.inArray(resource.name, dynamicResourcesData.map(function(r) {
+				return $.inArray(resource.name, self.state.resourceData.map(function(r) {
  					return r.rid;
  				})) == -1; 
 			});
 
 		var staticResources = staticResourcesData.map(function (resource, index) {
+			var keyValues = [];
+			for(key in resource.parameters) {
+				keyValues.push({key: key, value: resource.parameters[key]});
+			}
 			return (
-				<Resource key={resource.rid} rid={resource.rid} handleDelete={self.handleResourceDelete}/>
+				<Resource key={resource.rid} rid={resource.rid} handleDelete={self.handleResourceDelete} keyValues={keyValues}/>
 			);
 		});
 
 		var dynamicResources = dynamicResourcesData.map(function (resource, index) {
+			var keyValues = [];
+			for(key in resource.parameters) {
+				keyValues.push({key: key, value: resource.parameters[key]});
+			}
 			return (
-				<Resource key={resource.rid} rid={resource.rid} handleDelete={self.handleResourceDelete}/>
+				<Resource key={resource.rid} rid={resource.rid} handleDelete={self.handleResourceDelete} keyValues={keyValues}/>
 			);
 		});
 
 		var estimoteResources = estimoteResourcesData.map(function (resource, index) {
 			return (
-				<ResourceEstimote key={resource.name} rid={resource.name} handleAdd={self.handleResourceEstimoteAdd}/>
+				<ResourceEstimote key={resource.name} rid={resource.name} handleDynamicAdd={self.handleResourceEstimoteDynamicAdd} handleStaticAdd={self.handleResourceEstimoteStaticAdd}/>
 			);
 		});
 
