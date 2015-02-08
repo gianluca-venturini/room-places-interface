@@ -3,15 +3,16 @@ var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
 var AddResource = React.createClass({
 	getInitialState: function() {
-		return {name: "", model: "IPAD"};
+		return {name: "", model: "IPAD", range: ""};
  	},
  	handleSubmit: function(e) {
  		e.preventDefault();
 
  		var name = this.refs.name.getDOMNode().value.trim();
  		var model = this.refs.model.getDOMNode().value.trim();
+		var range = this.refs.range.getDOMNode().value.trim();
 
- 		nutella.publish("location/resource/add", {rid: name, model: model, type: this.props.type});
+ 		nutella.publish("location/resource/add", {rid: name, model: model, type: this.props.type, proximity_range: range});
 
  		// Clean the form
  		this.setState({name: ""});
@@ -22,12 +23,20 @@ var AddResource = React.createClass({
 	handleChangeModel: function(e) {
 		this.setState({model: event.target.value});
 	},
+	handleChangeRange: function(e) {
+		this.setState({range: event.target.value});
+	},
 	render: function() {
+		var proxRange;
+		if(this.props.type == "STATIC")
+			proxRange = <input type="text" value={this.state.range} placeholder="Proximity range" onChange={this.handleChangeRange} ref="range"/>
+
 		return(
 			<tr>
 				<td>
 					<form onSubmit={this.handleSubmit}>
 						<input type="text" value={this.state.name} placeholder="Name" onChange={this.handleChangeName} ref="name"/>
+						{proxRange}
 						<select value={this.state.model} onChange={this.handleChangeModel} ref="model">
 							<option value="IMAC">iMac</option>
 							<option value="IPHONE">iPhone</option>
@@ -235,7 +244,6 @@ var ResourceTable = React.createClass({
 					})) == -1;
 			});
 			data = data.concat(message.resources)
-			console.log(data);
 			self.setState({resourceData: data});
 		});
 

@@ -17,15 +17,196 @@ var Map = function(mapId) {
         arrow_ratio: 0.5,
         font: 0.12,
         quotation_excess: 1.2,
+        resource_radius: 0.1,
+        resource_range_stroke: 0.05,
+        location_range_color: "rgba(216, 242, 242, 0.5)",
+        location_range_stroke_color: "#056CF2",
+        location_range_color_overlapped: "rgba(231, 76, 60, 0.5)",
     };
 
-    // Contains all the resources indexed with the RID
+    // D3 group containing the room objects
+    self.room = null;
+
+    // Contains all the resources data indexed with the RID
     self.resources = {};
 
+    // Contains all the graphical resources indexed with the RID
+    self.graphicResources = {};
+
+    // Render the resources and keep track of them
     self.renderResources = function() {
+
+        // Check for possible overlap in ranges
+        self.checkOverlap();
+
+        var resources = [];
+
+        for(var r in self.resources) {
+            resources.push(self.resources[r]);
+        }
+
+        // Memorize last time (in ms) that we render the page
+        var lastRender = 0;
+
+        // Drag & drop behavior
+        var drag = d3.behavior.drag()
+            //.origin(function(d) { return d; })
+            .on("dragstart", function(d){
+                d.dragged = true;
+
+                self.renderResources();
+            })
+            .on("drag", function(d) {
+                d3.select(this)
+                    .attr("cx", d.continuous.x = d3.event.x)
+                    .attr("cy", d.continuous.y = d3.event.y);
+
+                var date = new Date();
+                if(date.getTime() - lastRender > 200) {
+                    self.renderResources();
+                    lastRender = date.getTime();
+                }
+
+            })
+            .on("dragend", function(d){
+                var x = d3.select(this).attr("cx");
+                var y = d3.select(this).attr("cy");
+
+                var continuous = {x: x, y: y};
+                if(d.continuous.z != null)
+                    continuous.z = d.continuous.z;
+
+                d.dragged = false;
+
+                // Rend all resources
+                self.renderResources();
+
+                // Update the resource on the server
+                nutella.publish("location/resource/update", {rid: d.rid, continuous: continuous});
+            });
+
+        // Resource D3 object
+        var resourceLocation = self.room.clip.selectAll(".resource_location")
+            .data(resources);
+
+        // Resource range D3 object
+        var resourceLocationRange = self.room.clip.selectAll(".resource_location_range")
+            .data(resources);
+
+        // Resource range background D3 object
+        var resourceLocationRangeBackground = self.room.clip.selectAll(".resource_location_range_background")
+            .data(resources);
+
+        resourceLocationRangeBackground
+            .enter()
+            .append("circle")
+            .attr("class", "resource_location_range_background")
+            .attr("r", function(d) {
+                if(d.proximity_range != null) {
+                    if(d.dragged == true)
+                        return 0;
+                    else
+                        return d.proximity_range;
+                }
+                else {
+                    return 0;
+                }
+            })
+            .attr("fill", self.style.location_range_color)
+            .attr("cx", function(d) { return d.continuous.x; })
+            .attr("cy", function(d) { return d.continuous.y; });
+
+        // Update resources that are already there
+        resourceLocationRangeBackground
+            .attr("cx", function(d) { return d.continuous.x; })
+            .attr("cy", function(d) { return d.continuous.y; })
+            .attr("fill", function(d) {
+                console.log(d);
+                if(d.overlapped == true) {
+                    console.log("OVERLAP");
+                    return self.style.location_range_color_overlapped;
+                }
+                else
+                    return self.style.location_range_color;
+            })
+            .transition()
+            .attr("r", function(d) {
+                if(d.proximity_range != null) {
+                    if(d.dragged == true)
+                        return 0;
+                    else
+                        return d.proximity_range;
+                }
+                else {
+                    return 0;
+                }
+            });
+
+        resourceLocationRangeBackground.exit().remove();
+
+        resourceLocationRange
+            .enter()
+            .append("circle")
+            .attr("class", "resource_location_range")
+            .attr("r", function(d) {
+                if(d.proximity_range != null) {
+                    if(d.dragged == true)
+                        return 0;
+                    else
+                        return d.proximity_range;
+                }
+                else {
+                    return 0;
+                }
+            })
+            .attr("fill", "none")
+            .attr("stroke", function() {
+                return self.style.location_range_stroke_color;
+            } )
+            .attr("stroke-width", self.style.resource_range_stroke)
+            .attr("cx", function(d) { return d.continuous.x; })
+            .attr("cy", function(d) { return d.continuous.y; });
+
+        // Update resources that are already there
+        resourceLocationRange
+            .attr("cx", function(d) { return d.continuous.x; })
+            .attr("cy", function(d) { return d.continuous.y; })
+            .transition()
+            .attr("r", function(d) {
+                if(d.proximity_range != null) {
+                    if(d.dragged == true)
+                        return 0;
+                    else
+                        return d.proximity_range;
+                }
+                else {
+                    return 0;
+                }
+            });
+
+        resourceLocation.exit().remove();
+
+        resourceLocation
+            .enter()
+            .append("circle")
+            .attr("class", "resource_location")
+            .attr("r", self.style.resource_radius)
+            .attr("fill", "black")
+            .attr("cx", function(d) { return d.continuous.x; })
+            .attr("cy", function(d) { return d.continuous.y; })
+            .call(drag);
+
+        // Update resources that are already there
+        resourceLocation
+            .transition()
+            .attr("cx", function(d) { return d.continuous.x; })
+            .attr("cy", function(d) { return d.continuous.y; });
+
+        resourceLocation.exit().remove();
 
     };
 
+    // Render the map from the beginning
     self.render = function() {
         var height = self.size.y + self.size.margin_top + self.size.margin_bottom;
         var width = self.size.x + self.size.margin_left + self.size.margin_right;
@@ -36,15 +217,40 @@ var Map = function(mapId) {
             self.room.remove();
         }
 
+        // Group that contains all the elements of the room
         self.room = self.svg.append("g")
-            .attr("transform", "translate("+ self.size.margin_left +","+ self.size.margin_top +")")
+            .attr("transform", "translate("+ self.size.margin_left +","+ self.size.margin_top +")");
 
+        // Clip path used in order to crop elements outside the room
+        var defs = self.room.append("defs");
+
+        defs.append("rect")
+            .attr("id", "rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", self.size.x)
+            .attr("height", self.size.y)
+            .attr("fill", "black")
+            .attr("stroke", "blue");
+
+        defs.append("clipPath")
+            .attr("id", "clip")
+                .append("use")
+                .attr({"xlink:href": "#rect"});
+
+
+
+        self.room.clip = self.room.append("g")
+            .attr("clip-path", "url(#clip)");
+
+
+        // Rectangle that represent the room
         self.rect = self.room.append("rect")
             .attr("x", 0)
             .attr("y", 0)
             .attr("width", self.size.x)
             .attr("height", self.size.y)
-            .style("fill", "rgb(255,255,255)")
+            .style("fill", "none")
             .attr("stroke", "black")
             .attr("stroke-width", self.style.stroke);
 
@@ -146,7 +352,9 @@ var Map = function(mapId) {
         self.drawArrow(0, self.size.margin_top+self.size.y - self.size.margin_top/2, "rgb(0,0,255)", Position.left, self.room);
         self.drawArrow(self.size.x , self.size.y+self.size.margin_top/2, "rgb(0,0,255)", Position.right, self.room);
 
-        self.drawQuotation(2, 1, 2, 5, Position.right, 1, "prova", "rgb(0,0,255)");
+        //self.drawQuotation(2, 1, 2, 5, Position.right, 1, "prova", "rgb(0,0,255)");
+
+        self.renderResources();
     };
 
     self.drawArrow = function(x, y, color, position, element) {
@@ -300,10 +508,89 @@ var Map = function(mapId) {
             .style("stroke-width", self.style.stroke);
     };
 
+    // Check if two static resources are overlapped and ser overlapped=true in case
+    self.checkOverlap = function() {
+        for(r1 in self.resources) {
+            self.resources[r1].overlapped = false;
+            for(r2 in self.resources) {
+                if( r1 != r2 ) {
+                    var resource1 = self.resources[r1];
+                    var resource2 = self.resources[r2];
+
+                    if(resource1.continuous != null &&
+                        resource2.continuous != null &&
+                        resource1.proximity_range != null &&
+                        resource2.proximity_range != null) {
+
+                        // Check if the distance is less than the sum of proximity ranges
+                        var distance = Math.sqrt(
+                                        Math.pow(resource1.continuous.x - resource2.continuous.x,2)
+                                      + Math.pow(resource1.continuous.y - resource2.continuous.y,2));
+
+                        var sumRange = parseFloat(resource1.proximity_range) + parseFloat(resource2.proximity_range);
+
+                        if(distance < sumRange) {
+                            console.log("Found overlap");
+                            resource1.overlapped = true;
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+
     self.init = function() {
         self.svg = d3.select(mapId);
 
         self.render();
+
+        // Download all resources
+        nutella.request("location/resources", {}, function(reply) {
+            for(var r in reply.resources) {
+                var resource = reply.resources[r];
+                if(resource["continuous"] != null ) {
+                    self.resources[resource.rid] = resource;
+                }
+            }
+
+            self.renderResources();
+        });
+
+        var updateResource = function(message) {
+            var resources = message.resources;
+            var changed = false;
+
+            for(var r in resources) {
+                var resource = resources[r];
+                if(resource["continuous"] != null ) {
+                    self.resources[resource.rid] = resource;
+                    changed = true;
+                }
+            }
+
+            if(changed) {
+                self.renderResources();
+            }
+        };
+
+        // Update resources
+        nutella.subscribe("location/resources/updated", updateResource);
+
+        // Add resources
+        nutella.subscribe("location/resources/added", updateResource);
+
+        // Delete resources
+        nutella.subscribe("location/resources/removed", function(message) {
+            var resources = message.resources;
+
+            for(var r in resources) {
+                delete self.resources[resources[r].rid];
+            }
+
+            self.renderResources();
+        });
+
     }();
 
     return self;
