@@ -11,10 +11,12 @@ var Map = function(mapId, room) {
 
     self._style = {
         stroke: 0.01,
-        arrow_thick: 0.1,
-        arrow_ratio: 0.5,
+        arrow_thick: 0.06,
+        _arrow_ratio: 2.0,
         font: 0.12,
         quotation_excess: 1.2,
+        _quotation_room_offset: 0.4,
+        quotation_color: "#056CF2",
         resource_radius: 0.1,
         resource_range_stroke: 0.05,
         location_range_color: "rgba(216, 242, 242, 0.5)",
@@ -27,10 +29,16 @@ var Map = function(mapId, room) {
     self.updateStyle = function(k) {
         self.style = {};
         for(var key in self._style) {
-            if(typeof self._style[key] == "string")
+            if(typeof self._style[key] == "string") {
                 self.style[key] = self._style[key];
-            else
-                self.style[key] = self._style[key] * k;
+            }
+            else {
+                if(key[0] == "_")
+                    self.style[key.slice(1)] = self._style[key];
+                else
+                    self.style[key] = self._style[key] * k;
+            }
+
         }
     };
 
@@ -63,9 +71,6 @@ var Map = function(mapId, room) {
             resources.push(self.resources[r]);
         }
 
-        // Memorize last time (in ms) that we render the page
-        var lastRender = 0;
-
         // Drag & drop behavior
         var drag = d3.behavior.drag()
             //.origin(function(d) { return d; })
@@ -79,13 +84,60 @@ var Map = function(mapId, room) {
                     .attr("cx", d.continuous.x = d3.event.x)
                     .attr("cy", d.continuous.y = d3.event.y);
 
-                /*
-                var date = new Date();
-                if(date.getTime() - lastRender > 200) {
-                    self.renderResources();
-                    lastRender = date.getTime();
-                }
-                */
+                // Add quotations
+                if(d.quotation != undefined)
+                    d.quotation.remove();
+
+                // X on the left
+                d.quotation = self.drawQuotation(
+                    0,
+                    d.continuous.y,
+                    d.continuous.x,
+                    d.continuous.y,
+                    Position.bottom,
+                    0,
+                    d.continuous.x.toPrecision(3),
+                    self.style.quotation_color);
+
+                // X on the right
+                d.quotation = self.drawQuotation(
+                    d.continuous.x,
+                    d.continuous.y,
+                    self.roomManager.x,
+                    d.continuous.y,
+                    Position.bottom,
+                    0,
+                    (self.roomManager.x-d.continuous.x).toPrecision(3),
+                    self.style.quotation_color,
+                    undefined,
+                    d.quotation);
+
+                // Y on the top
+                d.quotation = self.drawQuotation(
+                    d.continuous.x,
+                    0,
+                    d.continuous.x,
+                    d.continuous.y,
+                    Position.left,
+                    0,
+                    d.continuous.y.toPrecision(3),
+                    self.style.quotation_color,
+                    undefined,
+                    d.quotation);
+
+                // Y on the bottom
+                d.quotation = self.drawQuotation(
+                    d.continuous.x,
+                    d.continuous.y,
+                    d.continuous.x,
+                    self.roomManager.y,
+                    Position.left,
+                    0,
+                    (self.roomManager.y-d.continuous.y).toPrecision(3),
+                    self.style.quotation_color,
+                    undefined,
+                    d.quotation);
+
 
             })
             .on("dragend", function(d){
@@ -97,6 +149,9 @@ var Map = function(mapId, room) {
                     continuous.z = d.continuous.z;
 
                 d.dragged = false;
+
+                // Remove quotation
+                d.quotation.remove();
 
                 // Rend all resources
                 self.renderResources();
@@ -235,10 +290,12 @@ var Map = function(mapId, room) {
 
         resourceLocationName.exit().remove();
 
+        resourceLocationName.order();
+
         resourceLocation
             .enter()
             .append("circle")
-            .attr("class", "resource_location")
+            .attr("class", "resource_location pointer")
             .attr("r", self.style.resource_radius)
             .attr("fill", "black")
             .attr("cx", function(d) { return d.continuous.x; })
@@ -252,6 +309,8 @@ var Map = function(mapId, room) {
             .attr("cy", function(d) { return d.continuous.y; });
 
         resourceLocation.exit().remove();
+
+        resourceLocation.order();
 
     };
 
@@ -303,6 +362,7 @@ var Map = function(mapId, room) {
             .attr("stroke", "black")
             .attr("stroke-width", self.style.stroke);
 
+        /*
         // Vertical quotation line
         self.room.append("line")
             .attr("x1", -self.size.margin_left/2)
@@ -401,7 +461,31 @@ var Map = function(mapId, room) {
         self.drawArrow(0, self.size.margin_top+self.roomManager.y - self.size.margin_top/2, "rgb(0,0,255)", Position.left, self.room);
         self.drawArrow(self.roomManager.x , self.roomManager.y+self.size.margin_top/2, "rgb(0,0,255)", Position.right, self.room);
 
+        */
+
         //self.drawQuotation(2, 1, 2, 5, Position.right, 1, "prova", "rgb(0,0,255)");
+
+        // Vertical room quotation
+        self.drawQuotation(0, 0,                   0,                  self.roomManager.y, Position.left,   0.5, self.roomManager.y, self.style.quotation_color, function() {
+            var newHeight = prompt("Insert new height", self.roomManager.y);
+            var y = parseFloat(newHeight);
+
+            if(newHeight != undefined) {
+                self.roomManager.y = y;
+                self.render();
+            }
+        });
+
+        // Horizontal room quotation
+        self.drawQuotation(0, self.roomManager.y,  self.roomManager.x, self.roomManager.y, Position.bottom, 0.5, self.roomManager.x, self.style.quotation_color, function() {
+            var newWidth = prompt("Insert new width", self.roomManager.x);
+            var x = parseFloat(newWidth);
+
+            if(newWidth != undefined) {
+                self.roomManager.x = x;
+                self.render();
+            }
+        });
 
         self.renderResources();
     };
@@ -413,8 +497,8 @@ var Map = function(mapId, room) {
 
         var lineData = [
             { "x":  0.0, "y": 0.0},
-            { "x":  1*self.style.arrow_thick*self.style.arrow_ratio, "y": 1*self.style.arrow_thick/self.style.arrow_ratio},
-            { "x": -1*self.style.arrow_thick*self.style.arrow_ratio, "y": 1*self.style.arrow_thick/self.style.arrow_ratio}
+            { "x":  1*self.style.arrow_thick/self.style.arrow_ratio, "y": 1*self.style.arrow_thick*self.style.arrow_ratio},
+            { "x": -1*self.style.arrow_thick/self.style.arrow_ratio, "y": 1*self.style.arrow_thick*self.style.arrow_ratio}
         ];
 
         var lineFunction = d3.svg.line()
@@ -442,9 +526,15 @@ var Map = function(mapId, room) {
         return arrow;
     };
 
-    self.drawQuotation = function(x1, y1, x2, y2, position, offset, text, color) {
+    self.drawQuotation = function(x1, y1, x2, y2, position, offset, quotationText, color, onClick, quotationObject) {
 
-        var quotation = self.room.append("g");
+        var quotation;
+        if(quotationObject == undefined) {
+            quotation = self.room.append("g");
+        }
+        else {
+            quotation = quotationObject;
+        }
 
         // Calculate the offsets in two dimensions
         var ox, oy;
@@ -472,16 +562,22 @@ var Map = function(mapId, room) {
         }
 
         var text = quotation.append("text")
-            .text(text)
+            .text(quotationText)
             .attr("x", (x1+x2)/2 + ox)
             .attr("y", (y1+y2)/2 + oy + self.style.font / 3)
             .attr("font-size", self.style.font)
             .attr("text-anchor", "middle")
             .attr("fill", color);
 
+
+        if(onClick != null) {
+            text.on("click", onClick);
+            text.classed("pointer",true);
+        }
+
         // Get the text length
-        var textWidth = text.node().getBBox().width;
-        var textHeight = text.node().getBBox().height;
+        var textWidth = quotation.select("text").node().getBBox().width;
+        var textHeight = quotation.select("text").node().getBBox().height;
 
         var sx, sy;
 
@@ -555,6 +651,8 @@ var Map = function(mapId, room) {
             .attr("y2", y2+oy*self.style.quotation_excess)
             .style("stroke", color)
             .style("stroke-width", self.style.stroke);
+
+        return quotation;
     };
 
     // Check if two static resources are overlapped and ser overlapped=true in case
@@ -624,7 +722,7 @@ var Map = function(mapId, room) {
             }
 
             if(changed) {
-                self.render();
+                self.renderResources();
             }
         };
 
