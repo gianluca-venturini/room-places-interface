@@ -18,14 +18,15 @@
 
 		<script src="js/position.js" charset="utf-8"></script>
 		<script src="js/map.js" charset="utf-8"></script>
+		<script src="js/room.js" charset="utf-8"></script>
     </head>
     <body>
 
 		<div class="col-md-8">
-			<svg id="map"></svg>
+			<svg id="map" style="max-height: 1000px"></svg>
 		</div>
 
-        <div id="resource_table" class="col-md-3" style="margin-top: 30px"></div>
+        <div id="resource_table" class="col-md-4" style="margin-top: 30px"></div>
 
 				
 		<!-- Scripts -->
@@ -38,16 +39,18 @@
 
 		<!-- Your scripts here -->
 		<script type="text/jsx">
+
 			var query_params = nutella.init(location.search, function() {
+				var room = Room();
 
 				React.render(
-				  <ResourceTable />,
+				  <ResourceTable room={room}/>,
 				  document.getElementById('resource_table')
 				);
 
-				var map = Map("#map");
-				
+				var map = Map("#map", room);
 			});
+
 		</script>
 				
     </body>

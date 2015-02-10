@@ -10,12 +10,16 @@ var AddResource = React.createClass({
 
  		var name = this.refs.name.getDOMNode().value.trim();
  		var model = this.refs.model.getDOMNode().value.trim();
-		var range = this.refs.range.getDOMNode().value.trim();
+		var range;
+		if(this.refs.range != undefined)
+			range = this.refs.range.getDOMNode().value.trim();
+		else
+			range = 0;
 
- 		nutella.publish("location/resource/add", {rid: name, model: model, type: this.props.type, proximity_range: range});
+ 		nutella.publish("location/resource/add", {rid: name, model: model, type: this.props.type, proximity_range: parseFloat(range)});
 
  		// Clean the form
- 		this.setState({name: ""});
+ 		this.setState({name: "", range: ""});
  	},
 	handleChangeName: function(e) {
 		this.setState({name: event.target.value});
@@ -154,6 +158,15 @@ var Resource = React.createClass({
 	handleCollapse: function() {
 		this.setState({collapse: !this.state.collapse});
 	},
+	handleAddTrackingContinuous: function() {
+		this.props.handleAddTracking(this.props.resource, "continuous");
+	},
+	handleAddTrackingDiscrete: function() {
+		this.props.handleAddTracking(this.props.resource, "discrete");
+	},
+	handleAddTrackingNone: function() {
+		this.props.handleAddTracking(this.props.resource, "none");
+	},
 	render: function() {
 		var self = this;
 		var keyValues = this.props.keyValues.map(function (keyValue, index) {
@@ -162,16 +175,48 @@ var Resource = React.createClass({
 			);
 		});
 
+		var _continuous = "";
+		var _discrete = "";
+		var _none = "";
+		if(this.props.resource.discrete != undefined) {
+			_discrete = " active";
+		}
+		else if(this.props.resource.continuous != undefined) {
+			_continuous = " active";
+		}
+		else {
+			_none = " active";
+		}
+
+		var addTracking = <div className="btn-group col-md-4 pull-right">
+							<button className={"col-md-4 btn btn-default" + _continuous} type="button" aria-label="Left Align" onClick={this.handleAddTrackingContinuous}>
+								<span className="glyphicon glyphicon-screenshot" aria-hidden="true" />
+							</button>
+							<button className={"col-md-4 btn btn-default" + _discrete} type="button" aria-label="Left Align" onClick={this.handleAddTrackingDiscrete}>
+								<span className="glyphicon glyphicon-th" aria-hidden="true" />
+							</button>
+							<button className={"col-md-4 btn btn-default" + _none} type="button" aria-label="Left Align" onClick={this.handleAddTrackingNone}>
+								<span className="glyphicon glyphicon-ban-circle" aria-hidden="true" />
+							</button>
+						</div>;
+
+		if(this.props.resource.type == "DYNAMIC")
+			addTracking = null;
+
 		return(
 			<tr>
 				<td>
 					<div className="col-md-4">{this.props.rid}</div>
-					<button className="col-md-2 col-md-offset-4 btn btn-default" type="button" aria-label="Left Align" onClick={this.handleDelete}>
-						<span className="glyphicon glyphicon-remove" aria-hidden="true" />
-					</button>
-					<button className="col-md-2 btn btn-default" type="button" data-toggle="collapse" data-target={"#collapse_"+this.props.rid} aria-expanded="true" aria-controls={"collapse_"+this.props.rid} onClick={this.handleCollapse}>
+
+					<button className="col-md-1 btn btn-default pull-right" type="button" data-toggle="collapse" data-target={"#collapse_"+this.props.rid} aria-expanded="true" aria-controls={"collapse_"+this.props.rid} onClick={this.handleCollapse}>
 						<span className={this.state.collapse ? "glyphicon glyphicon-triangle-top" : "glyphicon glyphicon-triangle-bottom"} aria-hidden="true" />
 					</button>
+
+					<button className="col-md-1 btn btn-default pull-right" type="button" aria-label="Left Align" onClick={this.handleDelete}>
+						<span className="glyphicon glyphicon-remove" aria-hidden="true" />
+					</button>
+
+					{addTracking}
 					<div className="collapse" id={"collapse_"+this.props.rid}>
 						<table className="table table-bordered table-striped">
 							<ReactCSSTransitionGroup transitionName="example" component="tbody">
@@ -276,21 +321,54 @@ var ResourceTable = React.createClass({
 		nutella.publish("location/resource/add", {rid: rid,
 				model: "IBEACON",
 				type: "DYNAMIC"
-			});
+		});
 	},
 	handleResourceEstimoteStaticAdd: function(rid) {
 		nutella.publish("location/resource/add", {rid: rid,
 			model: "IBEACON",
-			type: "STATIC"
+			type: "STATIC",
+			proximity_range: 1
 		});
+	},
+	handleAddTracking: function(resource, type) {
+		var x = this.props.room.x / 2;
+		var y = this.props.room.y / 2;
+
+		console.log("type " + type);
+
+		var message;
+
+		switch(type) {
+			case "continuous":
+				message = {rid: resource.rid,
+					continuous: {x: x, y: y}
+				};
+				break;
+
+			case "discrete":
+				message = {rid: resource.rid,
+					discrete: {x: 0, y: 0}
+				};
+				break;
+			default:
+				message = {rid: resource.rid};
+				break;
+		}
+
+		nutella.publish("location/resource/update", message);
 	},
 	render: function() {
 		var self = this;
 
-		var staticResourcesData = this.state.resourceData.filter(function(resource) { return resource.type == "STATIC"});
-		var dynamicResourcesData = this.state.resourceData.filter(function(resource) { return resource.type == "DYNAMIC"});
-		var estimoteResourcesData = this.state.estimoteData.filter(function(resource) { 
-				return $.inArray(resource.name, self.state.resourceData.map(function(r) {
+		// Order the resource list
+		var resources = this.state.resourceData;
+		resources = resources.sort(function(a, b) {return a.rid.localeCompare(b.rid)});
+		console.log(resources);
+
+		var staticResourcesData = resources.filter(function(resource) { return resource.type == "STATIC"});
+		var dynamicResourcesData = resources.filter(function(resource) { return resource.type == "DYNAMIC"});
+		var estimoteResourcesData = this.state.estimoteData.filter(function(resource) {
+				return $.inArray(resource.name, resources.map(function(r) {
  					return r.rid;
  				})) == -1; 
 			});
@@ -301,7 +379,13 @@ var ResourceTable = React.createClass({
 				keyValues.push({key: key, value: resource.parameters[key]});
 			}
 			return (
-				<Resource key={resource.rid} rid={resource.rid} handleDelete={self.handleResourceDelete} keyValues={keyValues}/>
+				<Resource key={resource.rid}
+					rid={resource.rid}
+					resource={resource}
+					room={self.props.room}
+					handleDelete={self.handleResourceDelete}
+					handleAddTracking={self.handleAddTracking}
+					keyValues={keyValues}/>
 			);
 		});
 
@@ -311,13 +395,22 @@ var ResourceTable = React.createClass({
 				keyValues.push({key: key, value: resource.parameters[key]});
 			}
 			return (
-				<Resource key={resource.rid} rid={resource.rid} handleDelete={self.handleResourceDelete} keyValues={keyValues}/>
+				<Resource key={resource.rid}
+					rid={resource.rid}
+					resource={resource}
+					room={self.props.room}
+					handleDelete={self.handleResourceDelete}
+					handleAddTracking={self.handleAddTracking}
+					keyValues={keyValues}/>
 			);
 		});
 
 		var estimoteResources = estimoteResourcesData.map(function (resource, index) {
 			return (
-				<ResourceEstimote key={resource.name} rid={resource.name} handleDynamicAdd={self.handleResourceEstimoteDynamicAdd} handleStaticAdd={self.handleResourceEstimoteStaticAdd}/>
+				<ResourceEstimote key={resource.name}
+					rid={resource.name}
+					handleDynamicAdd={self.handleResourceEstimoteDynamicAdd}
+					handleStaticAdd={self.handleResourceEstimoteStaticAdd}/>
 			);
 		});
 

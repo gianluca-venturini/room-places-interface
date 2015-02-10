@@ -1,17 +1,15 @@
-var Map = function(mapId) {
+var Map = function(mapId, room) {
     var self = {};
 
     // The size measure are in meters
     self.size = {
-        x: 15,
-        y: 10,
         margin_left: 1,
         margin_right: 1,
         margin_top: 1,
         margin_bottom: 1
     };
 
-    self.style = {
+    self._style = {
         stroke: 0.01,
         arrow_thick: 0.1,
         arrow_ratio: 0.5,
@@ -21,8 +19,23 @@ var Map = function(mapId) {
         resource_range_stroke: 0.05,
         location_range_color: "rgba(216, 242, 242, 0.5)",
         location_range_stroke_color: "#056CF2",
+        location_range_stroke_color_overlapped: "#c0392b",
         location_range_color_overlapped: "rgba(231, 76, 60, 0.5)",
+        resource_name_offset: 0.2
     };
+
+    self.updateStyle = function(k) {
+        self.style = {};
+        for(var key in self._style) {
+            if(typeof self._style[key] == "string")
+                self.style[key] = self._style[key];
+            else
+                self.style[key] = self._style[key] * k;
+        }
+    };
+
+    // Room model
+    self.roomManager = room;
 
     // D3 group containing the room objects
     self.room = null;
@@ -35,6 +48,11 @@ var Map = function(mapId) {
 
     // Render the resources and keep track of them
     self.renderResources = function() {
+        self.renderStaticResources();
+    };
+
+    // Render the static resources and keep track of them
+    self.renderStaticResources = function() {
 
         // Check for possible overlap in ranges
         self.checkOverlap();
@@ -61,11 +79,13 @@ var Map = function(mapId) {
                     .attr("cx", d.continuous.x = d3.event.x)
                     .attr("cy", d.continuous.y = d3.event.y);
 
+                /*
                 var date = new Date();
                 if(date.getTime() - lastRender > 200) {
                     self.renderResources();
                     lastRender = date.getTime();
                 }
+                */
 
             })
             .on("dragend", function(d){
@@ -97,6 +117,10 @@ var Map = function(mapId) {
         var resourceLocationRangeBackground = self.room.clip.selectAll(".resource_location_range_background")
             .data(resources);
 
+        // Resource name (RID)
+        var resourceLocationName = self.room.clip.selectAll(".resource_location_name")
+            .data(resources);
+        
         resourceLocationRangeBackground
             .enter()
             .append("circle")
@@ -121,9 +145,7 @@ var Map = function(mapId) {
             .attr("cx", function(d) { return d.continuous.x; })
             .attr("cy", function(d) { return d.continuous.y; })
             .attr("fill", function(d) {
-                console.log(d);
                 if(d.overlapped == true) {
-                    console.log("OVERLAP");
                     return self.style.location_range_color_overlapped;
                 }
                 else
@@ -143,6 +165,7 @@ var Map = function(mapId) {
             });
 
         resourceLocationRangeBackground.exit().remove();
+
 
         resourceLocationRange
             .enter()
@@ -171,6 +194,14 @@ var Map = function(mapId) {
         resourceLocationRange
             .attr("cx", function(d) { return d.continuous.x; })
             .attr("cy", function(d) { return d.continuous.y; })
+            .attr("stroke", function(d) {
+                if(d.overlapped == true) {
+                    return self.style.location_range_stroke_color_overlapped;
+                }
+                else {
+                    return self.style.location_range_stroke_color;
+                }
+            } )
             .transition()
             .attr("r", function(d) {
                 if(d.proximity_range != null) {
@@ -184,7 +215,25 @@ var Map = function(mapId) {
                 }
             });
 
-        resourceLocation.exit().remove();
+        resourceLocationRange.exit().remove();
+
+        resourceLocationName
+            .enter()
+            .append("text")
+            .attr("class", "resource_location_name")
+            .attr("x", function(d) { return d.continuous.x; })
+            .attr("y", function(d) { return d.continuous.y - self.style.resource_name_offset; })
+            .attr("text-anchor", "middle")
+            .attr("fill", function(d) { if(d.dragged == true) return "none"; else return "black";})
+            .attr("font-size", self.style.font)
+            .text(function(d) { return d.rid; });
+
+        resourceLocationName
+            .attr("x", function(d) { return d.continuous.x; })
+            .attr("y", function(d) { return d.continuous.y - self.style.resource_name_offset; })
+            .attr("fill", function(d) { if(d.dragged == true) return "none"; else return "black";});
+
+        resourceLocationName.exit().remove();
 
         resourceLocation
             .enter()
@@ -208,8 +257,8 @@ var Map = function(mapId) {
 
     // Render the map from the beginning
     self.render = function() {
-        var height = self.size.y + self.size.margin_top + self.size.margin_bottom;
-        var width = self.size.x + self.size.margin_left + self.size.margin_right;
+        var height = self.roomManager.y + self.size.margin_top  + self.size.margin_bottom;
+        var width  = self.roomManager.x + self.size.margin_left + self.size.margin_right;
 
         self.svg.attr("viewBox", "0 0 " + width + " " + height);
 
@@ -228,8 +277,8 @@ var Map = function(mapId) {
             .attr("id", "rect")
             .attr("x", 0)
             .attr("y", 0)
-            .attr("width", self.size.x)
-            .attr("height", self.size.y)
+            .attr("width", self.roomManager.x)
+            .attr("height", self.roomManager.y)
             .attr("fill", "black")
             .attr("stroke", "blue");
 
@@ -248,8 +297,8 @@ var Map = function(mapId) {
         self.rect = self.room.append("rect")
             .attr("x", 0)
             .attr("y", 0)
-            .attr("width", self.size.x)
-            .attr("height", self.size.y)
+            .attr("width", self.roomManager.x)
+            .attr("height", self.roomManager.y)
             .style("fill", "none")
             .attr("stroke", "black")
             .attr("stroke-width", self.style.stroke);
@@ -259,15 +308,15 @@ var Map = function(mapId) {
             .attr("x1", -self.size.margin_left/2)
             .attr("x2", -self.size.margin_left/2)
             .attr("y1", 0)
-            .attr("y2", self.size.y/2 - self.style.font)
+            .attr("y2", self.roomManager.y/2 - self.style.font)
             .style("stroke", "rgb(0,0,255)")
             .style("stroke-width", self.style.stroke);
 
         self.room.append("line")
             .attr("x1", -self.size.margin_left/2)
             .attr("x2", -self.size.margin_left/2)
-            .attr("y1", self.size.y/2 + self.style.font)
-            .attr("y2", self.size.y)
+            .attr("y1", self.roomManager.y/2 + self.style.font)
+            .attr("y2", self.roomManager.y)
             .style("stroke", "rgb(0,0,255)")
             .style("stroke-width", self.style.stroke);
 
@@ -282,75 +331,75 @@ var Map = function(mapId) {
         self.room.append("line")
             .attr("x1", -self.size.margin_left*3/4)
             .attr("x2", 0)
-            .attr("y1", self.size.y)
-            .attr("y2", self.size.y)
+            .attr("y1", self.roomManager.y)
+            .attr("y2", self.roomManager.y)
             .style("stroke", "rgb(0,0,255)")
             .style("stroke-width", self.style.stroke);
 
         self.room.append("text")
-            .text(self.size.y)
+            .text(self.roomManager.y)
             .attr("x", -self.size.margin_left/2)
-            .attr("y", self.size.y/2 + self.style.font/3)
+            .attr("y", self.roomManager.y/2 + self.style.font/3)
             .attr("font-size", self.style.font)
             .attr("text-anchor", "middle")
             .on("click", function(e) {
-                var newHeight = prompt("Insert new height", self.size.y);
-                self.size.y = parseFloat(newHeight);
+                var newHeight = prompt("Insert new height", self.roomManager.y);
+                self.roomManager.y = parseFloat(newHeight);
                 self.render();
             });
 
         // Calculate arrow
         self.drawArrow(-self.size.margin_left/2 , 0, "rgb(0,0,255)", Position.top, self.room);
-        self.drawArrow(-self.size.margin_left/2 , self.size.y, "rgb(0,0,255)", Position.bottom, self.room);
+        self.drawArrow(-self.size.margin_left/2 , self.roomManager.y, "rgb(0,0,255)", Position.bottom, self.room);
 
         // Horizontal quotation line
         self.room.append("line")
             .attr("x1", 0)
-            .attr("x2", self.size.x/2 - self.style.font*2)
-            .attr("y1", self.size.margin_bottom/2 + self.size.y)
-            .attr("y2", self.size.margin_bottom/2 + self.size.y)
+            .attr("x2", self.roomManager.x/2 - self.style.font*2)
+            .attr("y1", self.size.margin_bottom/2 + self.roomManager.y)
+            .attr("y2", self.size.margin_bottom/2 + self.roomManager.y)
             .style("stroke", "rgb(0,0,255)")
             .style("stroke-width", self.style.stroke);
 
         self.room.append("line")
-            .attr("x1", self.size.x/2 + self.style.font*2)
-            .attr("x2", self.size.x)
-            .attr("y1", self.size.margin_bottom/2 + self.size.y)
-            .attr("y2", self.size.margin_bottom/2 + self.size.y)
+            .attr("x1", self.roomManager.x/2 + self.style.font*2)
+            .attr("x2", self.roomManager.x)
+            .attr("y1", self.size.margin_bottom/2 + self.roomManager.y)
+            .attr("y2", self.size.margin_bottom/2 + self.roomManager.y)
             .style("stroke", "rgb(0,0,255)")
             .style("stroke-width", self.style.stroke);
 
         self.room.append("line")
             .attr("x1", 0)
             .attr("x2", 0)
-            .attr("y1", self.size.y)
-            .attr("y2", self.size.margin_bottom*3/4 + self.size.y)
+            .attr("y1", self.roomManager.y)
+            .attr("y2", self.size.margin_bottom*3/4 + self.roomManager.y)
             .style("stroke", "rgb(0,0,255)")
             .style("stroke-width", self.style.stroke);
 
         self.room.append("line")
-            .attr("x1", self.size.x)
-            .attr("x2", self.size.x)
-            .attr("y1", self.size.y)
-            .attr("y2", self.size.margin_bottom*3/4 + self.size.y)
+            .attr("x1", self.roomManager.x)
+            .attr("x2", self.roomManager.x)
+            .attr("y1", self.roomManager.y)
+            .attr("y2", self.size.margin_bottom*3/4 + self.roomManager.y)
             .style("stroke", "rgb(0,0,255)")
             .style("stroke-width", self.style.stroke);
 
         self.room.append("text")
-            .text(self.size.x)
-            .attr("x", self.size.x/2)
-            .attr("y", self.size.y + self.size.margin_bottom/2 + self.style.font/3)
+            .text(self.roomManager.x)
+            .attr("x", self.roomManager.x/2)
+            .attr("y", self.roomManager.y + self.size.margin_bottom/2 + self.style.font/3)
             .attr("font-size", self.style.font)
             .attr("text-anchor", "middle")
             .on("click", function(e) {
-                var newWidth = prompt("Insert new width", self.size.x);
-                self.size.x = parseFloat(newWidth);
+                var newWidth = prompt("Insert new width", self.roomManager.x);
+                self.roomManager.x = parseFloat(newWidth);
                 self.render();
             });
 
         // Calculate arrow
-        self.drawArrow(0, self.size.margin_top+self.size.y - self.size.margin_top/2, "rgb(0,0,255)", Position.left, self.room);
-        self.drawArrow(self.size.x , self.size.y+self.size.margin_top/2, "rgb(0,0,255)", Position.right, self.room);
+        self.drawArrow(0, self.size.margin_top+self.roomManager.y - self.size.margin_top/2, "rgb(0,0,255)", Position.left, self.room);
+        self.drawArrow(self.roomManager.x , self.roomManager.y+self.size.margin_top/2, "rgb(0,0,255)", Position.right, self.room);
 
         //self.drawQuotation(2, 1, 2, 5, Position.right, 1, "prova", "rgb(0,0,255)");
 
@@ -530,7 +579,6 @@ var Map = function(mapId) {
                         var sumRange = parseFloat(resource1.proximity_range) + parseFloat(resource2.proximity_range);
 
                         if(distance < sumRange) {
-                            console.log("Found overlap");
                             resource1.overlapped = true;
                         }
                     }
@@ -542,6 +590,8 @@ var Map = function(mapId) {
 
     self.init = function() {
         self.svg = d3.select(mapId);
+
+        self.updateStyle(1);
 
         self.render();
 
@@ -567,6 +617,10 @@ var Map = function(mapId) {
                     self.resources[resource.rid] = resource;
                     changed = true;
                 }
+                else {
+                    delete self.resources[resource.rid];
+                    changed = true;
+                }
             }
 
             if(changed) {
@@ -589,6 +643,16 @@ var Map = function(mapId) {
             }
 
             self.renderResources();
+        });
+
+        // Update the whole map
+        room.observers.push(function() {
+
+            // Update the look and feel
+            var d = Math.max(room.x, room.y);
+            self.updateStyle(d/7.0);
+
+            self.render();
         });
 
     }();
