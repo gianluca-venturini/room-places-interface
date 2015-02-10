@@ -120,7 +120,7 @@ var Map = function(mapId, room) {
         // Resource name (RID)
         var resourceLocationName = self.room.clip.selectAll(".resource_location_name")
             .data(resources);
-        
+
         resourceLocationRangeBackground
             .enter()
             .append("circle")
@@ -624,7 +624,7 @@ var Map = function(mapId, room) {
             }
 
             if(changed) {
-                self.renderResources();
+                self.render();
             }
         };
 
