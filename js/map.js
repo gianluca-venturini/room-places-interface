@@ -59,7 +59,7 @@ var Map = function(mapId, room) {
         self.renderStaticResources();
     };
 
-    // Render the static resources and keep track of them
+    // Render the static resources with D3 and keep track of them
     self.renderStaticResources = function() {
 
         // Check for possible overlap in ranges
