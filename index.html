@@ -10,6 +10,8 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 		<link rel="stylesheet" href="css/animation.css">
 		<link rel="stylesheet" href="css/cursor.css">
+		<link rel="stylesheet" href="css/page_layout.css">
+		<link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
 
 		<script src="http://fb.me/react-with-addons-0.12.2.js"></script>
     	<script src="http://fb.me/JSXTransformer-0.12.2.js"></script>
@@ -23,11 +25,1604 @@
     </head>
     <body>
 
-		<div class="col-md-8">
+		<div class="col-md-8 col-sm-12 col-xs-12">
 			<svg id="map" style="max-height: 1000px"></svg>
 		</div>
 
-        <div id="resource_table" class="col-md-4" style="margin-top: 30px"></div>
+		<div class="col-md-4 col-sm-12 col-xs-12 table-responsive" style="overflow-x: visible;">
+
+        <div id="resource_table" class="col-md-12 table-responsive" style="overflow-x: scroll;">
+			<table class="table table-bordered table-striped table-hover" id="resource_table">
+				<thead>
+				<tr>
+					<th class="col-md-12 col-sm-12 col-xs-12 text-center">Resources</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-4 col-sm-4 col-xs-4"><div class="vertical-center"><span>Resource_name</span></div></div>
+
+						<div class="btn-group">
+							<a class="btn btn-default" href="#"><i class="fa fa-arrows fa-fw"></i></a>
+							<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+								<span class="fa fa-caret-down"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#"><i class="fa fa-arrows fa-fw"></i> Continuous</a></li>
+								<li><a href="#"><i class="fa fa-th-large fa-fw"></i> Discrete</a></li>
+								<li><a href="#"><i class="fa fa-ban fa-fw"></i> Disable</a></li>
+								<li class="divider"></li>
+								<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+							</ul>
+						</div>
+
+						<div class="btn-group" role="group">
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+									<b>D</b>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="#"><b>S</b> Static</a></li>
+									<li><a href="#"><b>D</b> Dynamic</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="right"  data-toggle="collapse" data-target="#collapseExample">
+							<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></button>
+						</div>
+
+						<div class="collapse" id="collapseExample">
+							<div style="padding: 20px;;">
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Variable</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3">X</span></td>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Y</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Proximity</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									</tbody>
+								</table>
+
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+										<tr>
+											<td class="col-md-6 col-sm-6 col-xs-6">Key</td>
+											<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+											<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										</tr>
+										<tr>
+											<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+											<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										</tr>
+										<tr>
+											<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+											<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										</tr>
+										<tr>
+											<td class="col-md-6"><input type="text" class="form-control" placeholder="key"></td>
+											<td class="col-md-6"><input type="text" class="form-control" placeholder="value"></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</td>
+				</tr>
+
+
+
+
+
+
+
+
+
+
+				<tr>
+					<td class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-4 col-sm-4 col-xs-4"><div class="vertical-center"><span>Resource_name</span></div></div>
+
+						<div class="btn-group">
+							<a class="btn btn-default" href="#"><i class="fa fa-arrows fa-fw"></i></a>
+							<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+								<span class="fa fa-caret-down"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#"><i class="fa fa-arrows fa-fw"></i> Continuous</a></li>
+								<li><a href="#"><i class="fa fa-th-large fa-fw"></i> Discrete</a></li>
+								<li><a href="#"><i class="fa fa-ban fa-fw"></i> Disable</a></li>
+								<li class="divider"></li>
+								<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+							</ul>
+						</div>
+
+						<div class="btn-group" role="group">
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+									<b>D</b>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="#"><b>S</b> Static</a></li>
+									<li><a href="#"><b>D</b> Dynamic</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="right"  data-toggle="collapse" data-target="#collapseExample">
+							<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></button>
+						</div>
+
+						<div class="collapse" id="collapseExample">
+							<div style="padding: 20px;;">
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Variable</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3">X</span></td>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Y</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Proximity</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									</tbody>
+								</table>
+
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Key</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="key"></td>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="value"></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-4 col-sm-4 col-xs-4"><div class="vertical-center"><span>Resource_name</span></div></div>
+
+						<div class="btn-group">
+							<a class="btn btn-default" href="#"><i class="fa fa-arrows fa-fw"></i></a>
+							<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+								<span class="fa fa-caret-down"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#"><i class="fa fa-arrows fa-fw"></i> Continuous</a></li>
+								<li><a href="#"><i class="fa fa-th-large fa-fw"></i> Discrete</a></li>
+								<li><a href="#"><i class="fa fa-ban fa-fw"></i> Disable</a></li>
+								<li class="divider"></li>
+								<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+							</ul>
+						</div>
+
+						<div class="btn-group" role="group">
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+									<b>D</b>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="#"><b>S</b> Static</a></li>
+									<li><a href="#"><b>D</b> Dynamic</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="right"  data-toggle="collapse" data-target="#collapseExample">
+							<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></button>
+						</div>
+
+						<div class="collapse" id="collapseExample">
+							<div style="padding: 20px;;">
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Variable</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3">X</span></td>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Y</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Proximity</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									</tbody>
+								</table>
+
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Key</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="key"></td>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="value"></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-4 col-sm-4 col-xs-4"><div class="vertical-center"><span>Resource_name</span></div></div>
+
+						<div class="btn-group">
+							<a class="btn btn-default" href="#"><i class="fa fa-arrows fa-fw"></i></a>
+							<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+								<span class="fa fa-caret-down"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#"><i class="fa fa-arrows fa-fw"></i> Continuous</a></li>
+								<li><a href="#"><i class="fa fa-th-large fa-fw"></i> Discrete</a></li>
+								<li><a href="#"><i class="fa fa-ban fa-fw"></i> Disable</a></li>
+								<li class="divider"></li>
+								<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+							</ul>
+						</div>
+
+						<div class="btn-group" role="group">
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+									<b>D</b>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="#"><b>S</b> Static</a></li>
+									<li><a href="#"><b>D</b> Dynamic</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="right"  data-toggle="collapse" data-target="#collapseExample">
+							<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></button>
+						</div>
+
+						<div class="collapse" id="collapseExample">
+							<div style="padding: 20px;;">
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Variable</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3">X</span></td>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Y</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Proximity</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									</tbody>
+								</table>
+
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Key</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="key"></td>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="value"></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-4 col-sm-4 col-xs-4"><div class="vertical-center"><span>Resource_name</span></div></div>
+
+						<div class="btn-group">
+							<a class="btn btn-default" href="#"><i class="fa fa-arrows fa-fw"></i></a>
+							<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+								<span class="fa fa-caret-down"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#"><i class="fa fa-arrows fa-fw"></i> Continuous</a></li>
+								<li><a href="#"><i class="fa fa-th-large fa-fw"></i> Discrete</a></li>
+								<li><a href="#"><i class="fa fa-ban fa-fw"></i> Disable</a></li>
+								<li class="divider"></li>
+								<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+							</ul>
+						</div>
+
+						<div class="btn-group" role="group">
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+									<b>D</b>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="#"><b>S</b> Static</a></li>
+									<li><a href="#"><b>D</b> Dynamic</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="right"  data-toggle="collapse" data-target="#collapseExample">
+							<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></button>
+						</div>
+
+						<div class="collapse" id="collapseExample">
+							<div style="padding: 20px;;">
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Variable</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3">X</span></td>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Y</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Proximity</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									</tbody>
+								</table>
+
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Key</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="key"></td>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="value"></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-4 col-sm-4 col-xs-4"><div class="vertical-center"><span>Resource_name</span></div></div>
+
+						<div class="btn-group">
+							<a class="btn btn-default" href="#"><i class="fa fa-arrows fa-fw"></i></a>
+							<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+								<span class="fa fa-caret-down"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#"><i class="fa fa-arrows fa-fw"></i> Continuous</a></li>
+								<li><a href="#"><i class="fa fa-th-large fa-fw"></i> Discrete</a></li>
+								<li><a href="#"><i class="fa fa-ban fa-fw"></i> Disable</a></li>
+								<li class="divider"></li>
+								<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+							</ul>
+						</div>
+
+						<div class="btn-group" role="group">
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+									<b>D</b>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="#"><b>S</b> Static</a></li>
+									<li><a href="#"><b>D</b> Dynamic</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="right"  data-toggle="collapse" data-target="#collapseExample">
+							<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></button>
+						</div>
+
+						<div class="collapse" id="collapseExample">
+							<div style="padding: 20px;;">
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Variable</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3">X</span></td>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Y</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Proximity</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									</tbody>
+								</table>
+
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Key</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="key"></td>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="value"></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-4 col-sm-4 col-xs-4"><div class="vertical-center"><span>Resource_name</span></div></div>
+
+						<div class="btn-group">
+							<a class="btn btn-default" href="#"><i class="fa fa-arrows fa-fw"></i></a>
+							<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+								<span class="fa fa-caret-down"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#"><i class="fa fa-arrows fa-fw"></i> Continuous</a></li>
+								<li><a href="#"><i class="fa fa-th-large fa-fw"></i> Discrete</a></li>
+								<li><a href="#"><i class="fa fa-ban fa-fw"></i> Disable</a></li>
+								<li class="divider"></li>
+								<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+							</ul>
+						</div>
+
+						<div class="btn-group" role="group">
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+									<b>D</b>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="#"><b>S</b> Static</a></li>
+									<li><a href="#"><b>D</b> Dynamic</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="right"  data-toggle="collapse" data-target="#collapseExample">
+							<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></button>
+						</div>
+
+						<div class="collapse" id="collapseExample">
+							<div style="padding: 20px;;">
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Variable</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3">X</span></td>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Y</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Proximity</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									</tbody>
+								</table>
+
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Key</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="key"></td>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="value"></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-4 col-sm-4 col-xs-4"><div class="vertical-center"><span>Resource_name</span></div></div>
+
+						<div class="btn-group">
+							<a class="btn btn-default" href="#"><i class="fa fa-arrows fa-fw"></i></a>
+							<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+								<span class="fa fa-caret-down"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#"><i class="fa fa-arrows fa-fw"></i> Continuous</a></li>
+								<li><a href="#"><i class="fa fa-th-large fa-fw"></i> Discrete</a></li>
+								<li><a href="#"><i class="fa fa-ban fa-fw"></i> Disable</a></li>
+								<li class="divider"></li>
+								<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+							</ul>
+						</div>
+
+						<div class="btn-group" role="group">
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+									<b>D</b>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="#"><b>S</b> Static</a></li>
+									<li><a href="#"><b>D</b> Dynamic</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="right"  data-toggle="collapse" data-target="#collapseExample">
+							<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></button>
+						</div>
+
+						<div class="collapse" id="collapseExample">
+							<div style="padding: 20px;;">
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Variable</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3">X</span></td>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Y</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Proximity</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									</tbody>
+								</table>
+
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Key</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="key"></td>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="value"></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-4 col-sm-4 col-xs-4"><div class="vertical-center"><span>Resource_name</span></div></div>
+
+						<div class="btn-group">
+							<a class="btn btn-default" href="#"><i class="fa fa-arrows fa-fw"></i></a>
+							<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+								<span class="fa fa-caret-down"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#"><i class="fa fa-arrows fa-fw"></i> Continuous</a></li>
+								<li><a href="#"><i class="fa fa-th-large fa-fw"></i> Discrete</a></li>
+								<li><a href="#"><i class="fa fa-ban fa-fw"></i> Disable</a></li>
+								<li class="divider"></li>
+								<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+							</ul>
+						</div>
+
+						<div class="btn-group" role="group">
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+									<b>D</b>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="#"><b>S</b> Static</a></li>
+									<li><a href="#"><b>D</b> Dynamic</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="right"  data-toggle="collapse" data-target="#collapseExample">
+							<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></button>
+						</div>
+
+						<div class="collapse" id="collapseExample">
+							<div style="padding: 20px;;">
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Variable</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3">X</span></td>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Y</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Proximity</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									</tbody>
+								</table>
+
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Key</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="key"></td>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="value"></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-4 col-sm-4 col-xs-4"><div class="vertical-center"><span>Resource_name</span></div></div>
+
+						<div class="btn-group">
+							<a class="btn btn-default" href="#"><i class="fa fa-arrows fa-fw"></i></a>
+							<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+								<span class="fa fa-caret-down"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#"><i class="fa fa-arrows fa-fw"></i> Continuous</a></li>
+								<li><a href="#"><i class="fa fa-th-large fa-fw"></i> Discrete</a></li>
+								<li><a href="#"><i class="fa fa-ban fa-fw"></i> Disable</a></li>
+								<li class="divider"></li>
+								<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+							</ul>
+						</div>
+
+						<div class="btn-group" role="group">
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+									<b>D</b>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="#"><b>S</b> Static</a></li>
+									<li><a href="#"><b>D</b> Dynamic</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="right"  data-toggle="collapse" data-target="#collapseExample">
+							<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></button>
+						</div>
+
+						<div class="collapse" id="collapseExample">
+							<div style="padding: 20px;;">
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Variable</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3">X</span></td>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Y</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Proximity</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									</tbody>
+								</table>
+
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Key</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="key"></td>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="value"></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-4 col-sm-4 col-xs-4"><div class="vertical-center"><span>Resource_name</span></div></div>
+
+						<div class="btn-group">
+							<a class="btn btn-default" href="#"><i class="fa fa-arrows fa-fw"></i></a>
+							<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+								<span class="fa fa-caret-down"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#"><i class="fa fa-arrows fa-fw"></i> Continuous</a></li>
+								<li><a href="#"><i class="fa fa-th-large fa-fw"></i> Discrete</a></li>
+								<li><a href="#"><i class="fa fa-ban fa-fw"></i> Disable</a></li>
+								<li class="divider"></li>
+								<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+							</ul>
+						</div>
+
+						<div class="btn-group" role="group">
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+									<b>D</b>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="#"><b>S</b> Static</a></li>
+									<li><a href="#"><b>D</b> Dynamic</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="right"  data-toggle="collapse" data-target="#collapseExample">
+							<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></button>
+						</div>
+
+						<div class="collapse" id="collapseExample">
+							<div style="padding: 20px;;">
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Variable</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3">X</span></td>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Y</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Proximity</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									</tbody>
+								</table>
+
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Key</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="key"></td>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="value"></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-4 col-sm-4 col-xs-4"><div class="vertical-center"><span>Resource_name</span></div></div>
+
+						<div class="btn-group">
+							<a class="btn btn-default" href="#"><i class="fa fa-arrows fa-fw"></i></a>
+							<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+								<span class="fa fa-caret-down"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#"><i class="fa fa-arrows fa-fw"></i> Continuous</a></li>
+								<li><a href="#"><i class="fa fa-th-large fa-fw"></i> Discrete</a></li>
+								<li><a href="#"><i class="fa fa-ban fa-fw"></i> Disable</a></li>
+								<li class="divider"></li>
+								<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+							</ul>
+						</div>
+
+						<div class="btn-group" role="group">
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+									<b>D</b>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="#"><b>S</b> Static</a></li>
+									<li><a href="#"><b>D</b> Dynamic</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="right"  data-toggle="collapse" data-target="#collapseExample">
+							<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></button>
+						</div>
+
+						<div class="collapse" id="collapseExample">
+							<div style="padding: 20px;;">
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Variable</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3">X</span></td>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Y</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Proximity</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									</tbody>
+								</table>
+
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Key</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="key"></td>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="value"></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-4 col-sm-4 col-xs-4"><div class="vertical-center"><span>Resource_name</span></div></div>
+
+						<div class="btn-group">
+							<a class="btn btn-default" href="#"><i class="fa fa-arrows fa-fw"></i></a>
+							<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+								<span class="fa fa-caret-down"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#"><i class="fa fa-arrows fa-fw"></i> Continuous</a></li>
+								<li><a href="#"><i class="fa fa-th-large fa-fw"></i> Discrete</a></li>
+								<li><a href="#"><i class="fa fa-ban fa-fw"></i> Disable</a></li>
+								<li class="divider"></li>
+								<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+							</ul>
+						</div>
+
+						<div class="btn-group" role="group">
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+									<b>D</b>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="#"><b>S</b> Static</a></li>
+									<li><a href="#"><b>D</b> Dynamic</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="right"  data-toggle="collapse" data-target="#collapseExample">
+							<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></button>
+						</div>
+
+						<div class="collapse" id="collapseExample">
+							<div style="padding: 20px;;">
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Variable</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3">X</span></td>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Y</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Proximity</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									</tbody>
+								</table>
+
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Key</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="key"></td>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="value"></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-4 col-sm-4 col-xs-4"><div class="vertical-center"><span>Resource_name</span></div></div>
+
+						<div class="btn-group">
+							<a class="btn btn-default" href="#"><i class="fa fa-arrows fa-fw"></i></a>
+							<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+								<span class="fa fa-caret-down"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#"><i class="fa fa-arrows fa-fw"></i> Continuous</a></li>
+								<li><a href="#"><i class="fa fa-th-large fa-fw"></i> Discrete</a></li>
+								<li><a href="#"><i class="fa fa-ban fa-fw"></i> Disable</a></li>
+								<li class="divider"></li>
+								<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+							</ul>
+						</div>
+
+						<div class="btn-group" role="group">
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+									<b>D</b>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="#"><b>S</b> Static</a></li>
+									<li><a href="#"><b>D</b> Dynamic</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="right"  data-toggle="collapse" data-target="#collapseExample">
+							<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></button>
+						</div>
+
+						<div class="collapse" id="collapseExample">
+							<div style="padding: 20px;;">
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Variable</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3">X</span></td>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Y</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Proximity</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									</tbody>
+								</table>
+
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Key</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="key"></td>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="value"></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-4 col-sm-4 col-xs-4"><div class="vertical-center"><span>Resource_name</span></div></div>
+
+						<div class="btn-group">
+							<a class="btn btn-default" href="#"><i class="fa fa-arrows fa-fw"></i></a>
+							<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+								<span class="fa fa-caret-down"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#"><i class="fa fa-arrows fa-fw"></i> Continuous</a></li>
+								<li><a href="#"><i class="fa fa-th-large fa-fw"></i> Discrete</a></li>
+								<li><a href="#"><i class="fa fa-ban fa-fw"></i> Disable</a></li>
+								<li class="divider"></li>
+								<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+							</ul>
+						</div>
+
+						<div class="btn-group" role="group">
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+									<b>D</b>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="#"><b>S</b> Static</a></li>
+									<li><a href="#"><b>D</b> Dynamic</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="right"  data-toggle="collapse" data-target="#collapseExample">
+							<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></button>
+						</div>
+
+						<div class="collapse" id="collapseExample">
+							<div style="padding: 20px;;">
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Variable</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3">X</span></td>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Y</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Proximity</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									</tbody>
+								</table>
+
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Key</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="key"></td>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="value"></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-4 col-sm-4 col-xs-4"><div class="vertical-center"><span>Resource_name</span></div></div>
+
+						<div class="btn-group">
+							<a class="btn btn-default" href="#"><i class="fa fa-arrows fa-fw"></i></a>
+							<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+								<span class="fa fa-caret-down"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#"><i class="fa fa-arrows fa-fw"></i> Continuous</a></li>
+								<li><a href="#"><i class="fa fa-th-large fa-fw"></i> Discrete</a></li>
+								<li><a href="#"><i class="fa fa-ban fa-fw"></i> Disable</a></li>
+								<li class="divider"></li>
+								<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+							</ul>
+						</div>
+
+						<div class="btn-group" role="group">
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+									<b>D</b>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="#"><b>S</b> Static</a></li>
+									<li><a href="#"><b>D</b> Dynamic</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="right"  data-toggle="collapse" data-target="#collapseExample">
+							<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></button>
+						</div>
+
+						<div class="collapse" id="collapseExample">
+							<div style="padding: 20px;;">
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Variable</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3">X</span></td>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Y</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Proximity</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									</tbody>
+								</table>
+
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Key</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="key"></td>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="value"></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-4 col-sm-4 col-xs-4"><div class="vertical-center"><span>Resource_name</span></div></div>
+
+						<div class="btn-group">
+							<a class="btn btn-default" href="#"><i class="fa fa-arrows fa-fw"></i></a>
+							<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+								<span class="fa fa-caret-down"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#"><i class="fa fa-arrows fa-fw"></i> Continuous</a></li>
+								<li><a href="#"><i class="fa fa-th-large fa-fw"></i> Discrete</a></li>
+								<li><a href="#"><i class="fa fa-ban fa-fw"></i> Disable</a></li>
+								<li class="divider"></li>
+								<li><a href="#"><i class="fa fa-trash-o fa-fw"></i> Delete</a></li>
+							</ul>
+						</div>
+
+						<div class="btn-group" role="group">
+							<div class="btn-group" role="group">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+									<b>D</b>
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="#"><b>S</b> Static</a></li>
+									<li><a href="#"><b>D</b> Dynamic</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="right"  data-toggle="collapse" data-target="#collapseExample">
+							<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></button>
+						</div>
+
+						<div class="collapse" id="collapseExample">
+							<div style="padding: 20px;;">
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Variable</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3">X</span></td>
+										<td class="col-md-6 col-sm-6 col-xs-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Y</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3">Proximity</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									</tbody>
+								</table>
+
+								<table class="table table-bordered table-striped table-hover" id="resource_table">
+									<thead>
+									<tr>
+										<td class="col-md-6 col-sm-6 col-xs-6">Key</td>
+										<td class="col-md-6 col-sm-6 col-xs-6">Value</td>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+										<td class="col-md-6"><span id="A3" contenteditable="true">Prova</span></td>
+									</tr>
+									<tr>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="key"></td>
+										<td class="col-md-6"><input type="text" class="form-control" placeholder="value"></td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</td>
+				</tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			</table>
+        </div>
+
+		<div class="col-md-12 col-sm-12 col-xs-12 table-responsive" style="overflow-x: visible;">
+			<table class="table table-bordered table-striped table-hover" id="resource_table" style="overflow-x: visible;">
+				<thead>
+				<tr>
+					<th class="col-md-12 col-sm-12 col-xs-12 text-center">Add resource</th>
+				</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="col-md-12 col-sm-12 col-xs-12">
+							<div class="col-md-4 col-sm-4 col-xs-4"><input type="text" class="form-control" placeholder="resource-id"></div>
+							<div class="btn-group dropup">
+								<a class="btn btn-default" href="#"><i class="fa fa-arrows fa-fw"></i></a>
+								<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+									<span class="fa fa-caret-up"></span></a>
+								<ul class="dropdown-menu">
+									<li><a href="#"><i class="fa fa-arrows fa-fw"></i> Continuous</a></li>
+									<li><a href="#"><i class="fa fa-th-large fa-fw"></i> Discrete</a></li>
+									<li><a href="#"><i class="fa fa-ban fa-fw"></i> Disabled</a></li>
+								</ul>
+							</div>
+
+							<div class="btn-group dropup" role="group">
+								<div class="btn-group" role="group">
+									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+										<b>D</b>
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu" role="menu">
+										<li><a href="#"><b>S</b> Static</a></li>
+										<li><a href="#"><b>D</b> Dynamic</a></li>
+									</ul>
+								</div>
+							</div>
+
+							<button type="button" class="btn btn-default right">
+								<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		</div>
 
 				
 		<!-- Scripts -->
@@ -47,10 +1642,13 @@
 
 			var room = Room();
 
+			/*
 			React.render(
 				<ResourceTable room={room}/>,
 				document.getElementById('resource_table')
 			);
+			*/
+
 
 			nutella = NUTELLA.init(query_parameters.run_id, query_parameters.broker, 'room-places-interface-map');
 
