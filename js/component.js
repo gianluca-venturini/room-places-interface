@@ -16,7 +16,7 @@ var AddResource = React.createClass({
 		else
 			range = 0;
 
- 		nutella.publish("location/resource/add", {rid: name, model: model, type: this.props.type, proximity_range: parseFloat(range)});
+ 		nutella.net.publish("location/resource/add", {rid: name, model: model, type: this.props.type, proximity_range: parseFloat(range)});
 
  		// Clean the form
  		this.setState({name: "", range: ""});
@@ -72,7 +72,7 @@ var AddKeyValue = React.createClass({
 		var value = this.state.value;
 
 		if(key != "" && value != "") {
-			nutella.publish("location/resource/update", {rid: this.props.rid, parameters: [{key: key, value: value}]});
+			nutella.net.publish("location/resource/update", {rid: this.props.rid, parameters: [{key: key, value: value}]});
 			this.setState({key: "", value: ""});
 		}
 	},
@@ -117,11 +117,11 @@ var KeyValue = React.createClass({
 			return;
 
 		if(this.state.key != this.state.previousKey) {
-			nutella.publish("location/resource/update", {rid: this.props.rid, parameters: [{key: this.state.previousKey, delete: true}]});
-			nutella.publish("location/resource/update", {rid: this.props.rid, parameters: [{key: this.state.key, value: this.state.value}]});
+			nutella.net.publish("location/resource/update", {rid: this.props.rid, parameters: [{key: this.state.previousKey, delete: true}]});
+			nutella.net.publish("location/resource/update", {rid: this.props.rid, parameters: [{key: this.state.key, value: this.state.value}]});
 		}
 		else {
-			nutella.publish("location/resource/update", {rid: this.props.rid, parameters: [{key: this.state.key, value: this.state.value}]});
+			nutella.net.publish("location/resource/update", {rid: this.props.rid, parameters: [{key: this.state.key, value: this.state.value}]});
 		}
 
  		this.setState({keyModification: false, valueModification: false, previousKey: this.state.key});
@@ -268,12 +268,12 @@ var ResourceTable = React.createClass({
  		self = this;
 
  		// Download all resources
- 		nutella.request("location/resources", {}, function(reply) {
+ 		nutella.net.request("location/resources", {}, function(reply) {
  			self.setState({resourceData: reply.resources});
  		});
 
  		// Wait for new added resources
- 		nutella.subscribe("location/resources/added", function(message) {
+ 		nutella.net.subscribe("location/resources/added", function(message) {
  			var data = self.state.resourceData;
  			data = data.concat(message.resources)
 
@@ -281,7 +281,7 @@ var ResourceTable = React.createClass({
  		});
 
 		// Wait for updated resources
-		nutella.subscribe("location/resources/updated", function(message) {
+		nutella.net.subscribe("location/resources/updated", function(message) {
 			var data = self.state.resourceData;
 			data = data.filter(function(d) {
 				return $.inArray(d.rid, message.resources.map(function(r) {
@@ -293,7 +293,7 @@ var ResourceTable = React.createClass({
 		});
 
  		// Wait for removed resources
- 		nutella.subscribe("location/resources/removed", function(message) {
+ 		nutella.net.subscribe("location/resources/removed", function(message) {
  			var data = self.state.resourceData;
  			data = data.filter(function(d) { 
  				return $.inArray(d.rid, message.resources.map(function(r) {
@@ -305,12 +305,12 @@ var ResourceTable = React.createClass({
  		});
 
  		// Download estimote beacons data
-		nutella.request("location/estimote", {}, function(reply) {
+		nutella.net.request("location/estimote", {}, function(reply) {
  			self.setState({estimoteData: reply.resources});
  		});
   	},
   	handleResourceDelete: function(rid) {
-		nutella.publish("location/resource/remove", {rid: rid});
+		nutella.net.publish("location/resource/remove", {rid: rid});
 
 		// Delete the corresponding row
 		var data = this.state.resourceData;
@@ -318,13 +318,13 @@ var ResourceTable = React.createClass({
  		this.setState({resourceData: data});
 	},
 	handleResourceEstimoteDynamicAdd: function(rid) {
-		nutella.publish("location/resource/add", {rid: rid,
+		nutella.net.publish("location/resource/add", {rid: rid,
 				model: "IBEACON",
 				type: "DYNAMIC"
 		});
 	},
 	handleResourceEstimoteStaticAdd: function(rid) {
-		nutella.publish("location/resource/add", {rid: rid,
+		nutella.net.publish("location/resource/add", {rid: rid,
 			model: "IBEACON",
 			type: "STATIC",
 			proximity_range: 1
@@ -355,7 +355,7 @@ var ResourceTable = React.createClass({
 				break;
 		}
 
-		nutella.publish("location/resource/update", message);
+		nutella.net.publish("location/resource/update", message);
 	},
 	render: function() {
 		var self = this;

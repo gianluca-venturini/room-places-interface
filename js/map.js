@@ -157,7 +157,7 @@ var Map = function(mapId, room) {
                 self.renderResources();
 
                 // Update the resource on the server
-                nutella.publish("location/resource/update", {rid: d.rid, continuous: continuous});
+                nutella.net.publish("location/resource/update", {rid: d.rid, continuous: continuous});
             });
 
         // Resource D3 object
@@ -694,7 +694,7 @@ var Map = function(mapId, room) {
         self.render();
 
         // Download all resources
-        nutella.request("location/resources", {}, function(reply) {
+        nutella.net.request("location/resources", {}, function(reply) {
             for(var r in reply.resources) {
                 var resource = reply.resources[r];
                 if(resource["continuous"] != null ) {
@@ -727,13 +727,13 @@ var Map = function(mapId, room) {
         };
 
         // Update resources
-        nutella.subscribe("location/resources/updated", updateResource);
+        nutella.net.subscribe("location/resources/updated", updateResource);
 
         // Add resources
-        nutella.subscribe("location/resources/added", updateResource);
+        nutella.net.subscribe("location/resources/added", updateResource);
 
         // Delete resources
-        nutella.subscribe("location/resources/removed", function(message) {
+        nutella.net.subscribe("location/resources/removed", function(message) {
             var resources = message.resources;
 
             for(var r in resources) {

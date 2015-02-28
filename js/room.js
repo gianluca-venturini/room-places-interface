@@ -34,7 +34,7 @@ var Room = function() {
 
     // Update the room size on server
     self.updateOnServer = function() {
-        nutella.publish("location/room/update", {x: _x, y: _y});
+        nutella.net.publish("location/room/update", {x: _x, y: _y});
     };
 
     // Notify the update of the room dimension to the observers
@@ -47,13 +47,13 @@ var Room = function() {
     self.init = function() {
 
         // Subscribe to room update
-        nutella.subscribe("location/room/updated", function(room) {
+        nutella.net.subscribe("location/room/updated", function(room) {
             _x = room.x;
             _y = room.y;
             self.notifyObservers();
         });
 
-        nutella.request("location/room", {}, function(room) {
+        nutella.net.request("location/room", {}, function(room) {
             _x = room.x;
             _y = room.y;
             self.notifyObservers();

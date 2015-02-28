@@ -32,7 +32,6 @@
 				
 		<!-- Scripts -->
 		<script src="bower_components/bower-mqttws/mqttws31.js" type="text/javascript" charset="utf-8"></script>
-		<script src="bower_components/simple-js-mqtt-client/simple-js-mqtt-client.js" type="text/javascript" charset="utf-8"></script>
 		<script src="bower_components/nutella_lib/nutella_lib.js" type="text/javascript" charset="utf-8"></script>
 
 		<script type="text/jsx" src="js/component.js"></script>
@@ -41,17 +40,22 @@
 		<!-- Your scripts here -->
 		<script type="text/jsx">
 
-			var query_params = nutella.init(location.search, function() {
-				var room = Room();
+			// Parse the query parameters
+			var query_parameters = NUTELLA.parseURLParameters();
 
-				React.render(
-				  <ResourceTable room={room}/>,
-				  document.getElementById('resource_table')
-				);
+			var nutella = NUTELLA.init(query_parameters.run_id, query_parameters.broker, 'room-places-interface-react');
 
-				var map = Map("#map", room);
+			var room = Room();
 
-			});
+			React.render(
+				<ResourceTable room={room}/>,
+				document.getElementById('resource_table')
+			);
+
+			nutella = NUTELLA.init(query_parameters.run_id, query_parameters.broker, 'room-places-interface-map');
+
+			var map = Map("#map", room);
+
 
 		</script>
 				
