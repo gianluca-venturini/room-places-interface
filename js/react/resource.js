@@ -52,7 +52,26 @@ var Resource = React.createClass({
         this.props.updateResource(resource);
     },
     handleDeletePressed: function() {
-        this.props.removeResource(resource);
+        this.props.removeResource(this.props.resource);
+    },
+    handleStaticPressed: function() {
+        var resource = this.props.resource;
+        if(resource.type == "STATIC")
+            return;
+
+        resource.type = "STATIC";
+        resource.proximity_range = 1;
+        delete resource["proximity"];
+        this.props.updateResource(resource);
+    },
+    handleDynamicPressed: function() {
+        var resource = this.props.resource;
+        if(resource.type == "DYNAMIC")
+            return;
+
+        resource.type = "DYNAMIC";
+        delete resource["proximity_range"];
+        this.props.updateResource(resource);
     },
     render: function () {
         var self = this;
@@ -171,8 +190,8 @@ var Resource = React.createClass({
                                 <span className="caret"></span>
                             </button>
                             <ul className="dropdown-menu" role="menu">
-                                <li><a href="#"><b>S</b> Static</a></li>
-                                <li><a href="#"><b>D</b> Dynamic</a></li>
+                                <li onClick={this.handleStaticPressed}><a href="#"><b>S</b> Static</a></li>
+                                <li onClick={this.handleDynamicPressed}><a href="#"><b>D</b> Dynamic</a></li>
                             </ul>
                         </div>
                     </div>
