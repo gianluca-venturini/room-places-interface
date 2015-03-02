@@ -280,13 +280,13 @@ var Map = function(mapId, room) {
             .attr("y", function(d) { return d.continuous.y - self.style.resource_name_offset; })
             .attr("text-anchor", "middle")
             .attr("fill", function(d) { if(d.dragged == true) return "none"; else return "black";})
-            .attr("font-size", self.style.font)
-            .text(function(d) { return d.rid; });
+            .attr("font-size", self.style.font);
 
         resourceLocationName
             .attr("x", function(d) { return d.continuous.x; })
             .attr("y", function(d) { return d.continuous.y - self.style.resource_name_offset; })
-            .attr("fill", function(d) { if(d.dragged == true) return "none"; else return "black";});
+            .attr("fill", function(d) { if(d.dragged == true) return "none"; else return "black";})
+            .text(function(d) { return d.rid; });
 
         resourceLocationName.exit().remove();
 
