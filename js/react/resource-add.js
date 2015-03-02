@@ -7,11 +7,23 @@ var ResourceAdd = React.createClass({
         return {name: "", model: "IPAD", type: "DYNAMIC", tracking: "CONTINUOUS"};
     },
     handleSubmit: function(e) {
-        alert("Submit");
         e.preventDefault();
 
+        var resource = {rid: this.state.name, model: this.state.model, type: this.state.type};
 
-        nutella.net.publish("location/resource/add", {rid: this.state.name, model: this.state.model, type: this.state.type});
+        nutella.net.publish("location/resource/add", resource);
+
+        if(this.state.tracking == "CONTINUOUS") {
+            if(this.state.type == "STATIC")
+                resource.proximity_range = 1;
+            resource.continuous = {x: this.props.room.x/2, y: this.props.room.y/2};
+        }
+        else if(this.state.tracking == "DISCRETE") {
+            resource.continuous = {x: 0, y: 0};
+        }
+
+
+        nutella.net.publish("location/resource/update", resource);
 
         // Clean the form
         this.setState({name: ""});

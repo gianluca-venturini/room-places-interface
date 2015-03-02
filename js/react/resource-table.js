@@ -84,7 +84,7 @@ var ResourceTable = React.createClass({
                         </tbody>
                     </table>
                 </div>
-                <ResourceAdd />
+                <ResourceAdd room={this.props.room}/>
             </div>
         );
     }
