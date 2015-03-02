@@ -71,7 +71,7 @@ var Map = function(mapId, room) {
             resources.push(self.resources[r]);
         }
 
-        // Drag & drop behavior
+        // Drag & drop behavior for resources
         var drag = d3.behavior.drag()
             //.origin(function(d) { return d; })
             .on("dragstart", function(d){
@@ -160,6 +160,45 @@ var Map = function(mapId, room) {
                 nutella.net.publish("location/resource/update", {rid: d.rid, continuous: continuous});
             });
 
+        // Drag & drop behavior for proximity range
+        var dragRange = d3.behavior.drag()
+            .on("dragstart", function(d){
+
+            })
+            .on("drag", function(d) {
+
+                // Calculate the new range
+                if(d.proximity_range != undefined)
+                    d.proximity_range = Math.sqrt(
+                            Math.pow(d3.event.x - d.continuous.x, 2)+
+                            Math.pow(d3.event.y - d.continuous.y, 2)
+                        );
+
+                // Update graphically the range
+                d3.select(this)
+                    .attr("r", function(d) {
+                        if(d.proximity_range != null) {
+                            if(d.dragged == true)
+                                return 0;
+                            else
+                                return d.proximity_range;
+                        }
+                        else {
+                            return 0;
+                        }
+                    });
+            })
+            .on("dragend", function(d) {
+
+                // Update the resource on the server
+                if(d.proximity_range != undefined)
+                    nutella.net.publish("location/resource/update", {
+                        rid: d.rid,
+                        proximity_range: d.proximity_range,
+                        continuous: d.continuous
+                    });
+            });
+
         // Resource D3 object
         var resourceLocation = self.room.clip.selectAll(".resource_location")
             .data(resources);
@@ -225,7 +264,7 @@ var Map = function(mapId, room) {
         resourceLocationRange
             .enter()
             .append("circle")
-            .attr("class", "resource_location_range")
+            .attr("class", "resource_location_range pointer")
             .attr("r", function(d) {
                 if(d.proximity_range != null) {
                     if(d.dragged == true)
@@ -243,7 +282,8 @@ var Map = function(mapId, room) {
             } )
             .attr("stroke-width", self.style.resource_range_stroke)
             .attr("cx", function(d) { return d.continuous.x; })
-            .attr("cy", function(d) { return d.continuous.y; });
+            .attr("cy", function(d) { return d.continuous.y; })
+            .call(dragRange);
 
         // Update resources that are already there
         resourceLocationRange
@@ -361,109 +401,6 @@ var Map = function(mapId, room) {
             .style("fill", "none")
             .attr("stroke", "black")
             .attr("stroke-width", self.style.stroke);
-
-        /*
-        // Vertical quotation line
-        self.room.append("line")
-            .attr("x1", -self.size.margin_left/2)
-            .attr("x2", -self.size.margin_left/2)
-            .attr("y1", 0)
-            .attr("y2", self.roomManager.y/2 - self.style.font)
-            .style("stroke", "rgb(0,0,255)")
-            .style("stroke-width", self.style.stroke);
-
-        self.room.append("line")
-            .attr("x1", -self.size.margin_left/2)
-            .attr("x2", -self.size.margin_left/2)
-            .attr("y1", self.roomManager.y/2 + self.style.font)
-            .attr("y2", self.roomManager.y)
-            .style("stroke", "rgb(0,0,255)")
-            .style("stroke-width", self.style.stroke);
-
-        self.room.append("line")
-            .attr("x1", -self.size.margin_left*3/4)
-            .attr("x2", 0)
-            .attr("y1", 0)
-            .attr("y2", 0)
-            .style("stroke", "rgb(0,0,255)")
-            .style("stroke-width", self.style.stroke);
-
-        self.room.append("line")
-            .attr("x1", -self.size.margin_left*3/4)
-            .attr("x2", 0)
-            .attr("y1", self.roomManager.y)
-            .attr("y2", self.roomManager.y)
-            .style("stroke", "rgb(0,0,255)")
-            .style("stroke-width", self.style.stroke);
-
-        self.room.append("text")
-            .text(self.roomManager.y)
-            .attr("x", -self.size.margin_left/2)
-            .attr("y", self.roomManager.y/2 + self.style.font/3)
-            .attr("font-size", self.style.font)
-            .attr("text-anchor", "middle")
-            .on("click", function(e) {
-                var newHeight = prompt("Insert new height", self.roomManager.y);
-                self.roomManager.y = parseFloat(newHeight);
-                self.render();
-            });
-
-        // Calculate arrow
-        self.drawArrow(-self.size.margin_left/2 , 0, "rgb(0,0,255)", Position.top, self.room);
-        self.drawArrow(-self.size.margin_left/2 , self.roomManager.y, "rgb(0,0,255)", Position.bottom, self.room);
-
-        // Horizontal quotation line
-        self.room.append("line")
-            .attr("x1", 0)
-            .attr("x2", self.roomManager.x/2 - self.style.font*2)
-            .attr("y1", self.size.margin_bottom/2 + self.roomManager.y)
-            .attr("y2", self.size.margin_bottom/2 + self.roomManager.y)
-            .style("stroke", "rgb(0,0,255)")
-            .style("stroke-width", self.style.stroke);
-
-        self.room.append("line")
-            .attr("x1", self.roomManager.x/2 + self.style.font*2)
-            .attr("x2", self.roomManager.x)
-            .attr("y1", self.size.margin_bottom/2 + self.roomManager.y)
-            .attr("y2", self.size.margin_bottom/2 + self.roomManager.y)
-            .style("stroke", "rgb(0,0,255)")
-            .style("stroke-width", self.style.stroke);
-
-        self.room.append("line")
-            .attr("x1", 0)
-            .attr("x2", 0)
-            .attr("y1", self.roomManager.y)
-            .attr("y2", self.size.margin_bottom*3/4 + self.roomManager.y)
-            .style("stroke", "rgb(0,0,255)")
-            .style("stroke-width", self.style.stroke);
-
-        self.room.append("line")
-            .attr("x1", self.roomManager.x)
-            .attr("x2", self.roomManager.x)
-            .attr("y1", self.roomManager.y)
-            .attr("y2", self.size.margin_bottom*3/4 + self.roomManager.y)
-            .style("stroke", "rgb(0,0,255)")
-            .style("stroke-width", self.style.stroke);
-
-        self.room.append("text")
-            .text(self.roomManager.x)
-            .attr("x", self.roomManager.x/2)
-            .attr("y", self.roomManager.y + self.size.margin_bottom/2 + self.style.font/3)
-            .attr("font-size", self.style.font)
-            .attr("text-anchor", "middle")
-            .on("click", function(e) {
-                var newWidth = prompt("Insert new width", self.roomManager.x);
-                self.roomManager.x = parseFloat(newWidth);
-                self.render();
-            });
-
-        // Calculate arrow
-        self.drawArrow(0, self.size.margin_top+self.roomManager.y - self.size.margin_top/2, "rgb(0,0,255)", Position.left, self.room);
-        self.drawArrow(self.roomManager.x , self.roomManager.y+self.size.margin_top/2, "rgb(0,0,255)", Position.right, self.room);
-
-        */
-
-        //self.drawQuotation(2, 1, 2, 5, Position.right, 1, "prova", "rgb(0,0,255)");
 
         // Vertical room quotation
         self.drawQuotation(0, 0,                   0,                  self.roomManager.y, Position.left,   0.5, self.roomManager.y, self.style.quotation_color, function() {

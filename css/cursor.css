@@ -2,6 +2,10 @@
     cursor: pointer;
 }
 
+.grab {
+    cursor: grab;
+}
+
 /* Makes all the text not selectable */
 body {
     -webkit-touch-callout: none;
