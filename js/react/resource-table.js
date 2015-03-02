@@ -71,17 +71,20 @@ var ResourceTable = React.createClass({
         });
 
         return(
-            <div id="resource_table" className="col-md-12 table-responsive" style={{"overflowX": "scroll"}}>
-                <table className="table table-bordered table-striped table-hover" id="resource_table">
-                    <thead>
-                        <tr>
-                            <th className="col-md-12 col-sm-12 col-xs-12 text-center">Resources</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {resourceRows}
-                    </tbody>
-                </table>
+            <div>
+                <div id="resource_table" className="col-md-12 table-responsive" style={{"overflowX": "scroll"}}>
+                    <table className="table table-bordered table-striped table-hover" id="resource_table">
+                        <thead>
+                            <tr>
+                                <th className="col-md-12 col-sm-12 col-xs-12 text-center">Resources</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {resourceRows}
+                        </tbody>
+                    </table>
+                </div>
+                <ResourceAdd />
             </div>
         );
     }
