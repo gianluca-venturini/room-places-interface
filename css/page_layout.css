@@ -67,3 +67,7 @@ td.input-fill {
 span[contenteditable=true] {
     cursor: pointer;
 }
+
+td.key-values {
+    height: 40px;
+}

@@ -14,6 +14,7 @@ var Resource = React.createClass({
     },
     handleUpdateParameters: function() {
         var resource = this.props.resource;
+        delete resource["parameters"];
         if(resource.continuous != undefined) {
             if(resource.continuous.x != undefined) {
                 resource.continuous.x = parseFloat($("#"+this.props.resource.rid+"_parameter_x").text());
@@ -30,6 +31,7 @@ var Resource = React.createClass({
     handleContinousPressed: function() {
         var resource = this.props.resource;
         delete resource["discrete"];
+        delete resource["parameters"];
         resource.continuous = {
             x: this.props.room.x/2,
             y: this.props.room.y/2
@@ -38,6 +40,7 @@ var Resource = React.createClass({
     },
     handleDiscretePressed: function() {
         var resource = this.props.resource;
+        delete resource["parameters"];
         delete resource["continuous"];
         resource.discrete = {
             x: 0,
@@ -49,6 +52,7 @@ var Resource = React.createClass({
         var resource = this.props.resource;
         delete resource["continuous"];
         delete resource["discrete"];
+        delete resource["parameters"];
         this.props.updateResource(resource);
     },
     handleDeletePressed: function() {
@@ -56,21 +60,82 @@ var Resource = React.createClass({
     },
     handleStaticPressed: function() {
         var resource = this.props.resource;
+        delete resource["parameters"];
         if(resource.type == "STATIC")
             return;
 
         resource.type = "STATIC";
         resource.proximity_range = 1;
         delete resource["proximity"];
+        delete resource["parameters"];
         this.props.updateResource(resource);
     },
     handleDynamicPressed: function() {
         var resource = this.props.resource;
+        delete resource["parameters"];
         if(resource.type == "DYNAMIC")
             return;
 
         resource.type = "DYNAMIC";
         delete resource["proximity_range"];
+        this.props.updateResource(resource);
+    },
+    handleAddKey: function() {
+        var key = this.refs.key.getDOMNode().value.trim();
+        var value = this.refs.value.getDOMNode().value.trim();
+
+        this.refs.key.getDOMNode().value = "";
+        this.refs.value.getDOMNode().value = "";
+
+        var resource = this.props.resource;
+
+        resource.parameters = [];
+
+        resource.parameters.push({key: key, value: value});
+
+        this.props.updateResource(resource);
+    },
+    handleKeyEnterPressed: function(event) {
+        // Pressed return
+        if(event.which == 13) {
+            this.handleAddKey();
+        }
+    },
+    handleModifyKey: function(event) {
+        var key = $("#"+event.target.id.substring(0, event.target.id.length-1)+"k").text();
+        var value = $("#"+event.target.id.substring(0, event.target.id.length-1)+"v").text();
+
+        if(key == "") {
+            $("#" + event.target.id.substring(0, event.target.id.length - 1) + "k").focus();
+            return;
+        }
+        if(value == "") {
+            $("#" + event.target.id.substring(0, event.target.id.length - 1) + "v").focus();
+            return;
+        }
+
+
+        var prev_key = event.target.id.substring(this.props.resource.rid.length+1, event.target.id.length-2);
+        console.log("prev: "+prev_key);
+
+        var resource = this.props.resource;
+
+        resource.parameters = [];
+
+        resource.parameters.push({key: prev_key, delete: true});
+        resource.parameters.push({key: key, value: value});
+
+        this.props.updateResource(resource);
+    },
+    handleDeleteKey: function(event) {
+        var key = event.target.id;
+
+        var resource = this.props.resource;
+
+        resource.parameters = [];
+
+        resource.parameters.push({key: key, delete: true});
+
         this.props.updateResource(resource);
     },
     render: function () {
@@ -132,12 +197,29 @@ var Resource = React.createClass({
 
         var keyValueRows = [];
 
-        if(this.props.parameters != undefined) {
-            this.props.parameters.map(function (parameter, index) {
+        if(this.props.resource.parameters != undefined) {
+            keyValueRows = Object.keys(this.props.resource.parameters).map(function (key, index) {
                 return (
                     <tr>
-                        <td className="col-md-6"><span contentEditable="true">{parameter.key}</span></td>
-                        <td className="col-md-6"><span contentEditable="true">{parameter.value}</span></td>
+                        <td className="col-md-6 key-values">
+                            <span id={self.props.resource.rid+"_"+key+"_k"}
+                                contentEditable="true"
+                                onKeyPress={self.handleParameterChange}
+                                onBlur={self.handleModifyKey}>
+                                    {key}
+                            </span>
+                        </td>
+                        <td className="col-md-6 key-values">
+                            <span id={self.props.resource.rid+"_"+key+"_v"}
+                                contentEditable="true"
+                                onKeyPress={self.handleParameterChange}
+                                onBlur={self.handleModifyKey}>
+                                    {self.props.resource.parameters[key]}
+                            </span>
+                            <button type="button" onClick={self.handleDeleteKey} id={key} className="btn btn-default btn-xs right">
+                                <span className="glyphicon glyphicon-remove" id={key} aria-hidden="true"></span>
+                            </button>
+                        </td>
                     </tr>
                 );
             });
@@ -211,21 +293,12 @@ var Resource = React.createClass({
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {keyValueRows}
                                     <tr>
-                                        <td className="col-md-6"><span id="A3" contentEditable="true">Prova</span></td>
-                                        <td className="col-md-6"><span id="A3" contentEditable="true">Prova</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td className="col-md-6"><span id="A3" contentEditable="true">Prova</span></td>
-                                        <td className="col-md-6"><span id="A3" contentEditable="true">Prova</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td className="col-md-6"><span id="A3" contentEditable="true">Prova</span></td>
-                                        <td className="col-md-6"><span id="A3" contentEditable="true">Prova</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td className="col-md-6"><input type="text" className="form-control" placeholder="key" /></td>
-                                        <td className="col-md-6"><input type="text" className="form-control" placeholder="value" /></td>
+                                        <form onSubmit={this.handleAddKey}>
+                                            <td className="col-md-6"><input onKeyPress={this.handleKeyEnterPressed} type="text" className="form-control" placeholder="key" ref="key" /></td>
+                                            <td className="col-md-6"><input onKeyPress={this.handleKeyEnterPressed} type="text" className="form-control" placeholder="value" ref="value"/></td>
+                                        </form>
                                     </tr>
                                 </tbody>
                             </table>
