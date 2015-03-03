@@ -159,18 +159,18 @@ var Resource = React.createClass({
          if(this.props.resource.continuous != undefined ) {
 
              if(this.props.resource.continuous.x != undefined) {
-                 parameters.push({key: "x", value: this.props.resource.continuous.x});
+                 parameters.push({key: "x", value: parseFloat(this.props.resource.continuous.x).toFixed(2)});
              }
 
 
 
              if(this.props.resource.continuous.y != undefined) {
-                 parameters.push({key: "y", value: this.props.resource.continuous.y});
+                 parameters.push({key: "y", value: parseFloat(this.props.resource.continuous.y).toFixed(2)});
              }
          }
 
          if(this.props.resource.proximity_range != undefined) {
-             parameters.push({key: "proximity", value: this.props.resource.proximity_range});
+             parameters.push({key: "proximity", value: parseFloat(this.props.resource.proximity_range).toFixed(2)});
          }
 
 

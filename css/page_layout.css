@@ -49,6 +49,11 @@ tbody td, thead th {
     max-height: 600px;
 }
 
+#beacon_table {
+    margin-top: 10px;
+    max-height: 200px;
+}
+
 td.input-fill input {
     display: block !important;
     padding: 0 !important;

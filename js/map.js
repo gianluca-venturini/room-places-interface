@@ -141,8 +141,9 @@ var Map = function(mapId, room) {
 
             })
             .on("dragend", function(d){
-                var x = d3.select(this).attr("cx");
-                var y = d3.select(this).attr("cy");
+                var x = parseFloat(d3.select(this).attr("cx"));
+                var y = self.roomManager.y - parseFloat(d3.select(this).attr("cy"));
+                d.continuous.y = y;
 
                 var continuous = {x: x, y: y};
                 if(d.continuous.z != null)
@@ -171,7 +172,7 @@ var Map = function(mapId, room) {
                 if(d.proximity_range != undefined)
                     d.proximity_range = Math.sqrt(
                             Math.pow(d3.event.x - d.continuous.x, 2)+
-                            Math.pow(d3.event.y - d.continuous.y, 2)
+                            Math.pow(d3.event.y - (self.roomManager.y - d.continuous.y), 2)
                         );
 
                 // Update graphically the range
@@ -231,13 +232,11 @@ var Map = function(mapId, room) {
                 }
             })
             .attr("fill", self.style.location_range_color)
-            .attr("cx", function(d) { return d.continuous.x; })
-            .attr("cy", function(d) { return d.continuous.y; });
 
         // Update resources that are already there
         resourceLocationRangeBackground
             .attr("cx", function(d) { return d.continuous.x; })
-            .attr("cy", function(d) { return d.continuous.y; })
+            .attr("cy", function(d) { return self.roomManager.y - d.continuous.y; })
             .attr("fill", function(d) {
                 if(d.overlapped == true) {
                     return self.style.location_range_color_overlapped;
@@ -282,13 +281,13 @@ var Map = function(mapId, room) {
             } )
             .attr("stroke-width", self.style.resource_range_stroke)
             .attr("cx", function(d) { return d.continuous.x; })
-            .attr("cy", function(d) { return d.continuous.y; })
+            .attr("cy", function(d) { return self.roomManager.y - d.continuous.y; })
             .call(dragRange);
 
         // Update resources that are already there
         resourceLocationRange
             .attr("cx", function(d) { return d.continuous.x; })
-            .attr("cy", function(d) { return d.continuous.y; })
+            .attr("cy", function(d) { return self.roomManager.y - d.continuous.y; })
             .attr("stroke", function(d) {
                 if(d.overlapped == true) {
                     return self.style.location_range_stroke_color_overlapped;
@@ -316,15 +315,13 @@ var Map = function(mapId, room) {
             .enter()
             .append("text")
             .attr("class", "resource_location_name")
-            .attr("x", function(d) { return d.continuous.x; })
-            .attr("y", function(d) { return d.continuous.y - self.style.resource_name_offset; })
             .attr("text-anchor", "middle")
             .attr("fill", function(d) { if(d.dragged == true) return "none"; else return "black";})
             .attr("font-size", self.style.font);
 
         resourceLocationName
             .attr("x", function(d) { return d.continuous.x; })
-            .attr("y", function(d) { return d.continuous.y - self.style.resource_name_offset; })
+            .attr("y", function(d) { return (self.roomManager.y - d.continuous.y) - self.style.resource_name_offset; })
             .attr("fill", function(d) { if(d.dragged == true) return "none"; else return "black";})
             .text(function(d) { return d.rid; });
 
@@ -339,14 +336,14 @@ var Map = function(mapId, room) {
             .attr("r", self.style.resource_radius)
             .attr("fill", "black")
             .attr("cx", function(d) { return d.continuous.x; })
-            .attr("cy", function(d) { return d.continuous.y; })
+            .attr("cy", function(d) { return self.roomManager.y - d.continuous.y; })
             .call(drag);
 
         // Update resources that are already there
         resourceLocation
             .transition()
             .attr("cx", function(d) { return d.continuous.x; })
-            .attr("cy", function(d) { return d.continuous.y; });
+            .attr("cy", function(d) { return self.roomManager.y - d.continuous.y; });
 
         resourceLocation.exit().remove();
 
