@@ -44,6 +44,7 @@ var Resource = React.createClass({
     handleContinousPressed: function() {
         var resource = this.props.resource;
         delete resource["discrete"];
+        delete resource["proximity"];
         delete resource["parameters"];
         resource.continuous = {
             x: this.props.room.x/2,
@@ -55,10 +56,19 @@ var Resource = React.createClass({
         var resource = this.props.resource;
         delete resource["parameters"];
         delete resource["continuous"];
+        delete resource["proximity"];
         resource.discrete = {
             x: 0,
             y: 0
         };
+        this.props.updateResource(resource);
+    },
+    handleProximityPressed: function() {
+        var resource = this.props.resource;
+        delete resource["parameters"];
+        delete resource["continuous"];
+        delete resource["discrete"];
+        resource.proximity = {};
         this.props.updateResource(resource);
     },
     handleDisablePressed: function() {
@@ -129,8 +139,6 @@ var Resource = React.createClass({
 
 
         var prev_key = event.target.id.substring(this.props.resource.rid.length+1, event.target.id.length-2);
-        console.log("prev: "+prev_key);
-
         var resource = this.props.resource;
 
         resource.parameters = [];
@@ -161,8 +169,6 @@ var Resource = React.createClass({
              if(this.props.resource.continuous.x != undefined) {
                  parameters.push({key: "x", value: parseFloat(this.props.resource.continuous.x).toFixed(2)});
              }
-
-
 
              if(this.props.resource.continuous.y != undefined) {
                  parameters.push({key: "y", value: parseFloat(this.props.resource.continuous.y).toFixed(2)});
@@ -255,9 +261,16 @@ var Resource = React.createClass({
         else if(this.props.resource.discrete != undefined) {
             trackingSystem = <i className="fa fa-th-large fa-fw"></i>;
         }
+        else if(this.props.resource.proximity != undefined) {
+            trackingSystem = <i className="fa fa-location-arrow fa-fw"></i>;
+        }
         else {
             trackingSystem = <i className="fa fa-ban fa-fw"></i>;
         }
+
+        var proximity = {};
+        if(this.props.resource.type == "DYNAMIC")
+            proximity = <li onClick={this.handleProximityPressed}><a href="#"><i className="fa fa-location-arrow fa-fw"></i> Proximity</a></li>
 
         return(
 
@@ -272,6 +285,7 @@ var Resource = React.createClass({
                         <ul className="dropdown-menu">
                             <li onClick={this.handleContinousPressed}><a href="#"><i className="fa fa-arrows fa-fw"></i> Continuous</a></li>
                             <li onClick={this.handleDiscretePressed}><a href="#"><i className="fa fa-th-large fa-fw"></i> Discrete</a></li>
+                        {proximity}
                             <li onClick={this.handleDisablePressed}><a href="#"><i className="fa fa-ban fa-fw"></i> Disable</a></li>
                             <li className="divider"></li>
                             <li onClick={this.handleDeletePressed}><a href="#"><i className="fa fa-trash-o fa-fw"></i> Delete</a></li>

@@ -14,16 +14,20 @@ var Map = function(mapId, room) {
         arrow_thick: 0.06,
         _arrow_ratio: 2.0,
         font: 0.12,
+        resource_name_font: 0.09,
         quotation_excess: 1.2,
         _quotation_room_offset: 0.4,
         quotation_color: "#056CF2",
-        resource_radius: 0.1,
+        resource_radius: 0.06,
+        resource_radius_hover: 0.2,
         resource_range_stroke: 0.05,
+        proximity_range_stroke: 0.01,
         location_range_color: "rgba(216, 242, 242, 0.5)",
         location_range_stroke_color: "#056CF2",
+        proximity_range_stroke_color: "#056CF2",
         location_range_stroke_color_overlapped: "#c0392b",
         location_range_color_overlapped: "rgba(231, 76, 60, 0.5)",
-        resource_name_offset: 0.2
+        resource_name_offset: 0.1
     };
 
     self.updateStyle = function(k) {
@@ -65,11 +69,19 @@ var Map = function(mapId, room) {
         // Check for possible overlap in ranges
         self.checkOverlap();
 
-        var resources = [];
+        var continuousResources = [];
+        var proximityResources = [];
 
         for(var r in self.resources) {
-            resources.push(self.resources[r]);
+            if(self.resources[r].continuous != undefined)
+                continuousResources.push(self.resources[r]);
+            if(self.resources[r].proximity != undefined &&
+                self.resources[r].proximity.rid != undefined &&
+                self.resources[r].proximity.distance != undefined)
+                proximityResources.push(self.resources[r]);
         }
+
+        console.log(proximityResources);
 
         // Drag & drop behavior for resources
         var drag = d3.behavior.drag()
@@ -200,21 +212,23 @@ var Map = function(mapId, room) {
                     });
             });
 
+        // Continuous resources
+
         // Resource D3 object
         var resourceLocation = self.room.clip.selectAll(".resource_location")
-            .data(resources);
+            .data(continuousResources);
 
         // Resource range D3 object
         var resourceLocationRange = self.room.clip.selectAll(".resource_location_range")
-            .data(resources);
+            .data(continuousResources);
 
         // Resource range background D3 object
         var resourceLocationRangeBackground = self.room.clip.selectAll(".resource_location_range_background")
-            .data(resources);
+            .data(continuousResources);
 
         // Resource name (RID)
         var resourceLocationName = self.room.clip.selectAll(".resource_location_name")
-            .data(resources);
+            .data(continuousResources);
 
         resourceLocationRangeBackground
             .enter()
@@ -314,10 +328,12 @@ var Map = function(mapId, room) {
         resourceLocationName
             .enter()
             .append("text")
+            .attr("x", function(d) { return d.continuous.x; })
+            .attr("y", function(d) { return (self.roomManager.y - d.continuous.y) - self.style.resource_name_offset; })
             .attr("class", "resource_location_name")
             .attr("text-anchor", "middle")
             .attr("fill", function(d) { if(d.dragged == true) return "none"; else return "black";})
-            .attr("font-size", self.style.font);
+            .attr("font-size", self.style.resource_name_font);
 
         resourceLocationName
             .attr("x", function(d) { return d.continuous.x; })
@@ -337,6 +353,17 @@ var Map = function(mapId, room) {
             .attr("fill", "black")
             .attr("cx", function(d) { return d.continuous.x; })
             .attr("cy", function(d) { return self.roomManager.y - d.continuous.y; })
+            .on("mouseenter", function(d) {
+                if(d.dragged != true)
+                    d3.select(this)
+                        .transition()
+                        .attr("r", self.style.resource_radius_hover);
+            })
+            .on("mouseleave", function(d) {
+                d3.select(this)
+                    .transition()
+                    .attr("r", self.style.resource_radius);
+            })
             .call(drag);
 
         // Update resources that are already there
@@ -348,6 +375,57 @@ var Map = function(mapId, room) {
         resourceLocation.exit().remove();
 
         resourceLocation.order();
+
+        // Proximity resources
+
+        // Resource
+        var proximityResourceRange = self.room.clip.selectAll(".proximity_resource_range")
+            .data(proximityResources);
+
+        var proximityResourceText = self.room.clip.selectAll(".proximity_resource_text")
+            .data(proximityResources);
+
+        proximityResourceRange
+            .enter()
+            .append("circle")
+            .attr("class", "proximity_resource_range")
+            .attr("r", function(d) { return d.proximity.distance; })
+            .attr("fill", "none")
+            .attr("stroke", function() {
+                return self.style.proximity_range_stroke_color;
+            } )
+            .attr("stroke-width", self.style.proximity_range_stroke)
+            .attr("cx", function(d) { return d.proximity.continuous.x; })
+            .attr("cy", function(d) { return self.roomManager.y - d.proximity.continuous.y; });
+
+        // Update resources that are already there
+        proximityResourceRange
+            .attr("cx", function(d) { return d.proximity.continuous.x; })
+            .attr("cy", function(d) { return self.roomManager.y - d.proximity.continuous.y; })
+            .transition()
+            .attr("r", function(d) { return d.proximity.distance; });
+
+        proximityResourceRange.exit().remove();
+
+        proximityResourceText
+            .enter()
+            .append("text")
+            .attr("class", "proximity_resource_text")
+            .attr("x", function(d) { return d.proximity.continuous.x; })
+            .attr("y", function(d) { return self.roomManager.y - d.proximity.continuous.y; })
+            .attr("text-anchor", "middle")
+            .attr("font-size", self.style.resource_name_font)
+            .attr("fill", "black")
+            .text(function(d) { return d.rid; });
+
+        // Update resources that are already there
+        proximityResourceText
+            .transition()
+            .attr("x", function(d) { return d.proximity.continuous.x; })
+            .attr("y", function(d) { return self.roomManager.y - d.proximity.continuous.y - d.proximity.distance; })
+            .text(function(d) { return d.rid; });
+
+        proximityResourceText.exit().remove();
 
     };
 
@@ -631,7 +709,8 @@ var Map = function(mapId, room) {
         nutella.net.request("location/resources", {}, function(reply) {
             for(var r in reply.resources) {
                 var resource = reply.resources[r];
-                if(resource["continuous"] != null ) {
+                if(resource["continuous"] != null  ||
+                    resource["proximity"] != null) {
                     self.resources[resource.rid] = resource;
                 }
             }
@@ -645,7 +724,9 @@ var Map = function(mapId, room) {
 
             for(var r in resources) {
                 var resource = resources[r];
-                if(resource["continuous"] != null ) {
+                console.log(resource);
+                if(resource["continuous"] != null ||
+                    resource["proximity"] != null) {
                     self.resources[resource.rid] = resource;
                     changed = true;
                 }

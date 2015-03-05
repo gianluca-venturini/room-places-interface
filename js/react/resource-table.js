@@ -16,7 +16,7 @@ var ResourceTable = React.createClass({
         // Wait for new added resources
         nutella.net.subscribe("location/resources/added", function(message) {
             var data = self.state.resourceData;
-            data = data.concat(message.resources)
+            data = data.concat(message.resources);
 
             self.setState({resourceData: data});
         });
@@ -48,7 +48,6 @@ var ResourceTable = React.createClass({
 
         // Download all beacons
         nutella.net.request("beacon/beacons", {}, function(reply) {
-            console.log(reply);
             self.setState({beaconData: reply.beacons});
         });
 
@@ -118,8 +117,6 @@ var ResourceTable = React.createClass({
                     addResource={self.addResource}/>
             );
         });
-
-        console.log(beaconRows);
 
         return(
             <div>
