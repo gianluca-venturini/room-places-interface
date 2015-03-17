@@ -63,6 +63,14 @@ var Map = function(mapId, room) {
         self.renderStaticResources();
     };
 
+    // Private variables
+    var proximityResourceRangeGroup = undefined;
+    var proximityResourceRangeTextGroup = undefined;
+    var staticResourceLocationGroup = undefined;
+    var staticResourceLocationRangeGroup = undefined;
+    var staticResourceLocationRangeBackgroundGroup = undefined;
+    var resourceLocationNameGroup = undefined;
+
     // Render the static resources with D3 and keep track of them
     self.renderStaticResources = function() {
 
@@ -215,19 +223,19 @@ var Map = function(mapId, room) {
         // Continuous resources
 
         // Resource D3 object
-        var resourceLocation = self.room.clip.selectAll(".resource_location")
+        var resourceLocation = staticResourceLocationGroup.selectAll(".resource_location")
             .data(continuousResources);
 
         // Resource range D3 object
-        var resourceLocationRange = self.room.clip.selectAll(".resource_location_range")
+        var resourceLocationRange = staticResourceLocationRangeGroup.selectAll(".resource_location_range")
             .data(continuousResources);
 
         // Resource range background D3 object
-        var resourceLocationRangeBackground = self.room.clip.selectAll(".resource_location_range_background")
+        var resourceLocationRangeBackground = staticResourceLocationRangeBackgroundGroup.selectAll(".resource_location_range_background")
             .data(continuousResources);
 
         // Resource name (RID)
-        var resourceLocationName = self.room.clip.selectAll(".resource_location_name")
+        var resourceLocationName = resourceLocationNameGroup.selectAll(".resource_location_name")
             .data(continuousResources);
 
         resourceLocationRangeBackground
@@ -245,7 +253,7 @@ var Map = function(mapId, room) {
                     return 0;
                 }
             })
-            .attr("fill", self.style.location_range_color)
+            .attr("fill", self.style.location_range_color);
 
         // Update resources that are already there
         resourceLocationRangeBackground
@@ -379,10 +387,10 @@ var Map = function(mapId, room) {
         // Proximity resources
 
         // Resource
-        var proximityResourceRange = self.room.clip.selectAll(".proximity_resource_range")
+        var proximityResourceRange = proximityResourceRangeGroup.selectAll(".proximity_resource_range")
             .data(proximityResources);
 
-        var proximityResourceText = self.room.clip.selectAll(".proximity_resource_text")
+        var proximityResourceText = proximityResourceRangeTextGroup.selectAll(".proximity_resource_text")
             .data(proximityResources);
 
         proximityResourceRange
@@ -423,6 +431,7 @@ var Map = function(mapId, room) {
             .transition()
             .attr("x", function(d) { return d.proximity.continuous.x; })
             .attr("y", function(d) { return self.roomManager.y - d.proximity.continuous.y - d.proximity.distance; })
+            .attr("fill", "black")
             .text(function(d) { return d.rid; });
 
         proximityResourceText.exit().remove();
@@ -498,6 +507,14 @@ var Map = function(mapId, room) {
                 self.render();
             }
         });
+
+        // Create all the groups
+        staticResourceLocationRangeBackgroundGroup = self.room.clip.append("g").attr("class", "staticResourceLocationRangeBackgroundGroup");
+        staticResourceLocationRangeGroup = self.room.clip.append("g").attr("class", "staticResourceLocationRangeGroup");
+        resourceLocationNameGroup = self.room.clip.append("g").attr("class", "resourceLocationNameGroup");
+        proximityResourceRangeGroup = self.room.clip.append("g").attr("class", "proximityResourceRangeGroup");
+        proximityResourceRangeTextGroup = self.room.clip.append("g").attr("class", "proximityResourceRangeTextGroup");
+        staticResourceLocationGroup = self.room.clip.append("g").attr("class", "staticResourceLocationGroup");
 
         self.renderResources();
     };
