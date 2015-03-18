@@ -14,7 +14,7 @@ var Map = function(mapId, room) {
         arrow_thick: 0.06,
         _arrow_ratio: 2.0,
         font: 0.12,
-        resource_name_font: 0.09,
+        resource_name_font: 0.1,
         quotation_excess: 1.2,
         _quotation_room_offset: 0.4,
         quotation_color: "#056CF2",
@@ -70,6 +70,7 @@ var Map = function(mapId, room) {
     var staticResourceLocationRangeGroup = undefined;
     var staticResourceLocationRangeBackgroundGroup = undefined;
     var resourceLocationNameGroup = undefined;
+    var resourceLocationNumberGroup = undefined;
 
     // Render the static resources with D3 and keep track of them
     self.renderStaticResources = function() {
@@ -89,12 +90,13 @@ var Map = function(mapId, room) {
                 proximityResources.push(self.resources[r]);
         }
 
-        console.log(proximityResources);
-
         // Drag & drop behavior for resources
         var drag = d3.behavior.drag()
             //.origin(function(d) { return d; })
             .on("dragstart", function(d){
+                d3.select(this)
+                    .classed({"dragged": true});
+
                 d.dragged = true;
 
                 self.renderResources();
@@ -158,11 +160,18 @@ var Map = function(mapId, room) {
                     undefined,
                     d.quotation);
 
+                // Recalculate y
+                d.continuous.y = self.roomManager.y - d.continuous.y;
+
 
             })
             .on("dragend", function(d){
                 var x = parseFloat(d3.select(this).attr("cx"));
                 var y = self.roomManager.y - parseFloat(d3.select(this).attr("cy"));
+
+                d3.select(this)
+                    .classed({"dragged": false});
+
                 d.continuous.y = y;
 
                 var continuous = {x: x, y: y};
@@ -436,6 +445,28 @@ var Map = function(mapId, room) {
 
         proximityResourceText.exit().remove();
 
+        // Number of beacons tracked for every base station
+        var resourceLocationNumber = resourceLocationNumberGroup.selectAll(".resource_location_number")
+            .data(continuousResources);
+
+        resourceLocationNumber
+            .enter()
+            .append("text")
+            .attr("x", function(d) { return d.continuous.x; })
+            .attr("y", function(d) { return self.roomManager.y - d.continuous.y + self.style.resource_name_font/3})
+            .attr("class", "resource_location_number no_interaction")
+            .attr("text-anchor", "middle")
+            .attr("fill", function(d) { if(d.dragged == true) return "none"; else return "white";})
+            .attr("font-size", self.style.resource_name_font);
+
+        // Update resources that are already there
+        resourceLocationNumber
+            .attr("x", function(d) { return d.continuous.x; })
+            .attr("y", function(d) { return self.roomManager.y - d.continuous.y + self.style.resource_name_font/3})
+            .text(function(d) {return d.number_resources; });
+
+        resourceLocationNumber.exit().remove();
+
     };
 
     // Render the map from the beginning
@@ -515,6 +546,7 @@ var Map = function(mapId, room) {
         proximityResourceRangeGroup = self.room.clip.append("g").attr("class", "proximityResourceRangeGroup");
         proximityResourceRangeTextGroup = self.room.clip.append("g").attr("class", "proximityResourceRangeTextGroup");
         staticResourceLocationGroup = self.room.clip.append("g").attr("class", "staticResourceLocationGroup");
+        resourceLocationNumberGroup = self.room.clip.append("g").attr("class", "resourceLocationNumberGroup");
 
         self.renderResources();
     };
@@ -741,7 +773,6 @@ var Map = function(mapId, room) {
 
             for(var r in resources) {
                 var resource = resources[r];
-                console.log(resource);
                 if(resource["continuous"] != null ||
                     resource["proximity"] != null) {
                     self.resources[resource.rid] = resource;
