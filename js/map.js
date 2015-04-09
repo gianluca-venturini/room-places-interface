@@ -764,7 +764,7 @@ var Map = function(mapId, room) {
                 }
             }
 
-            self.renderResources();
+            //self.renderResources();
         });
 
         var updateResource = function(message) {
@@ -785,7 +785,7 @@ var Map = function(mapId, room) {
             }
 
             if(changed) {
-                self.renderResources();
+                //self.renderResources();
             }
         };
 
@@ -803,7 +803,7 @@ var Map = function(mapId, room) {
                 delete self.resources[resources[r].rid];
             }
 
-            self.renderResources();
+            //self.renderResources();
         });
 
         // Update the whole map
@@ -815,6 +815,9 @@ var Map = function(mapId, room) {
 
             self.render();
         });
+
+        // Update resources position once a second
+        setInterval(self.renderResources, 1000);
 
     }();
 

@@ -268,15 +268,33 @@ var Resource = React.createClass({
             trackingSystem = <i className="fa fa-ban fa-fw"></i>;
         }
 
+        var model = "";
+        if(this.props.resource.model == "IMAC") {
+            model = "icon-iMac";
+        }
+        else if(this.props.resource.model == "IPHONE") {
+            model = "icon-iPhone";
+        }
+        else if(this.props.resource.model == "IPAD") {
+            model = "icon-iPad";
+        }
+        else if(this.props.resource.model == "IBEACON") {
+            model = "icon-iBeacon";
+        }
+
         var proximity = {};
         if(this.props.resource.type == "DYNAMIC")
-            proximity = <li onClick={this.handleProximityPressed}><a href="#"><i className="fa fa-location-arrow fa-fw"></i> Proximity</a></li>
+            proximity = <li onClick={this.handleProximityPressed}><a href="#"><i className="fa fa-location-arrow fa-fw"></i> Proximity</a></li>;
 
         return(
 
             <tr>
                 <td className="col-md-12 col-sm-12 col-xs-12">
                     <div className="col-md-4 col-sm-4 col-xs-4"><div className="vertical-center"><span>{this.props.resource.rid}</span></div></div>
+
+                    <div className="col-md-1 col-sm-1 col-xs-1" style={{marginRight: "40px", marginTop: "8px"}}>
+                        <span className={model} style={{fontSize: "20"}}></span>
+                    </div>
 
                     <div className="btn-group">
                         <a className="btn btn-default" href="#">{trackingSystem}</a>
@@ -285,7 +303,7 @@ var Resource = React.createClass({
                         <ul className="dropdown-menu">
                             <li onClick={this.handleContinousPressed}><a href="#"><i className="fa fa-arrows fa-fw"></i> Continuous</a></li>
                             <li onClick={this.handleDiscretePressed}><a href="#"><i className="fa fa-th-large fa-fw"></i> Discrete</a></li>
-                        {proximity}
+                            {proximity}
                             <li onClick={this.handleDisablePressed}><a href="#"><i className="fa fa-ban fa-fw"></i> Disable</a></li>
                             <li className="divider"></li>
                             <li onClick={this.handleDeletePressed}><a href="#"><i className="fa fa-trash-o fa-fw"></i> Delete</a></li>

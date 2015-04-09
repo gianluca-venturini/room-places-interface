@@ -19,7 +19,10 @@ var ResourceAdd = React.createClass({
             resource.continuous = {x: this.props.room.x/2, y: this.props.room.y/2};
         }
         else if(this.state.tracking == "DISCRETE") {
-            resource.continuous = {x: 0, y: 0};
+            resource.discrete = {x: 0, y: 0};
+        }
+        else if(this.state.tracking == "PROXIMITY") {
+            resource.proximity = {};
         }
 
 
@@ -36,6 +39,9 @@ var ResourceAdd = React.createClass({
     },
     handleChangeTypeStatic: function(e) {
         this.setState({type: "STATIC"});
+        if(this.state.tracking == "PROXIMITY") {
+            this.setState({tracking: "NONE"});
+        }
     },
     handleChangeTrackingContinuous: function(e) {
         this.setState({tracking: "CONTINUOUS"});
@@ -43,8 +49,23 @@ var ResourceAdd = React.createClass({
     handleChangeTrackingDiscrete: function(e) {
         this.setState({tracking: "DISCRETE"});
     },
+    handleTrackingProximity: function(e) {
+        this.setState({tracking: "PROXIMITY"});
+    },
     handleChangeTrackingNone: function(e) {
         this.setState({tracking: "NONE"});
+    },
+    handleChangeModelIMAC: function(e) {
+        this.setState({model: "IMAC"});
+    },
+    handleChangeModelIPHONE: function(e) {
+        this.setState({model: "IPHONE"});
+    },
+    handleChangeModelIPAD: function(e) {
+        this.setState({model: "IPAD"});
+    },
+    handleChangeModelIBEACON: function(e) {
+        this.setState({model: "IBEACON"});
     },
     handleChangeModel: function(e) {
         this.setState({model: event.target.value});
@@ -53,10 +74,16 @@ var ResourceAdd = React.createClass({
 
         var type = "";
 
-        if(this.state.type == "STATIC")
+        if(this.state.type == "STATIC") {
             type = <b>S</b>;
-        else if(this.state.type == "DYNAMIC")
+        }
+        else if(this.state.type == "DYNAMIC") {
             type = <b>D</b>;
+        }
+
+        var proximity = {};
+        if(this.state.type == "DYNAMIC")
+            proximity = <li onClick={this.handleTrackingProximity}><a href="#"><i className="fa fa-location-arrow fa-fw"></i> Proximity</a></li>;
 
         var tracking = "";
 
@@ -64,8 +91,21 @@ var ResourceAdd = React.createClass({
             tracking = "fa-arrows";
         else if(this.state.tracking == "DISCRETE")
             tracking = "fa-th-large";
+        else if(this.state.tracking == "PROXIMITY")
+            tracking = "fa-location-arrow";
         else
             tracking = "fa-ban";
+
+        var model = "";
+
+        if(this.state.model == "IMAC")
+            model = "icon-iMac";
+        else if(this.state.model == "IPHONE")
+            model = "icon-iPhone";
+        else if(this.state.model == "IPAD")
+            model = "icon-iPad";
+        else if(this.state.model == "IBEACON")
+            model = "icon-iBeacon";
 
         return(
             <div className="col-md-12 col-sm-12 col-xs-12 table-responsive" style={{"overflowX": "visible"}}>
@@ -82,6 +122,20 @@ var ResourceAdd = React.createClass({
                                     <div className="col-md-4 col-sm-4 col-xs-4">
                                         <input type="text" className="form-control" placeholder="resource-id" value={this.state.name} onChange={this.handleChangeName}/>
                                     </div>
+
+                                    <div className="btn-group dropup">
+                                        <a className="btn btn-default" href="#"><i className={"fa " + model + " fa-fw"}></i></a>
+                                        <a className="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
+                                            <span className="fa fa-caret-up"></span>
+                                        </a>
+                                        <ul className="dropdown-menu">
+                                            <li onClick={this.handleChangeModelIMAC}><a href="#"><i className="icon-iMac"></i> iMac</a></li>
+                                            <li onClick={this.handleChangeModelIPHONE}><a href="#"><i className="icon-iPhone"></i> iPhone</a></li>
+                                            <li onClick={this.handleChangeModelIPAD}><a href="#"><i className="icon-iPad"></i> iPad</a></li>
+                                            <li onClick={this.handleChangeModelIBEACON}><a href="#"><i className="icon-iBeacon"></i> iBeacon</a></li>
+                                        </ul>
+                                    </div>
+
                                     <div className="btn-group dropup">
                                         <a className="btn btn-default" href="#"><i className={"fa " + tracking + " fa-fw"}></i></a>
                                         <a className="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
@@ -90,6 +144,7 @@ var ResourceAdd = React.createClass({
                                         <ul className="dropdown-menu">
                                             <li onClick={this.handleChangeTrackingContinuous}><a href="#"><i className="fa fa-arrows fa-fw"></i> Continuous</a></li>
                                             <li onClick={this.handleChangeTrackingDiscrete}>  <a href="#"><i className="fa fa-th-large fa-fw"></i> Discrete</a></li>
+                                            {proximity}
                                             <li onClick={this.handleChangeTrackingNone}>      <a href="#"><i className="fa fa-ban fa-fw"></i> Disabled</a></li>
                                         </ul>
                                     </div>
