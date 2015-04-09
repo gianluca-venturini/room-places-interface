@@ -370,6 +370,7 @@ var Map = function(mapId, room) {
             .attr("fill", "black")
             .attr("cx", function(d) { return d.continuous.x; })
             .attr("cy", function(d) { return self.roomManager.y - d.continuous.y; })
+            /*
             .on("mouseenter", function(d) {
                 if(d.dragged != true)
                     d3.select(this)
@@ -381,11 +382,13 @@ var Map = function(mapId, room) {
                     .transition()
                     .attr("r", self.style.resource_radius);
             })
+            */
             .call(drag);
 
         // Update resources that are already there
         resourceLocation
             .transition()
+            .attr("r", self.style.resource_radius)
             .attr("cx", function(d) { return d.continuous.x; })
             .attr("cy", function(d) { return self.roomManager.y - d.continuous.y; });
 
@@ -399,6 +402,7 @@ var Map = function(mapId, room) {
         var proximityResourceRange = proximityResourceRangeGroup.selectAll(".proximity_resource_range")
             .data(proximityResources);
 
+        proximityResourceRangeTextGroup.selectAll(".proximity_resource_text").remove();
         var proximityResourceText = proximityResourceRangeTextGroup.selectAll(".proximity_resource_text")
             .data(proximityResources);
 
@@ -437,10 +441,9 @@ var Map = function(mapId, room) {
 
         // Update resources that are already there
         proximityResourceText
-            .transition()
+            //.transition()
             .attr("x", function(d) { return d.proximity.continuous.x; })
             .attr("y", function(d) { return self.roomManager.y - d.proximity.continuous.y - d.proximity.distance; })
-            .attr("fill", "black")
             .text(function(d) { return d.rid; });
 
         proximityResourceText.exit().remove();
