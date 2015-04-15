@@ -449,8 +449,11 @@ var Map = function(mapId, room) {
         proximityResourceText.exit().remove();
 
         // Number of beacons tracked for every base station
+        resourceLocationNumberGroup.selectAll(".resource_location_number").remove();
         var resourceLocationNumber = resourceLocationNumberGroup.selectAll(".resource_location_number")
             .data(continuousResources);
+
+        console.log(continuousResources);
 
         resourceLocationNumber
             .enter()
