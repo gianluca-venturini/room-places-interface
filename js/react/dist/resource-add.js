@@ -108,9 +108,9 @@ var ResourceAdd = React.createClass({displayName: "ResourceAdd",
             model = "icon-iBeacon";
 
         return(
-            React.createElement("div", {className: "col-md-12 col-sm-12 col-xs-12 table-responsive", style: {"overflowX": "visible"}}, 
+            React.createElement("div", {className: "col-md-12 col-sm-12 col-xs-12 table-responsive table_container animated", style: {"overflowX": "hide", height: this.props.tableHeight}}, 
                 React.createElement("table", {className: "table table-bordered table-striped table-hover", id: "resource_table", style: {"overflowX": "visible"}}, 
-                    React.createElement("thead", null, 
+                    React.createElement("thead", {onClick: _.partial(this.props.showTable, "table.addResource"), className: "pointer"}, 
                         React.createElement("tr", null, 
                             React.createElement("th", {className: "col-md-12 col-sm-12 col-xs-12 text-center"}, "Add resource")
                         )
@@ -123,10 +123,10 @@ var ResourceAdd = React.createClass({displayName: "ResourceAdd",
                                         React.createElement("input", {type: "text", className: "form-control", placeholder: "resource-id", value: this.state.name, onChange: this.handleChangeName})
                                     ), 
 
-                                    React.createElement("div", {className: "btn-group dropup"}, 
+                                    React.createElement("div", {className: "btn-group"}, 
                                         React.createElement("a", {className: "btn btn-default", href: "#"}, React.createElement("i", {className: "fa " + model + " fa-fw"})), 
                                         React.createElement("a", {className: "btn btn-default dropdown-toggle", "data-toggle": "dropdown", href: "#"}, 
-                                            React.createElement("span", {className: "fa fa-caret-up"})
+                                            React.createElement("span", {className: "fa fa-caret-down"})
                                         ), 
                                         React.createElement("ul", {className: "dropdown-menu"}, 
                                             React.createElement("li", {onClick: this.handleChangeModelIMAC}, React.createElement("a", {href: "#"}, React.createElement("i", {className: "icon-iMac"}), " iMac")), 
@@ -136,10 +136,10 @@ var ResourceAdd = React.createClass({displayName: "ResourceAdd",
                                         )
                                     ), 
 
-                                    React.createElement("div", {className: "btn-group dropup"}, 
+                                    React.createElement("div", {className: "btn-group"}, 
                                         React.createElement("a", {className: "btn btn-default", href: "#"}, React.createElement("i", {className: "fa " + tracking + " fa-fw"})), 
                                         React.createElement("a", {className: "btn btn-default dropdown-toggle", "data-toggle": "dropdown", href: "#"}, 
-                                            React.createElement("span", {className: "fa fa-caret-up"})
+                                            React.createElement("span", {className: "fa fa-caret-down"})
                                         ), 
                                         React.createElement("ul", {className: "dropdown-menu"}, 
                                             React.createElement("li", {onClick: this.handleChangeTrackingContinuous}, React.createElement("a", {href: "#"}, React.createElement("i", {className: "fa fa-arrows fa-fw"}), " Continuous")), 
@@ -149,7 +149,7 @@ var ResourceAdd = React.createClass({displayName: "ResourceAdd",
                                         )
                                     ), 
 
-                                    React.createElement("div", {className: "btn-group dropup", role: "group"}, 
+                                    React.createElement("div", {className: "btn-group", role: "group"}, 
                                         React.createElement("div", {className: "btn-group", role: "group"}, 
                                             React.createElement("button", {type: "button", className: "btn btn-default dropdown-toggle", "data-toggle": "dropdown", "aria-expanded": "false"}, 
                                                 type, 

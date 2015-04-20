@@ -77,9 +77,9 @@ var Discrete = React.createClass({
 
         if(self.state.tracking == undefined) {
             return(
-                <div className="col-md-12 col-sm-12 col-xs-12 table-responsive" style={{overflowX: "visible"}}>
+                <div className="col-md-12 col-sm-12 col-xs-12 table-responsive table_container animated" style={{overflowX: "hide", maxHeight: this.props.tableHeight}}>
                     <table className="table table-bordered table-striped table-hover" id="resource_table" style={{overflowX: "visible"}}>
-                        <thead>
+                        <thead onClick={_.partial(this.props.showTable, "table.discrete")} >
                         <tr>
                             <th className="col-md-12 col-sm-12 col-xs-12 text-center">Discrete Tracking</th>
                         </tr>
@@ -88,10 +88,10 @@ var Discrete = React.createClass({
                         <tr>
                             <td className="col-md-12 col-sm-12 col-xs-12">
 
-                                <div className="col-md-4 col-sm-4 col-xs-4 btn-group dropup">
+                                <div className="col-md-4 col-sm-4 col-xs-4 btn-group">
                                     <a className="btn btn-default" onClick={this.handleEnable}><i className="fa fa-ban fa-fw"></i></a>
                                     <a className="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
-                                        <span className="fa fa-caret-up"></span></a>
+                                        <span className="fa fa-caret-down"></span></a>
                                     <ul className="dropdown-menu">
                                         <li><a onClick={self.handleEnable}><i className="fa fa-th-large fa-fw"></i> Enabled</a></li>
                                         <li><a onClick={self.handleDisable}><i className="fa fa-ban fa-fw"></i> Disabled</a></li>
@@ -126,9 +126,9 @@ var Discrete = React.createClass({
             }
 
             return(
-                <div className="col-md-12 col-sm-12 col-xs-12 table-responsive" style={{overflowX: "visible"}}>
+                <div className="col-md-12 col-sm-12 col-xs-12 table-responsive table_container animated" style={{overflowX: "hide", height: this.props.tableHeight}}>
                     <table className="table table-bordered table-striped table-hover" id="resource_table" style={{overflowX: "visible"}}>
-                        <thead>
+                        <thead onClick={_.partial(this.props.showTable, "table.discrete")} className="pointer">
                         <tr>
                             <th className="col-md-12 col-sm-12 col-xs-12 text-center">Discrete Tracking</th>
                         </tr>
@@ -137,10 +137,10 @@ var Discrete = React.createClass({
                         <tr>
                             <td className="col-md-12 col-sm-12 col-xs-12">
 
-                                <div className="col-md-4 col-sm-3 col-xs-4 btn-group dropup">
+                                <div className="col-md-4 col-sm-3 col-xs-4 btn-group">
                                     <a className="btn btn-default" onClick={this.handleDisable}><i className="fa fa-th-large fa-fw"></i></a>
                                     <a className="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
-                                        <span className="fa fa-caret-up"></span></a>
+                                        <span className="fa fa-caret-down"></span></a>
                                     <ul className="dropdown-menu">
                                         <li><a onClick={self.handleEnable}><i className="fa fa-th-large fa-fw"></i> Enabled</a></li>
                                         <li><a onClick={self.handleDisable}><i className="fa fa-ban fa-fw"></i> Disabled</a></li>
@@ -262,7 +262,5 @@ var Discrete = React.createClass({
                 </div>
             );
         }
-        return(<div>Ciao</div>)
     }
 });
-

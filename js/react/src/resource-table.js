@@ -1,8 +1,15 @@
 var ResourceTable = React.createClass({
+    table: {
+        resource: "table.resource",
+        addResource: "table.addResource",
+        beacon: "table.beacon",
+        discrete: "table.discrete"
+    },
     getInitialState: function () {
         return {
             resourceData: [],
-            beaconData: []
+            beaconData: [],
+            tableOpen: this.table.resource
         };
     },
     componentDidMount: function () {
@@ -88,6 +95,14 @@ var ResourceTable = React.createClass({
     addResource: function(resource) {
         nutella.net.publish("location/resource/add", resource);
     },
+    showTable: function(table) {
+        if(this.state.tableOpen == table) {
+            this.setState({tableOpen: undefined});
+        }
+        else {
+            this.setState({tableOpen: table});
+        }
+    },
     render: function() {
         var self = this;
 
@@ -124,11 +139,31 @@ var ResourceTable = React.createClass({
             );
         });
 
+        var resourceTableHeight = "40px";
+        var addResourceTableHeight = "40px";
+        var beaconTableHeight = "40px";
+        var discreteTableHeight = "40px";
+
+        switch(this.state.tableOpen) {
+            case this.table.resource:
+                resourceTableHeight = "500px";
+                break;
+            case this.table.addResource:
+                addResourceTableHeight = "200px";
+                break;
+            case this.table.beacon:
+                beaconTableHeight = "500px";
+                break;
+            case this.table.discrete:
+                discreteTableHeight = "500px";
+                break;
+        }
+
         return(
             <div>
-                <div id="resource_table" className="col-md-12 table-responsive" style={{"overflowX": "scroll"}}>
+                <div className="col-md-12 table-responsive table_container animated" style={{"overflowX": "scroll", maxHeight: resourceTableHeight}}>
                     <table className="table table-bordered table-striped table-hover" id="resource_table">
-                        <thead>
+                        <thead onClick={_.partial(this.showTable, this.table.resource)} className="pointer">
                             <tr>
                                 <th className="col-md-12 col-sm-12 col-xs-12 text-center">Resources</th>
                             </tr>
@@ -138,10 +173,14 @@ var ResourceTable = React.createClass({
                         </tbody>
                     </table>
                 </div>
-                <ResourceAdd room={this.props.room}/>
-                <div id="beacon_table" className="col-md-12 table-responsive" style={{"overflowX": "scroll"}}>
+                <ResourceAdd room={this.props.room} tableHeight={addResourceTableHeight} showTable={this.showTable}/>
+                <div className="col-md-12 table-responsive table_container animated"
+                     style={{
+                        "overflowX": "scroll",
+                        maxHeight: beaconTableHeight
+                        }}>
                     <table className="table table-bordered table-striped table-hover" id="resource_table">
-                        <thead>
+                        <thead onClick={_.partial(this.showTable, this.table.beacon)} className="pointer">
                             <tr>
                                 <th className="col-md-12 col-sm-12 col-xs-12 text-center">Beacons</th>
                             </tr>
@@ -151,7 +190,7 @@ var ResourceTable = React.createClass({
                         </tbody>
                     </table>
                 </div>
-                <Discrete room={this.props.room}/>
+                <Discrete room={this.props.room} tableHeight={discreteTableHeight} showTable={this.showTable}/>
             </div>
         );
     }

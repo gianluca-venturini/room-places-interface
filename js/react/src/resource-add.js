@@ -108,9 +108,9 @@ var ResourceAdd = React.createClass({
             model = "icon-iBeacon";
 
         return(
-            <div className="col-md-12 col-sm-12 col-xs-12 table-responsive" style={{"overflowX": "visible"}}>
+            <div className="col-md-12 col-sm-12 col-xs-12 table-responsive table_container animated" style={{"overflowX": "hide", height: this.props.tableHeight}}>
                 <table className="table table-bordered table-striped table-hover" id="resource_table" style={{"overflowX": "visible"}}>
-                    <thead>
+                    <thead onClick={_.partial(this.props.showTable, "table.addResource")} className="pointer">
                         <tr>
                             <th className="col-md-12 col-sm-12 col-xs-12 text-center">Add resource</th>
                         </tr>
@@ -123,10 +123,10 @@ var ResourceAdd = React.createClass({
                                         <input type="text" className="form-control" placeholder="resource-id" value={this.state.name} onChange={this.handleChangeName}/>
                                     </div>
 
-                                    <div className="btn-group dropup">
+                                    <div className="btn-group">
                                         <a className="btn btn-default" href="#"><i className={"fa " + model + " fa-fw"}></i></a>
                                         <a className="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
-                                            <span className="fa fa-caret-up"></span>
+                                            <span className="fa fa-caret-down"></span>
                                         </a>
                                         <ul className="dropdown-menu">
                                             <li onClick={this.handleChangeModelIMAC}><a href="#"><i className="icon-iMac"></i> iMac</a></li>
@@ -136,10 +136,10 @@ var ResourceAdd = React.createClass({
                                         </ul>
                                     </div>
 
-                                    <div className="btn-group dropup">
+                                    <div className="btn-group">
                                         <a className="btn btn-default" href="#"><i className={"fa " + tracking + " fa-fw"}></i></a>
                                         <a className="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
-                                            <span className="fa fa-caret-up"></span>
+                                            <span className="fa fa-caret-down"></span>
                                         </a>
                                         <ul className="dropdown-menu">
                                             <li onClick={this.handleChangeTrackingContinuous}><a href="#"><i className="fa fa-arrows fa-fw"></i> Continuous</a></li>
@@ -149,7 +149,7 @@ var ResourceAdd = React.createClass({
                                         </ul>
                                     </div>
 
-                                    <div className="btn-group dropup" role="group">
+                                    <div className="btn-group" role="group">
                                         <div className="btn-group" role="group">
                                             <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                                 {type}

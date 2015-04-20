@@ -43,15 +43,8 @@ tbody td, thead th {
     vertical-align: middle;
 }
 
-#resource_table {
-    /*overflow-x: visible;*/
+.table_container {
     margin-top: 10px;
-    max-height: 500px;
-}
-
-#beacon_table {
-    margin-top: 10px;
-    max-height: 200px;
 }
 
 td.input-fill input {

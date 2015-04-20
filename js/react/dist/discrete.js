@@ -77,9 +77,9 @@ var Discrete = React.createClass({displayName: "Discrete",
 
         if(self.state.tracking == undefined) {
             return(
-                React.createElement("div", {className: "col-md-12 col-sm-12 col-xs-12 table-responsive", style: {overflowX: "visible"}}, 
+                React.createElement("div", {className: "col-md-12 col-sm-12 col-xs-12 table-responsive table_container animated", style: {overflowX: "hide", maxHeight: this.props.tableHeight}}, 
                     React.createElement("table", {className: "table table-bordered table-striped table-hover", id: "resource_table", style: {overflowX: "visible"}}, 
-                        React.createElement("thead", null, 
+                        React.createElement("thead", {onClick: _.partial(this.props.showTable, "table.discrete")}, 
                         React.createElement("tr", null, 
                             React.createElement("th", {className: "col-md-12 col-sm-12 col-xs-12 text-center"}, "Discrete Tracking")
                         )
@@ -88,10 +88,10 @@ var Discrete = React.createClass({displayName: "Discrete",
                         React.createElement("tr", null, 
                             React.createElement("td", {className: "col-md-12 col-sm-12 col-xs-12"}, 
 
-                                React.createElement("div", {className: "col-md-4 col-sm-4 col-xs-4 btn-group dropup"}, 
+                                React.createElement("div", {className: "col-md-4 col-sm-4 col-xs-4 btn-group"}, 
                                     React.createElement("a", {className: "btn btn-default", onClick: this.handleEnable}, React.createElement("i", {className: "fa fa-ban fa-fw"})), 
                                     React.createElement("a", {className: "btn btn-default dropdown-toggle", "data-toggle": "dropdown", href: "#"}, 
-                                        React.createElement("span", {className: "fa fa-caret-up"})), 
+                                        React.createElement("span", {className: "fa fa-caret-down"})), 
                                     React.createElement("ul", {className: "dropdown-menu"}, 
                                         React.createElement("li", null, React.createElement("a", {onClick: self.handleEnable}, React.createElement("i", {className: "fa fa-th-large fa-fw"}), " Enabled")), 
                                         React.createElement("li", null, React.createElement("a", {onClick: self.handleDisable}, React.createElement("i", {className: "fa fa-ban fa-fw"}), " Disabled"))
@@ -126,9 +126,9 @@ var Discrete = React.createClass({displayName: "Discrete",
             }
 
             return(
-                React.createElement("div", {className: "col-md-12 col-sm-12 col-xs-12 table-responsive", style: {overflowX: "visible"}}, 
+                React.createElement("div", {className: "col-md-12 col-sm-12 col-xs-12 table-responsive table_container animated", style: {overflowX: "hide", height: this.props.tableHeight}}, 
                     React.createElement("table", {className: "table table-bordered table-striped table-hover", id: "resource_table", style: {overflowX: "visible"}}, 
-                        React.createElement("thead", null, 
+                        React.createElement("thead", {onClick: _.partial(this.props.showTable, "table.discrete"), className: "pointer"}, 
                         React.createElement("tr", null, 
                             React.createElement("th", {className: "col-md-12 col-sm-12 col-xs-12 text-center"}, "Discrete Tracking")
                         )
@@ -137,10 +137,10 @@ var Discrete = React.createClass({displayName: "Discrete",
                         React.createElement("tr", null, 
                             React.createElement("td", {className: "col-md-12 col-sm-12 col-xs-12"}, 
 
-                                React.createElement("div", {className: "col-md-4 col-sm-3 col-xs-4 btn-group dropup"}, 
+                                React.createElement("div", {className: "col-md-4 col-sm-3 col-xs-4 btn-group"}, 
                                     React.createElement("a", {className: "btn btn-default", onClick: this.handleDisable}, React.createElement("i", {className: "fa fa-th-large fa-fw"})), 
                                     React.createElement("a", {className: "btn btn-default dropdown-toggle", "data-toggle": "dropdown", href: "#"}, 
-                                        React.createElement("span", {className: "fa fa-caret-up"})), 
+                                        React.createElement("span", {className: "fa fa-caret-down"})), 
                                     React.createElement("ul", {className: "dropdown-menu"}, 
                                         React.createElement("li", null, React.createElement("a", {onClick: self.handleEnable}, React.createElement("i", {className: "fa fa-th-large fa-fw"}), " Enabled")), 
                                         React.createElement("li", null, React.createElement("a", {onClick: self.handleDisable}, React.createElement("i", {className: "fa fa-ban fa-fw"}), " Disabled"))
@@ -262,7 +262,5 @@ var Discrete = React.createClass({displayName: "Discrete",
                 )
             );
         }
-        return(React.createElement("div", null, "Ciao"))
     }
 });
-
