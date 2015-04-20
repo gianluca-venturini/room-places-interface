@@ -598,9 +598,11 @@ var Map = function(mapId, room) {
                 d3.select(this)
                     .classed({"dragged": false});
 
-                d.y = y;
-
                 self.dragging = false;
+
+                nutella.net.publish("location/tracking/discrete/update", {
+                    tracking: self.discreteTracking
+                });
 
                 // Remove quotation
                 d.quotation.remove();
