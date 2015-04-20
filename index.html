@@ -19,6 +19,7 @@
     	<script src="js/lib/jquery-1.10.0.min.js"></script>
     	<script src="js/lib/bootstrap.min.js"></script>
 		<script src="js/lib/d3.v3.min.js" charset="utf-8"></script>
+		<script src="js/lib/underscore.js" charset="utf-8"></script>
 
 		<script src="js/position.js" charset="utf-8"></script>
 		<script src="js/map.js" charset="utf-8"></script>
@@ -39,10 +40,11 @@
 				
 		<!-- Scripts -->
 
-		<script type="text/jsx" src="js/react/resource.js"></script>
-		<script type="text/jsx" src="js/react/resource-table.js"></script>
-		<script type="text/jsx" src="js/react/resource-add.js"></script>
-		<script type="text/jsx" src="js/react/beacon.js"></script>
+		<script src="js/react/dist/resource.js"></script>
+		<script src="js/react/dist/resource-table.js"></script>
+		<script src="js/react/dist/resource-add.js"></script>
+		<script src="js/react/dist/beacon.js"></script>
+		<script src="js/react/dist/discrete.js"></script>
 		<!-- <script src="build/component.js"></script> -->
 
 		<!-- Your scripts here -->
@@ -51,18 +53,18 @@
 
 			var query_parameters = NUTELLA.parseURLParameters();
 
+            nutella = NUTELLA.init(query_parameters.broker, query_parameters.app_id, query_parameters.run_id, 'room-places-interface-map');
+
+            var room = Room();
+
+            var map = Map("#map", room);
+
 			var nutella = NUTELLA.init(query_parameters.broker, query_parameters.app_id, query_parameters.run_id, 'room-places-interface-react');
 
-			var room = Room();
-
-			React.render(
+            React.render(
 				<ResourceTable room={room}/>,
 				document.getElementById('resource')
 			);
-
-			nutella = NUTELLA.init(query_parameters.broker, query_parameters.app_id, query_parameters.run_id, 'room-places-interface-map');
-
-			var map = Map("#map", room);
 
 
 		</script>

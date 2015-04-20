@@ -28,7 +28,6 @@ var ResourceTable = React.createClass({
         }, 1000);
 
         // Wait for updated resources
-        /*
         nutella.net.subscribe("location/resources/updated", function(message) {
             var data = self.state.resourceData;
             data = data.filter(function(d) {
@@ -39,7 +38,6 @@ var ResourceTable = React.createClass({
             data = data.concat(message.resources)
             self.setState({resourceData: data});
         });
-        */
 
         // Wait for removed resources
         nutella.net.subscribe("location/resources/removed", function(message) {
@@ -153,6 +151,7 @@ var ResourceTable = React.createClass({
                         </tbody>
                     </table>
                 </div>
+                <Discrete room={this.props.room}/>
             </div>
         );
     }

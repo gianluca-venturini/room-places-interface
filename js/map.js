@@ -27,7 +27,18 @@ var Map = function(mapId, room) {
         proximity_range_stroke_color: "#056CF2",
         location_range_stroke_color_overlapped: "#c0392b",
         location_range_color_overlapped: "rgba(231, 76, 60, 0.5)",
-        resource_name_offset: 0.1
+        resource_name_offset: 0.1,
+        discrete_square_side: 0.07,
+        discrete_square_stroke: 0.01
+    };
+
+    self.constant = {
+        position: {
+            top_right: "position.top_right",
+            top_left: "position.top_left",
+            bottom_right: "position.bottom_right",
+            bottom_left: "position.bottom_left"
+        }
     };
 
     self.updateStyle = function(k) {
@@ -55,12 +66,18 @@ var Map = function(mapId, room) {
     // Contains all the resources data indexed with the RID
     self.resources = {};
 
+    // Contains the discrete tracking system or undefined if not enabled
+    self.discreteTracking = undefined;
+
     // Contains all the graphical resources indexed with the RID
     self.graphicResources = {};
 
+    // Tells if it is during dragging procedure
+    self.dragging = false;
+
     // Render the resources and keep track of them
     self.renderResources = function() {
-        self.renderStaticResources();
+        self.renderContinuousResources();
     };
 
     // Private variables
@@ -71,9 +88,11 @@ var Map = function(mapId, room) {
     var staticResourceLocationRangeBackgroundGroup = undefined;
     var resourceLocationNameGroup = undefined;
     var resourceLocationNumberGroup = undefined;
+    var discreteTrackingSystemGroup = undefined;
+    var discreteTrackingSystemSquareGroup = undefined;
 
     // Render the static resources with D3 and keep track of them
-    self.renderStaticResources = function() {
+    self.renderContinuousResources = function() {
 
         // Check for possible overlap in ranges
         self.checkOverlap();
@@ -98,6 +117,7 @@ var Map = function(mapId, room) {
                     .classed({"dragged": true});
 
                 d.dragged = true;
+                self.dragging = true;
 
                 self.renderResources();
             })
@@ -179,6 +199,7 @@ var Map = function(mapId, room) {
                     continuous.z = d.continuous.z;
 
                 d.dragged = false;
+                self.dragging = false;
 
                 // Remove quotation
                 d.quotation.remove();
@@ -193,7 +214,7 @@ var Map = function(mapId, room) {
         // Drag & drop behavior for proximity range
         var dragRange = d3.behavior.drag()
             .on("dragstart", function(d){
-
+                self.dragging = true;
             })
             .on("drag", function(d) {
 
@@ -219,6 +240,8 @@ var Map = function(mapId, room) {
                     });
             })
             .on("dragend", function(d) {
+
+                self.dragging = false;
 
                 // Update the resource on the server
                 if(d.proximity_range != undefined)
@@ -370,19 +393,6 @@ var Map = function(mapId, room) {
             .attr("fill", "black")
             .attr("cx", function(d) { return d.continuous.x; })
             .attr("cy", function(d) { return self.roomManager.y - d.continuous.y; })
-            /*
-            .on("mouseenter", function(d) {
-                if(d.dragged != true)
-                    d3.select(this)
-                        .transition()
-                        .attr("r", self.style.resource_radius_hover);
-            })
-            .on("mouseleave", function(d) {
-                d3.select(this)
-                    .transition()
-                    .attr("r", self.style.resource_radius);
-            })
-            */
             .call(drag);
 
         // Update resources that are already there
@@ -452,9 +462,7 @@ var Map = function(mapId, room) {
         resourceLocationNumberGroup.selectAll(".resource_location_number").remove();
         var resourceLocationNumber = resourceLocationNumberGroup.selectAll(".resource_location_number")
             .data(continuousResources);
-
-        console.log(continuousResources);
-
+        
         resourceLocationNumber
             .enter()
             .append("text")
@@ -475,8 +483,275 @@ var Map = function(mapId, room) {
 
     };
 
+    self.renderDiscreteTrackingSystem = function() {
+
+        if (self.discreteTracking == undefined) {
+            discreteTrackingSystemGroup.selectAll(".discreteTrackingSystemGroup").remove();
+            return;
+        }
+
+        // Drag & drop behavior for discrete tracking system squares
+        var squareDrag = d3.behavior.drag()
+            .on("dragstart", function(d){
+                d3.select(this)
+                    .classed({"dragged": true});
+
+                d.dragged = true;
+
+                self.renderResources();
+            })
+            .on("drag", function(d) {
+
+
+                // Add quotations
+                if(d.quotation != undefined)
+                    d.quotation.remove();
+
+                // X on the left
+                d.quotation = self.drawQuotation(
+                    0,
+                    d3.event.y,
+                    d3.event.x,
+                    d3.event.y,
+                    Position.bottom,
+                    0,
+                    d3.event.x.toPrecision(3),
+                    self.style.quotation_color);
+
+                // X on the right
+                d.quotation = self.drawQuotation(
+                    d3.event.x,
+                    d3.event.y,
+                    self.roomManager.x,
+                    d3.event.y,
+                    Position.bottom,
+                    0,
+                    (self.roomManager.x-d3.event.x).toPrecision(3),
+                    self.style.quotation_color,
+                    undefined,
+                    d.quotation);
+
+                // Y on the top
+                d.quotation = self.drawQuotation(
+                    d3.event.x,
+                    0,
+                    d3.event.x,
+                    d3.event.y,
+                    Position.left,
+                    0,
+                    d3.event.y.toPrecision(3),
+                    self.style.quotation_color,
+                    undefined,
+                    d.quotation);
+
+                // Y on the bottom
+                d.quotation = self.drawQuotation(
+                    d3.event.x,
+                    d3.event.y,
+                    d3.event.x,
+                    self.roomManager.y,
+                    Position.left,
+                    0,
+                    (self.roomManager.y - d3.event.y).toPrecision(3),
+                    self.style.quotation_color,
+                    undefined,
+                    d.quotation);
+
+                switch(d.position) {
+                    case self.constant.position.bottom_left:
+                        self.discreteTracking.width += self.discreteTracking.x - d3.event.x;
+                        self.discreteTracking.height += d3.event.y - (self.roomManager.y - self.discreteTracking.y);
+                        self.discreteTracking.x = d3.event.x;
+                        self.discreteTracking.y = self.roomManager.y - d3.event.y;
+                        break;
+                    case self.constant.position.bottom_right:
+                        self.discreteTracking.width -= self.discreteTracking.x + self.discreteTracking.width - d3.event.x;
+                        self.discreteTracking.height += d3.event.y - (self.roomManager.y - self.discreteTracking.y);
+                        self.discreteTracking.y = self.roomManager.y - d3.event.y;
+                        break;
+                    case self.constant.position.top_left:
+                        self.discreteTracking.width += self.discreteTracking.x - d3.event.x;
+                        self.discreteTracking.height -= d3.event.y - (self.roomManager.y - (self.discreteTracking.y + self.discreteTracking.height));
+                        self.discreteTracking.x = d3.event.x;
+                        break;
+                    case self.constant.position.top_right:
+                        self.discreteTracking.width -= self.discreteTracking.x + self.discreteTracking.width - d3.event.x;
+                        self.discreteTracking.height -= d3.event.y - (self.roomManager.y - (self.discreteTracking.y + self.discreteTracking.height));
+                        break;
+                }
+
+                if(self.discreteTracking.width < 0){
+                    self.discreteTracking.width = 0;
+                }
+
+                if(self.discreteTracking.height < 0){
+                    self.discreteTracking.height = 0;
+                }
+
+                self.renderDiscreteTrackingSystem();
+
+            })
+            .on("dragend", function(d){
+                var x = parseFloat(d3.select(this).attr("x"));
+                var y = self.roomManager.y - parseFloat(d3.select(this).attr("y"));
+
+                d3.select(this)
+                    .classed({"dragged": false});
+
+                d.y = y;
+
+                self.dragging = false;
+
+                // Remove quotation
+                d.quotation.remove();
+
+            });
+
+        // Draw the lines of the discrete tracking system
+        var lines = [];
+        var squares = [];
+
+        // Calculate the coordinates for the horizontal lines
+        for (i = 0; i <= self.discreteTracking.n_y; i++) {
+            lines.push({
+                source: {
+                    x: self.discreteTracking.x,
+                    y: self.discreteTracking.y +
+                    self.discreteTracking.height / self.discreteTracking.n_y * i
+                },
+                destination: {
+                    x: self.discreteTracking.x + self.discreteTracking.width,
+                    y: self.discreteTracking.y +
+                    self.discreteTracking.height / self.discreteTracking.n_y * i
+                }
+            });
+        }
+
+        // Calculate the coordinates for the vertical lines
+        for (i = 0; i <= self.discreteTracking.n_x; i++) {
+            lines.push({
+                source: {
+                    x: self.discreteTracking.x +
+                    self.discreteTracking.width / self.discreteTracking.n_x * i,
+                    y: self.discreteTracking.y
+                },
+                destination: {
+                    x: self.discreteTracking.x +
+                    self.discreteTracking.width / self.discreteTracking.n_x * i,
+                    y: self.discreteTracking.y +
+                    self.discreteTracking.height
+                }
+            });
+        }
+
+        // Calculate the coordinates for the corners
+        squares.push({
+            x: self.discreteTracking.x,
+            y: self.discreteTracking.y,
+            position: self.constant.position.bottom_left
+        });
+        squares.push({
+            x: self.discreteTracking.x + self.discreteTracking.width,
+            y: self.discreteTracking.y,
+            position: self.constant.position.bottom_right
+        });
+        squares.push({
+            x: self.discreteTracking.x,
+            y: self.discreteTracking.y + self.discreteTracking.height,
+            position: self.constant.position.top_left
+        });
+        squares.push({
+            x: self.discreteTracking.x + self.discreteTracking.width,
+            y: self.discreteTracking.y + self.discreteTracking.height,
+            position: self.constant.position.top_right
+        });
+
+        // Lines
+        var linesSelection = discreteTrackingSystemGroup.selectAll("line")
+            .data(lines);
+
+        linesSelection.enter()
+            .append("line")
+            .attr("x1", function (d) {
+                return d.source.x
+            })
+            .attr("y1", function (d) {
+                return self.roomManager.y - d.source.y
+            })
+            .attr("x2", function (d) {
+                return d.destination.x
+            })
+            .attr("y2", function (d) {
+                return self.roomManager.y - d.destination.y
+            })
+            .style("stroke", "#000000")
+            .style("stroke-width", self.style.stroke);
+
+        linesSelection
+            .attr("x1", function (d) {
+                return d.source.x
+            })
+            .attr("y1", function (d) {
+                return self.roomManager.y - d.source.y
+            })
+            .attr("x2", function (d) {
+                return d.destination.x
+            })
+            .attr("y2", function (d) {
+                return self.roomManager.y - d.destination.y
+            })
+            .style("stroke", "#000000")
+            .style("stroke-width", self.style.stroke);
+
+        linesSelection
+            .exit()
+            .remove();
+
+        // Squares
+        var squareSelection = discreteTrackingSystemSquareGroup.selectAll(".square")
+            .data(squares);
+
+        squareSelection.enter()
+            .append("rect")
+            .classed({"square": true, "pointer": true})
+            .attr("x", function (square) {
+                return square.x - self.style.discrete_square_side / 2;
+            })
+            .attr("y", function (square) {
+                return self.roomManager.y - (square.y + self.style.discrete_square_side / 2);
+            })
+            .attr("width", function (square) {
+                return self.style.discrete_square_side;
+            })
+            .attr("height", function (square) {
+                return self.style.discrete_square_side;
+            })
+            .attr("stroke-width", this.style.discrete_square_stroke)
+            .attr("stroke", "#000")
+            .attr("fill", "#fff")
+            .call(squareDrag);
+
+        squareSelection
+            .attr("x", function (square) {
+                return square.x - self.style.discrete_square_side / 2;
+            })
+            .attr("y", function (square) {
+                return self.roomManager.y - (square.y + self.style.discrete_square_side / 2);
+            })
+            .attr("width", function (square) {
+                return self.style.discrete_square_side;
+            })
+            .attr("height", function (square) {
+                return self.style.discrete_square_side;
+            });
+
+        squareSelection.exit()
+            .remove();
+    };
+
     // Render the map from the beginning
     self.render = function() {
+
         var height = self.roomManager.y + self.size.margin_top  + self.size.margin_bottom;
         var width  = self.roomManager.x + self.size.margin_left + self.size.margin_right;
 
@@ -507,14 +782,13 @@ var Map = function(mapId, room) {
                 .append("use")
                 .attr({"xlink:href": "#rect"});
 
-
-
         self.room.clip = self.room.append("g")
             .attr("clip-path", "url(#clip)");
 
+        self.room.unclip = self.room.append("g");
 
         // Rectangle that represent the room
-        self.rect = self.room.append("rect")
+        self.rect = self.room.unclip.append("rect")
             .attr("x", 0)
             .attr("y", 0)
             .attr("width", self.roomManager.x)
@@ -553,7 +827,10 @@ var Map = function(mapId, room) {
         proximityResourceRangeTextGroup = self.room.clip.append("g").attr("class", "proximityResourceRangeTextGroup");
         staticResourceLocationGroup = self.room.clip.append("g").attr("class", "staticResourceLocationGroup");
         resourceLocationNumberGroup = self.room.clip.append("g").attr("class", "resourceLocationNumberGroup");
+        discreteTrackingSystemGroup = self.room.clip.append("g").attr("class", "discreteTrackingSystemGroup");
+        discreteTrackingSystemSquareGroup = self.room.unclip.append("g").attr("class", "discreteTrackingSystemSquareGroup");
 
+        self.renderDiscreteTrackingSystem();
         self.renderResources();
     };
 
@@ -597,7 +874,7 @@ var Map = function(mapId, room) {
 
         var quotation;
         if(quotationObject == undefined) {
-            quotation = self.room.append("g");
+            quotation = self.room.unclip.append("g");
         }
         else {
             quotation = quotationObject;
@@ -754,6 +1031,7 @@ var Map = function(mapId, room) {
 
 
     self.init = function() {
+
         self.svg = d3.select(mapId);
 
         self.updateStyle(1);
@@ -812,6 +1090,27 @@ var Map = function(mapId, room) {
             //self.renderResources();
         });
 
+        // Update disctete tracking system
+        nutella.net.subscribe("location/tracking/discrete/updated", function(message) {
+            var tracking = message["tracking"];
+            if(_.isEmpty(tracking)) {
+                tracking = undefined;
+            }
+            self.discreteTracking = tracking;
+            self.render();
+        });
+
+
+        // Download discrete tracking system if present
+        nutella.net.request("location/tracking/discrete", {}, function(reply) {
+            var tracking = reply["tracking"];
+            if(_.isEmpty(tracking)){
+                tracking = undefined;
+            }
+            self.discreteTracking = tracking;
+            self.render();
+        });
+
         // Update the whole map
         room.observers.push(function() {
 
@@ -823,7 +1122,11 @@ var Map = function(mapId, room) {
         });
 
         // Update resources position once a second
-        setInterval(self.renderResources, 1000);
+        setInterval( function() {
+            if(self.dragging == false) {
+                self.renderResources();
+            }
+        }, 200);
 
     }();
 

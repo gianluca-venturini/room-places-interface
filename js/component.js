@@ -334,8 +334,6 @@ var ResourceTable = React.createClass({
 		var x = this.props.room.x / 2;
 		var y = this.props.room.y / 2;
 
-		console.log("type " + type);
-
 		var message;
 
 		switch(type) {
@@ -363,7 +361,6 @@ var ResourceTable = React.createClass({
 		// Order the resource list
 		var resources = this.state.resourceData;
 		resources = resources.sort(function(a, b) {return a.rid.localeCompare(b.rid)});
-		console.log(resources);
 
 		var staticResourcesData = resources.filter(function(resource) { return resource.type == "STATIC"});
 		var dynamicResourcesData = resources.filter(function(resource) { return resource.type == "DYNAMIC"});

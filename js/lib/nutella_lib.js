@@ -3582,7 +3582,6 @@ var LocationSubModule = function(main_nutella) {
 
     // Download all resources
     this.nutella.net.request("location/resources", {}, function(reply) {
-        console.log(reply);
         self._resources = reply.resources;
         this._initialized = true;
     });
