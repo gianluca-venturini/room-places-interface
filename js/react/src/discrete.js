@@ -77,9 +77,9 @@ var Discrete = React.createClass({
 
         if(self.state.tracking == undefined) {
             return(
-                <div className="col-md-12 col-sm-12 col-xs-12 table-responsive table_container animated" style={{overflowX: "hide", maxHeight: this.props.tableHeight}}>
+                <div className="col-md-12 col-sm-12 col-xs-12 table-responsive table_container animated" style={{overflowX: "hide", height: this.props.tableHeight}}>
                     <table className="table table-bordered table-striped table-hover" id="resource_table" style={{overflowX: "visible"}}>
-                        <thead onClick={_.partial(this.props.showTable, "table.discrete")} >
+                        <thead onClick={_.partial(this.props.showTable, "table.discrete")} className="pointer">
                         <tr>
                             <th className="col-md-12 col-sm-12 col-xs-12 text-center">Discrete Tracking</th>
                         </tr>
