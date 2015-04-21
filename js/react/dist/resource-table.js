@@ -28,11 +28,13 @@ var ResourceTable = React.createClass({displayName: "ResourceTable",
             self.setState({resourceData: data});
         });
 
+        /*
         setInterval(function() {
             nutella.net.request("location/resources", {}, function(reply) {
                 self.setState({resourceData: reply.resources});
             });
         }, 1000);
+        */
 
         // Wait for updated resources
         nutella.net.subscribe("location/resources/updated", function(message) {
@@ -42,7 +44,7 @@ var ResourceTable = React.createClass({displayName: "ResourceTable",
                         return r.rid;
                     })) == -1;
             });
-            data = data.concat(message.resources)
+            data = data.concat(message.resources);
             self.setState({resourceData: data});
         });
 

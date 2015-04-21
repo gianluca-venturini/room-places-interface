@@ -15,29 +15,44 @@ var Resource = React.createClass({
     handleUpdateParameters: function() {
         var resource = this.props.resource;
         delete resource["parameters"];
+
         if(resource.continuous != undefined) {
             if(resource.continuous.x != undefined) {
                 var number = parseFloat($("#"+this.props.resource.rid+"_parameter_x").text());
                 if(!isNaN(number))
                     resource.continuous.x = number;
-                else {
-                    $("#" + this.props.resource.rid + "_parameter_x").text("s");
-                }
             }
             if(resource.continuous.y != undefined) {
                 var number = parseFloat($("#"+this.props.resource.rid+"_parameter_y").text());
                 if(!isNaN(number))
                     resource.continuous.y = number;
-                else
-                    $("#"+this.props.resource.rid+"_parameter_y").text(resource.continuous.y);
             }
-            if(resource.proximity_range != undefined) {
-                var number = parseFloat($("#"+this.props.resource.rid+"_parameter_proximity").text());
+        }
+
+        if(resource.discrete != undefined) {
+            if(resource.discrete.x != undefined) {
+                var value = $("#"+this.props.resource.rid+"_parameter_x").text();
+                var number = parseFloat(value);
                 if(!isNaN(number))
-                    resource.proximity_range = number;
-                else
-                    $("#"+this.props.resource.rid+"_parameter_proximity").text(resource.proximity_range);
+                    resource.discrete.x = number;
+                else if(value.length > 0)
+                    resource.discrete.x = value;
             }
+            if(resource.discrete.y != undefined) {
+                var number = parseFloat($("#"+this.props.resource.rid+"_parameter_y").text());
+                if(!isNaN(number))
+                    resource.discrete.y = number;
+                else if(value.length > 0)
+                    resource.discrete.y = value;
+            }
+        }
+
+        if(resource.proximity_range != undefined) {
+            var number = parseFloat($("#"+this.props.resource.rid+"_parameter_proximity").text());
+            if(!isNaN(number))
+                resource.proximity_range = number;
+            else
+                $("#"+this.props.resource.rid+"_parameter_proximity").text(resource.proximity_range);
         }
         this.props.updateResource(resource);
     },
@@ -174,6 +189,31 @@ var Resource = React.createClass({
                  parameters.push({key: "y", value: parseFloat(this.props.resource.continuous.y).toFixed(2)});
              }
          }
+
+        if(this.props.resource.discrete != undefined ) {
+
+            if(this.props.resource.discrete.x != undefined) {
+                var value = this.props.resource.discrete.x;
+
+                if(!isNaN(parseInt(value))) {
+                    // Reduce precision
+                    value = parseInt(value);
+                }
+
+                parameters.push({key: "x", value: value});
+            }
+
+            if(this.props.resource.discrete.y != undefined) {
+                var value = this.props.resource.discrete.y;
+
+                if(!isNaN(parseInt(value))) {
+                    // Reduce precision
+                    value = parseInt(value);
+                }
+
+                parameters.push({key: "y", value: value});
+            }
+        }
 
          if(this.props.resource.proximity_range != undefined) {
              parameters.push({key: "proximity", value: parseFloat(this.props.resource.proximity_range).toFixed(2)});
