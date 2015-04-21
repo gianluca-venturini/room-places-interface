@@ -77,7 +77,7 @@ var Map = function(mapId, room) {
 
     // Render the resources and keep track of them
     self.renderResources = function() {
-        self.renderContinuousResources();
+        self.renderResources();
     };
 
     // Private variables
@@ -92,21 +92,29 @@ var Map = function(mapId, room) {
     var discreteTrackingSystemSquareGroup = undefined;
 
     // Render the static resources with D3 and keep track of them
-    self.renderContinuousResources = function() {
+    self.renderResources = function() {
 
         // Check for possible overlap in ranges
         self.checkOverlap();
 
         var continuousResources = [];
+        var discreteResources = [];
         var proximityResources = [];
 
         for(var r in self.resources) {
-            if(self.resources[r].continuous != undefined)
+            if(self.resources[r].continuous != undefined) {
                 continuousResources.push(self.resources[r]);
-            if(self.resources[r].proximity != undefined &&
+            }
+            else if(self.resources[r].discrete != undefined) {
+                if(self.discreteTracking != undefined) {
+                    discreteResources.push(self.resources[r]);
+                }
+            }
+            else if(self.resources[r].proximity != undefined &&
                 self.resources[r].proximity.rid != undefined &&
-                self.resources[r].proximity.distance != undefined)
+                self.resources[r].proximity.distance != undefined) {
                 proximityResources.push(self.resources[r]);
+            }
         }
 
         // Drag & drop behavior for resources
@@ -122,9 +130,12 @@ var Map = function(mapId, room) {
                 self.renderResources();
             })
             .on("drag", function(d) {
+
+                var x, y;
+
                 d3.select(this)
-                    .attr("cx", d.continuous.x = d3.event.x)
-                    .attr("cy", d.continuous.y = d3.event.y);
+                    .attr("cx", x = d3.event.x)
+                    .attr("cy", y = d3.event.y);
 
                 // Add quotations
                 if(d.quotation != undefined)
@@ -133,70 +144,75 @@ var Map = function(mapId, room) {
                 // X on the left
                 d.quotation = self.drawQuotation(
                     0,
-                    d.continuous.y,
-                    d.continuous.x,
-                    d.continuous.y,
+                    y,
+                    x,
+                    y,
                     Position.bottom,
                     0,
-                    d.continuous.x.toPrecision(3),
+                    x.toPrecision(3),
                     self.style.quotation_color);
 
                 // X on the right
                 d.quotation = self.drawQuotation(
-                    d.continuous.x,
-                    d.continuous.y,
+                    x,
+                    y,
                     self.roomManager.x,
-                    d.continuous.y,
+                    y,
                     Position.bottom,
                     0,
-                    (self.roomManager.x-d.continuous.x).toPrecision(3),
+                    (self.roomManager.x-x).toPrecision(3),
                     self.style.quotation_color,
                     undefined,
                     d.quotation);
 
                 // Y on the top
                 d.quotation = self.drawQuotation(
-                    d.continuous.x,
+                    x,
                     0,
-                    d.continuous.x,
-                    d.continuous.y,
+                    x,
+                    y,
                     Position.left,
                     0,
-                    d.continuous.y.toPrecision(3),
+                    y.toPrecision(3),
                     self.style.quotation_color,
                     undefined,
                     d.quotation);
 
                 // Y on the bottom
                 d.quotation = self.drawQuotation(
-                    d.continuous.x,
-                    d.continuous.y,
-                    d.continuous.x,
+                    x,
+                    y,
+                    x,
                     self.roomManager.y,
                     Position.left,
                     0,
-                    (self.roomManager.y-d.continuous.y).toPrecision(3),
+                    (self.roomManager.y-y).toPrecision(3),
                     self.style.quotation_color,
                     undefined,
                     d.quotation);
 
                 // Recalculate y
-                d.continuous.y = self.roomManager.y - d.continuous.y;
+                y = self.roomManager.y - y;
 
+
+                 if(d.continuous != undefined) {
+                    d.continuous = {x: x, y: y};
+                 }
+                 else if(d.discrete != undefined) {
+                    d.discrete = self.continuousToDiscrete({x: x, y: y});
+                 }
 
             })
             .on("dragend", function(d){
-                var x = parseFloat(d3.select(this).attr("cx"));
-                var y = self.roomManager.y - parseFloat(d3.select(this).attr("cy"));
+                //var x = parseFloat(d3.select(this).attr("cx"));
+                //var y = self.roomManager.y - parseFloat(d3.select(this).attr("cy"));
 
                 d3.select(this)
                     .classed({"dragged": false});
 
-                d.continuous.y = y;
+                //d.continuous.y = y;
 
-                var continuous = {x: x, y: y};
-                if(d.continuous.z != null)
-                    continuous.z = d.continuous.z;
+                //var continuous = {x: x, y: y};
 
                 d.dragged = false;
                 self.dragging = false;
@@ -207,8 +223,14 @@ var Map = function(mapId, room) {
                 // Rend all resources
                 self.renderResources();
 
-                // Update the resource on the server
-                nutella.net.publish("location/resource/update", {rid: d.rid, continuous: continuous});
+                if(d.continuous != undefined) {
+                    // Update the resource on the server
+                    nutella.net.publish("location/resource/update", {rid: d.rid, continuous: d.continuous});
+                }
+                else if(d.discrete != undefined) {
+                    // Update the resource on the server
+                    nutella.net.publish("location/resource/update", {rid: d.rid, discrete: d.discrete});
+                }
             });
 
         // Drag & drop behavior for proximity range
@@ -218,11 +240,23 @@ var Map = function(mapId, room) {
             })
             .on("drag", function(d) {
 
+                var x = 0;
+                var y = 0;
+
+                if(d.continuous != undefined) {
+                    x = d.continuous.x;
+                    y = d.continuous.y;
+                }
+                else if(d.discrete != undefined) {
+                    x = self.discreteToContinuous(d.discrete).x;
+                    y = self.discreteToContinuous(d.discrete).y;
+                }
+
                 // Calculate the new range
                 if(d.proximity_range != undefined)
                     d.proximity_range = Math.sqrt(
-                            Math.pow(d3.event.x - d.continuous.x, 2)+
-                            Math.pow(d3.event.y - (self.roomManager.y - d.continuous.y), 2)
+                            Math.pow(d3.event.x - x, 2)+
+                            Math.pow(d3.event.y - (self.roomManager.y - y), 2)
                         );
 
                 // Update graphically the range
@@ -243,20 +277,27 @@ var Map = function(mapId, room) {
 
                 self.dragging = false;
 
-                // Update the resource on the server
-                if(d.proximity_range != undefined)
+                if(d.proximity_range != undefined && d.continuous != undefined) {
                     nutella.net.publish("location/resource/update", {
                         rid: d.rid,
                         proximity_range: d.proximity_range,
                         continuous: d.continuous
                     });
+                }
+                else if(d.proximity_range != undefined && d.discrete != undefined) {
+                    nutella.net.publish("location/resource/update", {
+                        rid: d.rid,
+                        proximity_range: d.proximity_range,
+                        discrete: d.discrete
+                    });
+                }
             });
 
         // Continuous resources
 
         // Resource D3 object
         var resourceLocation = staticResourceLocationGroup.selectAll(".resource_location")
-            .data(continuousResources);
+            .data(continuousResources.concat(discreteResources));
 
         // Resource range D3 object
         var resourceLocationRange = staticResourceLocationRangeGroup.selectAll(".resource_location_range")
@@ -268,7 +309,7 @@ var Map = function(mapId, room) {
 
         // Resource name (RID)
         var resourceLocationName = resourceLocationNameGroup.selectAll(".resource_location_name")
-            .data(continuousResources);
+            .data(continuousResources.concat(discreteResources));
 
         resourceLocationRangeBackground
             .enter()
@@ -368,16 +409,60 @@ var Map = function(mapId, room) {
         resourceLocationName
             .enter()
             .append("text")
-            .attr("x", function(d) { return d.continuous.x; })
-            .attr("y", function(d) { return (self.roomManager.y - d.continuous.y) - self.style.resource_name_offset; })
+            .attr("x", function(d) {
+                var x = 0;
+
+                if(d.continuous != undefined) {
+                    x = d.continuous.x;
+                }
+                else if(d.discrete != undefined) {
+                    x = self.discreteToContinuous(d.discrete).x;
+                }
+
+                return x;
+            })
+            .attr("y", function(d) {
+                var y = 0;
+
+                if(d.continuous != undefined) {
+                    y = d.continuous.y;
+                }
+                else if(d.discrete != undefined) {
+                    y = self.discreteToContinuous(d.discrete).y;
+                }
+
+                return (self.roomManager.y - y)- self.style.resource_name_offset;
+            })
             .attr("class", "resource_location_name")
             .attr("text-anchor", "middle")
             .attr("fill", function(d) { if(d.dragged == true) return "none"; else return "black";})
             .attr("font-size", self.style.resource_name_font);
 
         resourceLocationName
-            .attr("x", function(d) { return d.continuous.x; })
-            .attr("y", function(d) { return (self.roomManager.y - d.continuous.y) - self.style.resource_name_offset; })
+            .attr("x", function(d) {
+                var x = 0;
+
+                if(d.continuous != undefined) {
+                    x = d.continuous.x;
+                }
+                else if(d.discrete != undefined) {
+                    x = self.discreteToContinuous(d.discrete).x;
+                }
+
+                return x;
+            })
+            .attr("y", function(d) {
+                var y = 0;
+
+                if(d.continuous != undefined) {
+                    y = d.continuous.y;
+                }
+                else if(d.discrete != undefined) {
+                    y = self.discreteToContinuous(d.discrete).y;
+                }
+
+                return (self.roomManager.y - y)- self.style.resource_name_offset;
+            })
             .attr("fill", function(d) { if(d.dragged == true) return "none"; else return "black";})
             .text(function(d) { return d.rid; });
 
@@ -391,16 +476,60 @@ var Map = function(mapId, room) {
             .attr("class", "resource_location pointer")
             .attr("r", self.style.resource_radius)
             .attr("fill", "black")
-            .attr("cx", function(d) { return d.continuous.x; })
-            .attr("cy", function(d) { return self.roomManager.y - d.continuous.y; })
+            .attr("cx", function(d) {
+                var x = 0;
+
+                if(d.continuous != undefined) {
+                    x = d.continuous.x;
+                }
+                else if(d.discrete != undefined) {
+                    x = self.discreteToContinuous(d.discrete).x;
+                }
+
+                return x;
+            })
+            .attr("cy", function(d) {
+                var y = 0;
+
+                if(d.continuous != undefined) {
+                    y = d.continuous.y;
+                }
+                else if(d.discrete != undefined) {
+                    y = self.discreteToContinuous(d.discrete).y;
+                }
+
+                return self.roomManager.y - y;
+            })
             .call(drag);
 
         // Update resources that are already there
         resourceLocation
             .transition()
             .attr("r", self.style.resource_radius)
-            .attr("cx", function(d) { return d.continuous.x; })
-            .attr("cy", function(d) { return self.roomManager.y - d.continuous.y; });
+            .attr("cx", function(d) {
+                var x = 0;
+
+                if(d.continuous != undefined) {
+                    x = d.continuous.x;
+                }
+                else if(d.discrete != undefined) {
+                    x = self.discreteToContinuous(d.discrete).x;
+                }
+
+                return x;
+            })
+            .attr("cy", function(d) {
+                var y = 0;
+
+                if(d.continuous != undefined) {
+                    y = d.continuous.y;
+                }
+                else if(d.discrete != undefined) {
+                    y = self.discreteToContinuous(d.discrete).y;
+                }
+
+                return self.roomManager.y - y;
+            });
 
         resourceLocation.exit().remove();
 
@@ -1031,6 +1160,69 @@ var Map = function(mapId, room) {
         }
     };
 
+    self.discreteToContinuous = function(discrete) {
+
+        if(self.discreteTracking == undefined) {
+            return undefined;
+        }
+
+        var x = discrete.x;
+        var y = discrete.y;
+
+        var continuous = {x, undefined, y: undefined};
+
+        if(typeof discrete.x == "string") {
+            x = x.charCodeAt(0) - "a".charCodeAt(0);
+        }
+        if(typeof discrete.y == "string") {
+            y = y.charCodeAt(0) - "a".charCodeAt(0);
+        }
+
+        continuous.x = self.discreteTracking.x +
+            (self.discreteTracking.width / self.discreteTracking.n_x) * x +
+            (self.discreteTracking.width / self.discreteTracking.n_x) / 2;
+
+        continuous.y = self.discreteTracking.y +
+            (self.discreteTracking.height / self.discreteTracking.n_y) * y +
+            (self.discreteTracking.height / self.discreteTracking.n_y) / 2;
+
+        return continuous;
+
+    };
+
+    self.continuousToDiscrete = function(continuous) {
+
+        if(self.discreteTracking == undefined) {
+            return undefined;
+        }
+
+        var x = continuous.x;
+        var y = continuous.y;
+
+        var discrete = {x: undefined, y: undefined};
+
+        discrete.x = Math.floor(
+            (continuous.x - self.discreteTracking.x) /
+            (self.discreteTracking.width / self.discreteTracking.n_x)
+        );
+
+        discrete.y = Math.floor(
+            (continuous.y - self.discreteTracking.y) /
+            (self.discreteTracking.height / self.discreteTracking.n_y)
+        );
+
+        // Translate in letters if necessary
+        if(self.discreteTracking.t_x == "LETTER") {
+            discrete.x = String.fromCharCode("a".charCodeAt(0) + discrete.x);
+        }
+        if(self.discreteTracking.t_y == "LETTER") {
+            discrete.y = String.fromCharCode("a".charCodeAt(0) + discrete.y);
+        }
+
+
+        return discrete;
+    };
+
 
     self.init = function() {
 
@@ -1044,7 +1236,8 @@ var Map = function(mapId, room) {
         nutella.net.request("location/resources", {}, function(reply) {
             for(var r in reply.resources) {
                 var resource = reply.resources[r];
-                if(resource["continuous"] != null  ||
+                if(resource["continuous"] != null ||
+                    resource["discrete"] != null  ||
                     resource["proximity"] != null) {
                     self.resources[resource.rid] = resource;
                 }
@@ -1060,6 +1253,7 @@ var Map = function(mapId, room) {
             for(var r in resources) {
                 var resource = resources[r];
                 if(resource["continuous"] != null ||
+                    resource["discrete"] != null  ||
                     resource["proximity"] != null) {
                     self.resources[resource.rid] = resource;
                     changed = true;
