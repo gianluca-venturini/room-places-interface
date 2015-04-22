@@ -301,11 +301,11 @@ var Map = function(mapId, room) {
 
         // Resource range D3 object
         var resourceLocationRange = staticResourceLocationRangeGroup.selectAll(".resource_location_range")
-            .data(continuousResources);
+            .data(continuousResources.concat(discreteResources));
 
         // Resource range background D3 object
         var resourceLocationRangeBackground = staticResourceLocationRangeBackgroundGroup.selectAll(".resource_location_range_background")
-            .data(continuousResources);
+            .data(continuousResources.concat(discreteResources));
 
         // Resource name (RID)
         var resourceLocationName = resourceLocationNameGroup.selectAll(".resource_location_name")
@@ -330,8 +330,30 @@ var Map = function(mapId, room) {
 
         // Update resources that are already there
         resourceLocationRangeBackground
-            .attr("cx", function(d) { return d.continuous.x; })
-            .attr("cy", function(d) { return self.roomManager.y - d.continuous.y; })
+            .attr("cx", function(d) {
+                var x = 0;
+
+                if(d.continuous != undefined) {
+                    x = d.continuous.x;
+                }
+                else if(d.discrete != undefined) {
+                    x = self.discreteToContinuous(d.discrete).x;
+                }
+
+                return x;
+            })
+            .attr("cy", function(d) {
+                var y = 0;
+
+                if(d.continuous != undefined) {
+                    y = d.continuous.y;
+                }
+                else if(d.discrete != undefined) {
+                    y = self.discreteToContinuous(d.discrete).y;
+                }
+
+                return self.roomManager.y - y;
+            })
             .attr("fill", function(d) {
                 if(d.overlapped == true) {
                     return self.style.location_range_color_overlapped;
@@ -375,14 +397,58 @@ var Map = function(mapId, room) {
                 return self.style.location_range_stroke_color;
             } )
             .attr("stroke-width", self.style.resource_range_stroke)
-            .attr("cx", function(d) { return d.continuous.x; })
-            .attr("cy", function(d) { return self.roomManager.y - d.continuous.y; })
+            .attr("cx", function(d) {
+                var x = 0;
+
+                if(d.continuous != undefined) {
+                    x = d.continuous.x;
+                }
+                else if(d.discrete != undefined) {
+                    x = self.discreteToContinuous(d.discrete).x;
+                }
+
+                return x;
+            })
+            .attr("cy", function(d) {
+                var y = 0;
+
+                if(d.continuous != undefined) {
+                    y = d.continuous.y;
+                }
+                else if(d.discrete != undefined) {
+                    y = self.discreteToContinuous(d.discrete).y;
+                }
+
+                return self.roomManager.y - y;
+            })
             .call(dragRange);
 
         // Update resources that are already there
         resourceLocationRange
-            .attr("cx", function(d) { return d.continuous.x; })
-            .attr("cy", function(d) { return self.roomManager.y - d.continuous.y; })
+            .attr("cx", function(d) {
+                var x = 0;
+
+                if(d.continuous != undefined) {
+                    x = d.continuous.x;
+                }
+                else if(d.discrete != undefined) {
+                    x = self.discreteToContinuous(d.discrete).x;
+                }
+
+                return x;
+            })
+            .attr("cy", function(d) {
+                var y = 0;
+
+                if(d.continuous != undefined) {
+                    y = d.continuous.y;
+                }
+                else if(d.discrete != undefined) {
+                    y = self.discreteToContinuous(d.discrete).y;
+                }
+
+                return self.roomManager.y - y;
+            })
             .attr("stroke", function(d) {
                 if(d.overlapped == true) {
                     return self.style.location_range_stroke_color_overlapped;
