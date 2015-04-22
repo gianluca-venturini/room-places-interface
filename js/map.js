@@ -27,7 +27,7 @@ var Map = function(mapId, room) {
         proximity_range_stroke_color: "#056CF2",
         location_range_stroke_color_overlapped: "#c0392b",
         location_range_color_overlapped: "rgba(231, 76, 60, 0.5)",
-        resource_name_offset: 0.1,
+        resource_name_offset: 0.07,
         discrete_square_side: 0.07,
         discrete_square_stroke: 0.01
     };
@@ -113,7 +113,12 @@ var Map = function(mapId, room) {
             else if(self.resources[r].proximity != undefined &&
                 self.resources[r].proximity.rid != undefined &&
                 self.resources[r].proximity.distance != undefined) {
-                proximityResources.push(self.resources[r]);
+                if(self.resources[r].proximity.continuous != undefined) {
+                    proximityResources.push(self.resources[r]);
+                }
+                else if(self.resources[r].proximity.discrete != undefined && self.discreteTracking != undefined) {
+                    proximityResources.push(self.resources[r]);
+                }
             }
         }
 
@@ -534,7 +539,7 @@ var Map = function(mapId, room) {
 
         resourceLocationName.exit().remove();
 
-        resourceLocationName.order();
+        //resourceLocationName.order();
 
         resourceLocation
             .enter()
@@ -621,13 +626,41 @@ var Map = function(mapId, room) {
                 return self.style.proximity_range_stroke_color;
             } )
             .attr("stroke-width", self.style.proximity_range_stroke)
-            .attr("cx", function(d) { return d.proximity.continuous.x; })
-            .attr("cy", function(d) { return self.roomManager.y - d.proximity.continuous.y; });
+            .attr("cx", function(d) {
+                if(d.proximity.continuous != undefined) {
+                    return d.proximity.continuous.x;
+                }
+                else if(d.proximity.discrete != undefined) {
+                    return self.discreteToContinuous(d.proximity.discrete).x;
+                }
+            })
+            .attr("cy", function(d) {
+                if(d.proximity.continuous != undefined) {
+                    return self.roomManager.y - d.proximity.continuous.y;
+                }
+                else if(d.proximity.discrete != undefined) {
+                    return self.roomManager.y - self.discreteToContinuous(d.proximity.discrete).y;
+                }
+            });
 
         // Update resources that are already there
         proximityResourceRange
-            .attr("cx", function(d) { return d.proximity.continuous.x; })
-            .attr("cy", function(d) { return self.roomManager.y - d.proximity.continuous.y; })
+            .attr("cx", function(d) {
+                if(d.proximity.continuous != undefined) {
+                    return d.proximity.continuous.x;
+                }
+                else if(d.proximity.discrete != undefined) {
+                    return self.discreteToContinuous(d.proximity.discrete).x;
+                }
+            })
+            .attr("cy", function(d) {
+                if(d.proximity.continuous != undefined) {
+                    return self.roomManager.y - d.proximity.continuous.y;
+                }
+                else if(d.proximity.discrete != undefined) {
+                    return self.roomManager.y - self.discreteToContinuous(d.proximity.discrete).y;
+                }
+            })
             .transition()
             .attr("r", function(d) { return d.proximity.distance; });
 
@@ -637,8 +670,22 @@ var Map = function(mapId, room) {
             .enter()
             .append("text")
             .attr("class", "proximity_resource_text")
-            .attr("x", function(d) { return d.proximity.continuous.x; })
-            .attr("y", function(d) { return self.roomManager.y - d.proximity.continuous.y; })
+            .attr("x", function(d) {
+                if(d.proximity.continuous != undefined) {
+                    return d.proximity.continuous.x;
+                }
+                else if(d.proximity.discrete != undefined) {
+                    return self.discreteToContinuous(d.proximity.discrete).x;
+                }
+            })
+            .attr("y", function(d) {
+                if(d.proximity.continuous != undefined) {
+                    return self.roomManager.y - d.proximity.continuous.y;
+                }
+                else if(d.proximity.discrete != undefined) {
+                    return self.roomManager.y - self.discreteToContinuous(d.proximity.discrete).y;
+                }
+            })
             .attr("text-anchor", "middle")
             .attr("font-size", self.style.resource_name_font)
             .attr("fill", "black")
@@ -647,8 +694,22 @@ var Map = function(mapId, room) {
         // Update resources that are already there
         proximityResourceText
             //.transition()
-            .attr("x", function(d) { return d.proximity.continuous.x; })
-            .attr("y", function(d) { return self.roomManager.y - d.proximity.continuous.y - d.proximity.distance; })
+            .attr("x", function(d) {
+                if(d.proximity.continuous != undefined) {
+                    return d.proximity.continuous.x;
+                }
+                else if(d.proximity.discrete != undefined) {
+                    return self.discreteToContinuous(d.proximity.discrete).x;
+                }
+            })
+            .attr("y", function(d) {
+                if(d.proximity.continuous != undefined) {
+                    return self.roomManager.y - d.proximity.continuous.y - d.proximity.distance;
+                }
+                else if(d.proximity.discrete != undefined) {
+                    return self.roomManager.y - self.discreteToContinuous(d.proximity.discrete).y - d.proximity.distance;
+                }
+            })
             .text(function(d) { return d.rid; });
 
         proximityResourceText.exit().remove();
@@ -656,13 +717,27 @@ var Map = function(mapId, room) {
         // Number of beacons tracked for every base station
         resourceLocationNumberGroup.selectAll(".resource_location_number").remove();
         var resourceLocationNumber = resourceLocationNumberGroup.selectAll(".resource_location_number")
-            .data(continuousResources);
+            .data(continuousResources.concat(discreteResources));
         
         resourceLocationNumber
             .enter()
             .append("text")
-            .attr("x", function(d) { return d.continuous.x; })
-            .attr("y", function(d) { return self.roomManager.y - d.continuous.y + self.style.resource_name_font/3})
+            .attr("x", function(d) {
+                if(d.continuous != undefined) {
+                    return d.continuous.x;
+                }
+                else if(d.discrete != undefined) {
+                    return self.discreteToContinuous(d.discrete).x;
+                }
+            })
+            .attr("y", function(d) {
+                if(d.continuous != undefined) {
+                    return self.roomManager.y - d.continuous.y + self.style.resource_name_font/3;
+                }
+                else if(d.discrete != undefined) {
+                    return self.roomManager.y - self.discreteToContinuous(d.discrete).y + self.style.resource_name_font/3;
+                }
+            })
             .attr("class", "resource_location_number no_interaction")
             .attr("text-anchor", "middle")
             .attr("fill", function(d) { if(d.dragged == true) return "none"; else return "white";})
@@ -670,8 +745,22 @@ var Map = function(mapId, room) {
 
         // Update resources that are already there
         resourceLocationNumber
-            .attr("x", function(d) { return d.continuous.x; })
-            .attr("y", function(d) { return self.roomManager.y - d.continuous.y + self.style.resource_name_font/3})
+            .attr("x", function(d) {
+                if(d.continuous != undefined) {
+                    return d.continuous.x;
+                }
+                else if(d.discrete != undefined) {
+                    return self.discreteToContinuous(d.discrete).x;
+                }
+            })
+            .attr("y", function(d) {
+                if(d.continuous != undefined) {
+                    return self.roomManager.y - d.continuous.y + self.style.resource_name_font/3;
+                }
+                else if(d.discrete != undefined) {
+                    return self.roomManager.y - self.discreteToContinuous(d.discrete).y + self.style.resource_name_font/3;
+                }
+            })
             .text(function(d) {return d.number_resources; });
 
         resourceLocationNumber.exit().remove();
