@@ -1205,15 +1205,31 @@ var Map = function(mapId, room) {
                     var resource1 = self.resources[r1];
                     var resource2 = self.resources[r2];
 
-                    if(resource1.continuous != null &&
-                        resource2.continuous != null &&
+                    var continuous1, continuous2;
+
+                    if(resource1.continuous != undefined) {
+                        continuous1 = resource1.continuous;
+                    }
+                    else if(resource1.discrete != undefined) {
+                        continuous1 = self.discreteToContinuous(resource1.discrete);
+                    }
+
+                    if(resource2.continuous != undefined) {
+                        continuous2 = resource2.continuous;
+                    }
+                    else if(resource2.discrete != undefined) {
+                        continuous2 = self.discreteToContinuous(resource2.discrete);
+                    }
+
+                    if(continuous1 != undefined &&
+                        continuous2 != undefined &&
                         resource1.proximity_range != null &&
                         resource2.proximity_range != null) {
 
                         // Check if the distance is less than the sum of proximity ranges
                         var distance = Math.sqrt(
-                                        Math.pow(resource1.continuous.x - resource2.continuous.x,2)
-                                      + Math.pow(resource1.continuous.y - resource2.continuous.y,2));
+                                        Math.pow(continuous1.x - continuous2.x,2)
+                                      + Math.pow(continuous1.y - continuous2.y,2));
 
                         var sumRange = parseFloat(resource1.proximity_range) + parseFloat(resource2.proximity_range);
 
