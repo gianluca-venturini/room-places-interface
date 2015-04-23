@@ -12,6 +12,7 @@ var ResourceTable = React.createClass({
             tableOpen: this.table.resource
         };
     },
+    resourcesBuffer: undefined,  // Used for not updating the interface every time a resource change
     componentDidMount: function () {
         self = this;
 
@@ -28,24 +29,40 @@ var ResourceTable = React.createClass({
             self.setState({resourceData: data});
         });
 
-        /*
+        // Update the interface if the buffer is not empty
         setInterval(function() {
-            nutella.net.request("location/resources", {}, function(reply) {
-                self.setState({resourceData: reply.resources});
+            if(self.resourceBuffer == undefined) {
+                return; // Return if buffer empty
+            }
+
+            var data = self.state.resourceData;
+
+            // Remove updated resources
+            data = data.filter(function(d) {
+                return $.inArray(d.rid, self.resourceBuffer.map(function(r) {
+                        return r.rid;
+                    })) == -1;
             });
-        }, 1000);
-        */
+
+            // Add updated resources from the buffer
+            data = data.concat(self.resourceBuffer);
+
+            self.setState({resourceData: data});
+
+            self.resourceBuffer = undefined;    // Empty the buffer
+        }, 200);
 
         // Wait for updated resources
         nutella.net.subscribe("location/resources/updated", function(message) {
-            var data = self.state.resourceData;
-            data = data.filter(function(d) {
+            if(self.resourceBuffer == undefined) {
+                self.resourceBuffer = [];
+            }
+            self.resourceBuffer = self.resourceBuffer.filter(function(d) {
                 return $.inArray(d.rid, message.resources.map(function(r) {
                         return r.rid;
                     })) == -1;
             });
-            data = data.concat(message.resources);
-            self.setState({resourceData: data});
+            self.resourceBuffer = self.resourceBuffer.concat(message.resources);
         });
 
         // Wait for removed resources
