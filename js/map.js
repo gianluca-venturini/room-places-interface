@@ -15,6 +15,8 @@ var Map = function(mapId, room) {
         _arrow_ratio: 2.0,
         font: 0.12,
         resource_name_font: 0.1,
+        discrete_symbol_font: 0.1,
+        discrete_symbol_font_offset: 0.1,
         quotation_excess: 1.2,
         _quotation_room_offset: 0.4,
         quotation_color: "#056CF2",
@@ -223,7 +225,9 @@ var Map = function(mapId, room) {
                 self.dragging = false;
 
                 // Remove quotation
-                d.quotation.remove();
+                if(d.quotation != undefined) {
+                    d.quotation.remove();
+                }
 
                 // Rend all resources
                 self.renderResources();
@@ -889,7 +893,9 @@ var Map = function(mapId, room) {
                 });
 
                 // Remove quotation
-                d.quotation.remove();
+                if(d.quotation != undefined) {
+                    d.quotation.remove();
+                }
 
             });
 
@@ -1032,6 +1038,70 @@ var Map = function(mapId, room) {
             });
 
         squareSelection.exit()
+            .remove();
+
+        var symbols = [];
+
+        // Horizontal numbers or letters
+        for(var i = 0; i < self.discreteTracking.n_x; i++) {
+            symbol = {};
+            symbol.x = self.discreteTracking.x +
+                self.discreteTracking.width / self.discreteTracking.n_x * (i + 1/2);
+            symbol.y = self.discreteTracking.y -
+                self.style.discrete_symbol_font_offset;
+
+            switch(self.discreteTracking.t_x) {
+                case "NUMBER":
+                    symbol.symbol = i;
+                    break;
+                case "LETTER":
+                    symbol.symbol = String.fromCharCode(97 + i);
+                    break;
+            }
+
+            symbols.push(symbol);
+        }
+
+        // Vertical numbers or letters
+        for(var i = 0; i < self.discreteTracking.n_y; i++) {
+            symbol = {};
+            symbol.x = self.discreteTracking.x -
+                self.style.discrete_symbol_font_offset;
+            symbol.y = self.discreteTracking.y +
+                self.discreteTracking.height / self.discreteTracking.n_y * (i + 1/2);
+            ;
+
+            switch(self.discreteTracking.t_x) {
+                case "NUMBER":
+                    symbol.symbol = i;
+                    break;
+                case "LETTER":
+                    symbol.symbol = String.fromCharCode(97 + i);
+                    break;
+            }
+
+            symbols.push(symbol);
+        }
+
+        // Symbols
+        var symbolsSelection = discreteTrackingSystemGroup.selectAll(".symbol")
+            .data(symbols);
+
+        symbolsSelection.enter()
+            .append("text")
+            .classed({"symbol": true})
+            .attr("x", function(symbol) {return symbol.x})
+            .attr("y", function(symbol) {return self.roomManager.y - symbol.y})
+            .attr("font-size", this.style.discrete_symbol_font)
+            .text(function(symbol) { return symbol.symbol;});
+
+        symbolsSelection
+            .transition()
+            .attr("x", function(symbol) {return symbol.x})
+            .attr("y", function(symbol) {return self.roomManager.y - symbol.y})
+            .text(function(symbol) { return symbol.symbol;});
+
+        symbolsSelection.exit()
             .remove();
     };
 
