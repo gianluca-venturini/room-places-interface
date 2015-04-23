@@ -317,6 +317,7 @@ var Map = function(mapId, room) {
             .data(continuousResources.concat(discreteResources));
 
         // Resource name (RID)
+        resourceLocationNameGroup.selectAll(".resource_location_name").remove();
         var resourceLocationName = resourceLocationNameGroup.selectAll(".resource_location_name")
             .data(continuousResources.concat(discreteResources));
 
@@ -511,7 +512,8 @@ var Map = function(mapId, room) {
             .attr("class", "resource_location_name")
             .attr("text-anchor", "middle")
             .attr("fill", function(d) { if(d.dragged == true) return "none"; else return "black";})
-            .attr("font-size", self.style.resource_name_font);
+            .attr("font-size", self.style.resource_name_font)
+            .text(function(d) { return d.rid; });
 
         resourceLocationName
             .attr("x", function(d) {
@@ -766,6 +768,7 @@ var Map = function(mapId, room) {
                 }
             })
             .text(function(d) {return d.number_resources; });
+            //.attr("fill", function(d) { return d.number_resources > 0 ? "black" : "none" });
 
         resourceLocationNumber.exit().remove();
 
@@ -1071,7 +1074,7 @@ var Map = function(mapId, room) {
                 self.discreteTracking.height / self.discreteTracking.n_y * (i + 1/2);
             ;
 
-            switch(self.discreteTracking.t_x) {
+            switch(self.discreteTracking.t_y) {
                 case "NUMBER":
                     symbol.symbol = i;
                     break;
