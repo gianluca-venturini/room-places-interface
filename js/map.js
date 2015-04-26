@@ -304,22 +304,26 @@ var Map = function(mapId, room) {
 
         // Continuous resources
 
+        function rid(d) {
+            return d.rid;
+        }
+
         // Resource D3 object
         var resourceLocation = staticResourceLocationGroup.selectAll(".resource_location")
-            .data(continuousResources.concat(discreteResources));
+            .data(continuousResources.concat(discreteResources), rid);
 
         // Resource range D3 object
         var resourceLocationRange = staticResourceLocationRangeGroup.selectAll(".resource_location_range")
-            .data(continuousResources.concat(discreteResources));
+            .data(continuousResources.concat(discreteResources), rid);
 
         // Resource range background D3 object
         var resourceLocationRangeBackground = staticResourceLocationRangeBackgroundGroup.selectAll(".resource_location_range_background")
-            .data(continuousResources.concat(discreteResources));
+            .data(continuousResources.concat(discreteResources), rid);
 
         // Resource name (RID)
         resourceLocationNameGroup.selectAll(".resource_location_name").remove();
         var resourceLocationName = resourceLocationNameGroup.selectAll(".resource_location_name")
-            .data(continuousResources.concat(discreteResources));
+            .data(continuousResources.concat(discreteResources), rid);
 
         resourceLocationRangeBackground
             .enter()
@@ -616,11 +620,11 @@ var Map = function(mapId, room) {
 
         // Resource
         var proximityResourceRange = proximityResourceRangeGroup.selectAll(".proximity_resource_range")
-            .data(proximityResources);
+            .data(proximityResources, rid);
 
         proximityResourceRangeTextGroup.selectAll(".proximity_resource_text").remove();
         var proximityResourceText = proximityResourceRangeTextGroup.selectAll(".proximity_resource_text")
-            .data(proximityResources);
+            .data(proximityResources, rid);
 
         proximityResourceRange
             .enter()
@@ -723,7 +727,7 @@ var Map = function(mapId, room) {
         // Number of beacons tracked for every base station
         resourceLocationNumberGroup.selectAll(".resource_location_number").remove();
         var resourceLocationNumber = resourceLocationNumberGroup.selectAll(".resource_location_number")
-            .data(continuousResources.concat(discreteResources));
+            .data(continuousResources.concat(discreteResources), rid);
         
         resourceLocationNumber
             .enter()
@@ -746,7 +750,13 @@ var Map = function(mapId, room) {
             })
             .attr("class", "resource_location_number no_interaction")
             .attr("text-anchor", "middle")
-            .attr("fill", function(d) { if(d.dragged == true) return "none"; else return "white";})
+            .attr("fill", function(d) {
+                if(d.dragged == true ||
+                    d.number_resources == undefined ||
+                    d.number_resources == 0)
+                    return "none";
+                else
+                    return "white";})
             .attr("font-size", self.style.resource_name_font);
 
         // Update resources that are already there
@@ -767,7 +777,14 @@ var Map = function(mapId, room) {
                     return self.roomManager.y - self.discreteToContinuous(d.discrete).y + self.style.resource_name_font/3;
                 }
             })
-            .text(function(d) {return d.number_resources; });
+            .text(function(d) {return d.number_resources; })
+            .attr("fill", function(d) {
+                if(d.dragged == true ||
+                    d.number_resources == undefined ||
+                    d.number_resources == 0)
+                    return "none";
+                else
+                    return "white";})
             //.attr("fill", function(d) { return d.number_resources > 0 ? "black" : "none" });
 
         resourceLocationNumber.exit().remove();
@@ -1180,13 +1197,13 @@ var Map = function(mapId, room) {
 
         // Create all the groups
         staticResourceLocationRangeBackgroundGroup = self.room.clip.append("g").attr("class", "staticResourceLocationRangeBackgroundGroup");
-        staticResourceLocationRangeGroup = self.room.clip.append("g").attr("class", "staticResourceLocationRangeGroup");
         resourceLocationNameGroup = self.room.clip.append("g").attr("class", "resourceLocationNameGroup");
         proximityResourceRangeGroup = self.room.clip.append("g").attr("class", "proximityResourceRangeGroup");
         proximityResourceRangeTextGroup = self.room.clip.append("g").attr("class", "proximityResourceRangeTextGroup");
-        staticResourceLocationGroup = self.room.clip.append("g").attr("class", "staticResourceLocationGroup");
         resourceLocationNumberGroup = self.room.clip.append("g").attr("class", "resourceLocationNumberGroup");
         discreteTrackingSystemGroup = self.room.clip.append("g").attr("class", "discreteTrackingSystemGroup");
+        staticResourceLocationRangeGroup = self.room.clip.append("g").attr("class", "staticResourceLocationRangeGroup");
+        staticResourceLocationGroup = self.room.clip.append("g").attr("class", "staticResourceLocationGroup");
         discreteTrackingSystemSquareGroup = self.room.unclip.append("g").attr("class", "discreteTrackingSystemSquareGroup");
 
         self.renderDiscreteTrackingSystem();
