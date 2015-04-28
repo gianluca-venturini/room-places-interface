@@ -1432,7 +1432,7 @@ var Map = function(mapId, room) {
         var x = discrete.x;
         var y = discrete.y;
 
-        var continuous = {x, undefined, y: undefined};
+        var continuous = {x: undefined, y: undefined};
 
         if(typeof discrete.x == "string") {
             x = x.charCodeAt(0) - "a".charCodeAt(0);

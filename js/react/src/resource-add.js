@@ -67,6 +67,15 @@ var ResourceAdd = React.createClass({
     handleChangeModelIBEACON: function(e) {
         this.setState({model: "IBEACON"});
     },
+    handleChangeModelADISPLAY: function(e) {
+        this.setState({model: "ADISPLAY"});
+    },
+    handleChangeModelTTABLE: function(e) {
+        this.setState({model: "TTABLE"});
+    },
+    handleChangeModelOTHER: function(e) {
+        this.setState({model: "OTHER"});
+    },
     handleChangeModel: function(e) {
         this.setState({model: event.target.value});
     },
@@ -98,14 +107,29 @@ var ResourceAdd = React.createClass({
 
         var model = "";
 
-        if(this.state.model == "IMAC")
-            model = "icon-iMac";
-        else if(this.state.model == "IPHONE")
-            model = "icon-iPhone";
-        else if(this.state.model == "IPAD")
-            model = "icon-iPad";
-        else if(this.state.model == "IBEACON")
-            model = "icon-iBeacon";
+        switch(this.state.model) {
+            case "IMAC":
+                model = "icon-iMac";
+                break;
+            case "IPHONE":
+                model = "icon-iPhone";
+                break;
+            case "IPAD":
+                model = "icon-iPad";
+                break;
+            case "IBEACON":
+                model = "icon-iBeacon";
+                break;
+            case "ADISPLAY":
+                model = "icon-aDisplay";
+                break;
+            case "TTABLE":
+                model = "icon-tTable";
+                break;
+            case "OTHER":
+                model = "icon-other";
+                break;
+        }
 
         return(
             <div className="col-md-12 col-sm-12 col-xs-12 table-responsive table_container animated" style={{"overflowX": "hide", height: this.props.tableHeight}}>
@@ -133,6 +157,9 @@ var ResourceAdd = React.createClass({
                                             <li onClick={this.handleChangeModelIPHONE}><a href="#"><i className="icon-iPhone"></i> iPhone</a></li>
                                             <li onClick={this.handleChangeModelIPAD}><a href="#"><i className="icon-iPad"></i> iPad</a></li>
                                             <li onClick={this.handleChangeModelIBEACON}><a href="#"><i className="icon-iBeacon"></i> iBeacon</a></li>
+                                            <li onClick={this.handleChangeModelADISPLAY}><a href="#"><i className="icon-aDisplay"></i> Ambient Display</a></li>
+                                            <li onClick={this.handleChangeModelTTABLE}><a href="#"><i className="icon-tTable"></i> Touch Table</a></li>
+                                            <li onClick={this.handleChangeModelOTHER}><a href="#"><i className="icon-other"></i> Other</a></li>
                                         </ul>
                                     </div>
 

@@ -23,6 +23,22 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
+.icon-tTable:before {
+	content: "\e602";
+}
+
+.icon-other:before {
+	content: "\e601";
+}
+
+.icon-iBeacon:before {
+	content: "\e600";
+}
+
+.icon-aDisplay:before {
+	content: "\f27c";
+}
+
 .icon-iBeacon:before {
 	content: "\e600";
 }

@@ -67,6 +67,15 @@ var ResourceAdd = React.createClass({displayName: "ResourceAdd",
     handleChangeModelIBEACON: function(e) {
         this.setState({model: "IBEACON"});
     },
+    handleChangeModelADISPLAY: function(e) {
+        this.setState({model: "ADISPLAY"});
+    },
+    handleChangeModelTTABLE: function(e) {
+        this.setState({model: "TTABLE"});
+    },
+    handleChangeModelOTHER: function(e) {
+        this.setState({model: "OTHER"});
+    },
     handleChangeModel: function(e) {
         this.setState({model: event.target.value});
     },
@@ -98,14 +107,29 @@ var ResourceAdd = React.createClass({displayName: "ResourceAdd",
 
         var model = "";
 
-        if(this.state.model == "IMAC")
-            model = "icon-iMac";
-        else if(this.state.model == "IPHONE")
-            model = "icon-iPhone";
-        else if(this.state.model == "IPAD")
-            model = "icon-iPad";
-        else if(this.state.model == "IBEACON")
-            model = "icon-iBeacon";
+        switch(this.state.model) {
+            case "IMAC":
+                model = "icon-iMac";
+                break;
+            case "IPHONE":
+                model = "icon-iPhone";
+                break;
+            case "IPAD":
+                model = "icon-iPad";
+                break;
+            case "IBEACON":
+                model = "icon-iBeacon";
+                break;
+            case "ADISPLAY":
+                model = "icon-aDisplay";
+                break;
+            case "TTABLE":
+                model = "icon-tTable";
+                break;
+            case "OTHER":
+                model = "icon-other";
+                break;
+        }
 
         return(
             React.createElement("div", {className: "col-md-12 col-sm-12 col-xs-12 table-responsive table_container animated", style: {"overflowX": "hide", height: this.props.tableHeight}}, 
@@ -132,7 +156,10 @@ var ResourceAdd = React.createClass({displayName: "ResourceAdd",
                                             React.createElement("li", {onClick: this.handleChangeModelIMAC}, React.createElement("a", {href: "#"}, React.createElement("i", {className: "icon-iMac"}), " iMac")), 
                                             React.createElement("li", {onClick: this.handleChangeModelIPHONE}, React.createElement("a", {href: "#"}, React.createElement("i", {className: "icon-iPhone"}), " iPhone")), 
                                             React.createElement("li", {onClick: this.handleChangeModelIPAD}, React.createElement("a", {href: "#"}, React.createElement("i", {className: "icon-iPad"}), " iPad")), 
-                                            React.createElement("li", {onClick: this.handleChangeModelIBEACON}, React.createElement("a", {href: "#"}, React.createElement("i", {className: "icon-iBeacon"}), " iBeacon"))
+                                            React.createElement("li", {onClick: this.handleChangeModelIBEACON}, React.createElement("a", {href: "#"}, React.createElement("i", {className: "icon-iBeacon"}), " iBeacon")), 
+                                            React.createElement("li", {onClick: this.handleChangeModelADISPLAY}, React.createElement("a", {href: "#"}, React.createElement("i", {className: "icon-aDisplay"}), " Ambient Display")), 
+                                            React.createElement("li", {onClick: this.handleChangeModelTTABLE}, React.createElement("a", {href: "#"}, React.createElement("i", {className: "icon-tTable"}), " Touch Table")), 
+                                            React.createElement("li", {onClick: this.handleChangeModelOTHER}, React.createElement("a", {href: "#"}, React.createElement("i", {className: "icon-other"}), " Other"))
                                         )
                                     ), 
 

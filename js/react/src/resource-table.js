@@ -168,7 +168,7 @@ var ResourceTable = React.createClass({
                 resourceTableHeight = "500px";
                 break;
             case this.table.addResource:
-                addResourceTableHeight = "200px";
+                addResourceTableHeight = "300px";
                 break;
             case this.table.beacon:
                 beaconTableHeight = "500px";

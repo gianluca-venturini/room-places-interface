@@ -309,17 +309,28 @@ var Resource = React.createClass({
         }
 
         var model = "";
-        if(this.props.resource.model == "IMAC") {
-            model = "icon-iMac";
-        }
-        else if(this.props.resource.model == "IPHONE") {
-            model = "icon-iPhone";
-        }
-        else if(this.props.resource.model == "IPAD") {
-            model = "icon-iPad";
-        }
-        else if(this.props.resource.model == "IBEACON") {
-            model = "icon-iBeacon";
+        switch(this.props.resource.model) {
+            case "IMAC":
+                model = "icon-iMac";
+                break;
+            case "IPHONE":
+                model = "icon-iPhone";
+                break;
+            case "IPAD":
+                model = "icon-iPad";
+                break;
+            case "IBEACON":
+                model = "icon-iBeacon";
+                break;
+            case "ADISPLAY":
+                model = "icon-aDisplay";
+                break;
+            case "TTABLE":
+                model = "icon-tTable";
+                break;
+            case "OTHER":
+                model = "icon-other";
+                break;
         }
 
         var proximity = {};
