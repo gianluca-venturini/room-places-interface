@@ -515,7 +515,7 @@ var Map = function(mapId, room) {
 
                 return (self.roomManager.y - y)- self.style.resource_name_offset;
             })
-            .attr("class", "resource_location_name")
+            .attr("class", "resource_location_name no_interaction")
             .attr("text-anchor", "middle")
             .attr("fill", function(d) { if(d.dragged == true) return "none"; else return "black";})
             .attr("font-size", self.style.resource_name_font)
@@ -998,6 +998,7 @@ var Map = function(mapId, room) {
             .attr("y2", function (d) {
                 return self.roomManager.y - d.destination.y
             })
+            .attr("class", "no_interaction")
             .style("stroke", self.style.discrete_tracking_color)
             .style("stroke-dasharray", ("" + self.style.discrete_tracking_dash_length + "," + self.style.discrete_tracking_dash_length))
             .style("stroke-width", self.style.stroke);
@@ -1110,7 +1111,7 @@ var Map = function(mapId, room) {
 
         symbolsSelection.enter()
             .append("text")
-            .classed({"symbol": true})
+            .classed({"symbol": true, "no_interaction": true})
             .attr("x", function(symbol) {return symbol.x})
             .attr("y", function(symbol) {return self.roomManager.y - symbol.y})
             .attr("font-size", this.style.discrete_symbol_font)
@@ -1198,14 +1199,14 @@ var Map = function(mapId, room) {
 
         // Create all the groups
         staticResourceLocationRangeBackgroundGroup = self.room.clip.append("g").attr("class", "staticResourceLocationRangeBackgroundGroup");
-        resourceLocationNameGroup = self.room.clip.append("g").attr("class", "resourceLocationNameGroup");
+        resourceLocationNameGroup = self.room.unclip.append("g").attr("class", "resourceLocationNameGroup");
         proximityResourceRangeGroup = self.room.clip.append("g").attr("class", "proximityResourceRangeGroup");
         proximityResourceRangeTextGroup = self.room.clip.append("g").attr("class", "proximityResourceRangeTextGroup");
         discreteTrackingSystemGroup = self.room.unclip.append("g").attr("class", "discreteTrackingSystemGroup");
         staticResourceLocationRangeGroup = self.room.clip.append("g").attr("class", "staticResourceLocationRangeGroup");
-        staticResourceLocationGroup = self.room.clip.append("g").attr("class", "staticResourceLocationGroup");
+        staticResourceLocationGroup = self.room.unclip.append("g").attr("class", "staticResourceLocationGroup");
         discreteTrackingSystemSquareGroup = self.room.unclip.append("g").attr("class", "discreteTrackingSystemSquareGroup");
-        resourceLocationNumberGroup = self.room.clip.append("g").attr("class", "resourceLocationNumberGroup");
+        resourceLocationNumberGroup = self.room.unclip.append("g").attr("class", "resourceLocationNumberGroup");
 
         self.renderDiscreteTrackingSystem();
         self.renderResources();
