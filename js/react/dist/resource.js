@@ -18,12 +18,12 @@ var Resource = React.createClass({displayName: "Resource",
 
         if(resource.continuous != undefined) {
             if(resource.continuous.x != undefined) {
-                var number = parseFloat($("#"+this.props.resource.rid+"_parameter_x").text());
+                var number = parseFloat($("#"+this.props.resource.rid+"_parameter_x").attr("v"));
                 if(!isNaN(number))
                     resource.continuous.x = number;
             }
             if(resource.continuous.y != undefined) {
-                var number = parseFloat($("#"+this.props.resource.rid+"_parameter_y").text());
+                var number = parseFloat($("#"+this.props.resource.rid+"_parameter_y").attr("v"));
                 if(!isNaN(number))
                     resource.continuous.y = number;
             }
@@ -31,7 +31,7 @@ var Resource = React.createClass({displayName: "Resource",
 
         if(resource.discrete != undefined) {
             if(resource.discrete.x != undefined) {
-                var value = $("#"+this.props.resource.rid+"_parameter_x").text();
+                var value = $("#"+this.props.resource.rid+"_parameter_x").attr("v");
                 var number = parseFloat(value);
                 if(!isNaN(number))
                     resource.discrete.x = number;
@@ -39,7 +39,7 @@ var Resource = React.createClass({displayName: "Resource",
                     resource.discrete.x = value;
             }
             if(resource.discrete.y != undefined) {
-                var number = parseFloat($("#"+this.props.resource.rid+"_parameter_y").text());
+                var number = parseFloat($("#"+this.props.resource.rid+"_parameter_y").attr("v"));
                 if(!isNaN(number))
                     resource.discrete.y = number;
                 else if(value.length > 0)
@@ -48,11 +48,11 @@ var Resource = React.createClass({displayName: "Resource",
         }
 
         if(resource.proximity_range != undefined) {
-            var number = parseFloat($("#"+this.props.resource.rid+"_parameter_proximity").text());
+            var number = parseFloat($("#"+this.props.resource.rid+"_parameter_proximity").attr("v"));
             if(!isNaN(number))
                 resource.proximity_range = number;
             else
-                $("#"+this.props.resource.rid+"_parameter_proximity").text(resource.proximity_range);
+                $("#"+this.props.resource.rid+"_parameter_proximity").val(resource.proximity_range);
         }
         this.props.updateResource(resource);
     },
@@ -139,10 +139,27 @@ var Resource = React.createClass({displayName: "Resource",
             this.handleAddKey();
         }
     },
-    handleModifyKey: function(event) {
-        var key = $("#"+event.target.id.substring(0, event.target.id.length-1)+"k").text();
-        var value = $("#"+event.target.id.substring(0, event.target.id.length-1)+"v").text();
+    handleModifyKey: function(name, _key, _value) {
+        var key, value, prev_key = undefined;
 
+        var resource = this.props.resource;
+
+        console.log(name, _key, _value);
+
+        switch(name) {
+            case "key":
+                key = _value;
+                prev_key = _key;
+                value = resource.parameters[prev_key];
+                break;
+            case "value":
+                prev_key = _key;
+                key = _key;
+                value = _value;
+                break;
+        }
+
+        /*
         if(key == "") {
             $("#" + event.target.id.substring(0, event.target.id.length - 1) + "k").focus();
             return;
@@ -151,10 +168,8 @@ var Resource = React.createClass({displayName: "Resource",
             $("#" + event.target.id.substring(0, event.target.id.length - 1) + "v").focus();
             return;
         }
+        */
 
-
-        var prev_key = event.target.id.substring(this.props.resource.rid.length+1, event.target.id.length-2);
-        var resource = this.props.resource;
 
         resource.parameters = [];
 
@@ -226,13 +241,12 @@ var Resource = React.createClass({displayName: "Resource",
                  React.createElement("tr", null, 
                      React.createElement("td", {className: "col-md-6 col-sm-6 col-xs-6"}, React.createElement("span", null, parameter.key)), 
                      React.createElement("td", {className: "col-md-6 col-sm-6 col-xs-6"}, 
-                         React.createElement("span", {id: self.props.resource.rid+"_parameter_"+parameter.key, 
-                             contentEditable: "true", 
-                             onKeyDown: self.handleParameterChange, 
-                             onKeyUp: self.handleParameterChange, 
-                             onBlur: self.handleUpdateParameters}, 
-                                parameter.value
-                         )
+                         React.createElement(InteractiveLabel, {
+                             id: self.props.resource.rid+"_parameter_"+parameter.key, 
+                             onKeyPress: self.handleParameterChange, 
+                             onValueChange: self.handleUpdateParameters, 
+                             labelValue: parameter.value, 
+                             labelKey: parameter.key})
                      )
                  )
              );
@@ -261,20 +275,22 @@ var Resource = React.createClass({displayName: "Resource",
                 return (
                     React.createElement("tr", null, 
                         React.createElement("td", {className: "col-md-6 key-values"}, 
-                            React.createElement("span", {id: self.props.resource.rid+"_"+key+"_k", 
-                                contentEditable: "true", 
+                            React.createElement(InteractiveLabel, {
+                                id: self.props.resource.rid+"_"+key+"_k", 
                                 onKeyPress: self.handleParameterChange, 
-                                onBlur: self.handleModifyKey}, 
-                                    key
-                            )
+                                onValueChange: self.handleModifyKey, 
+                                labelName: "key", 
+                                labelValue: key, 
+                                labelKey: key})
                         ), 
                         React.createElement("td", {className: "col-md-6 key-values"}, 
-                            React.createElement("span", {id: self.props.resource.rid+"_"+key+"_v", 
-                                contentEditable: "true", 
+                            React.createElement(InteractiveLabel, {
+                                id: self.props.resource.rid+"_"+key+"_k", 
                                 onKeyPress: self.handleParameterChange, 
-                                onBlur: self.handleModifyKey}, 
-                                    self.props.resource.parameters[key]
-                            ), 
+                                onValueChange: self.handleModifyKey, 
+                                labelName: "value", 
+                                labelValue: self.props.resource.parameters[key], 
+                                labelKey: key}), 
                             React.createElement("button", {type: "button", onClick: self.handleDeleteKey, id: key, className: "btn btn-default btn-xs right"}, 
                                 React.createElement("span", {className: "glyphicon glyphicon-remove", id: key, "aria-hidden": "true"})
                             )
