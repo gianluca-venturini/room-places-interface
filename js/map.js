@@ -19,6 +19,8 @@ var Map = function(mapId, room) {
         discrete_symbol_font_offset: 0.1,
         quotation_excess: 1.2,
         _quotation_room_offset: 0.4,
+        discrete_tracking_dash_length: 0.02,
+        discrete_tracking_color: "#777777",
         quotation_color: "#056CF2",
         resource_radius: 0.06,
         resource_radius_hover: 0.2,
@@ -996,7 +998,8 @@ var Map = function(mapId, room) {
             .attr("y2", function (d) {
                 return self.roomManager.y - d.destination.y
             })
-            .style("stroke", "#000000")
+            .style("stroke", self.style.discrete_tracking_color)
+            .style("stroke-dasharray", ("" + self.style.discrete_tracking_dash_length + "," + self.style.discrete_tracking_dash_length))
             .style("stroke-width", self.style.stroke);
 
         linesSelection
@@ -1011,9 +1014,7 @@ var Map = function(mapId, room) {
             })
             .attr("y2", function (d) {
                 return self.roomManager.y - d.destination.y
-            })
-            .style("stroke", "#000000")
-            .style("stroke-width", self.style.stroke);
+            });
 
         linesSelection
             .exit()
@@ -1200,11 +1201,11 @@ var Map = function(mapId, room) {
         resourceLocationNameGroup = self.room.clip.append("g").attr("class", "resourceLocationNameGroup");
         proximityResourceRangeGroup = self.room.clip.append("g").attr("class", "proximityResourceRangeGroup");
         proximityResourceRangeTextGroup = self.room.clip.append("g").attr("class", "proximityResourceRangeTextGroup");
-        resourceLocationNumberGroup = self.room.clip.append("g").attr("class", "resourceLocationNumberGroup");
-        discreteTrackingSystemGroup = self.room.clip.append("g").attr("class", "discreteTrackingSystemGroup");
+        discreteTrackingSystemGroup = self.room.unclip.append("g").attr("class", "discreteTrackingSystemGroup");
         staticResourceLocationRangeGroup = self.room.clip.append("g").attr("class", "staticResourceLocationRangeGroup");
         staticResourceLocationGroup = self.room.clip.append("g").attr("class", "staticResourceLocationGroup");
         discreteTrackingSystemSquareGroup = self.room.unclip.append("g").attr("class", "discreteTrackingSystemSquareGroup");
+        resourceLocationNumberGroup = self.room.clip.append("g").attr("class", "resourceLocationNumberGroup");
 
         self.renderDiscreteTrackingSystem();
         self.renderResources();
