@@ -9,14 +9,21 @@ var InteractiveLabel = React.createClass({
             value: nextProps.labelValue
         });
     },
-    onBlur: function() {
+    onBlur: function(event) {
         this.onSubmit();
+
+        return false;
     },
-    onSubmit: function() {
+    onSubmit: function(event) {
         if(this.props.id != undefined) {
             $("#"+this.props.id).attr("v", this.state.value);
         }
         this.props.onValueChange(this.props.labelName, this.props.labelKey, this.state.value);
+
+        if(event != undefined) {
+            event.preventDefault();
+        }
+
         return false;
     },
     handleChange: function(event) {

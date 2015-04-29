@@ -47,17 +47,23 @@ var Discrete = React.createClass({displayName: "Discrete",
             event.target.blur();
         }
     },
-    handleBlur: function () {
-        this.updateTracking();
-    },
-    updateTracking: function () {
+    handleModifyAttribute: function (name, key, value) {
+
         var tracking = this.state.tracking;
-        tracking.x = parseFloat(this.refs.x.getDOMNode().textContent);
-        tracking.y = parseFloat(this.refs.y.getDOMNode().textContent);
-        tracking.width = parseFloat(this.refs.width.getDOMNode().textContent);
-        tracking.height = parseFloat(this.refs.height.getDOMNode().textContent);
-        tracking.n_x = parseInt(this.refs.n_x.getDOMNode().textContent);
-        tracking.n_y = parseInt(this.refs.n_y.getDOMNode().textContent);
+
+        switch(key) {
+            case "n_x":
+            case "n_y":
+                tracking[key] = parseInt(value);
+                break;
+
+            case "width":
+            case "height":
+            case "x":
+            case "y":
+                tracking[key] = parseFloat(value);
+                break;
+        }
 
         nutella.net.publish("location/tracking/discrete/update", {tracking: tracking});
 
@@ -159,67 +165,77 @@ var Discrete = React.createClass({displayName: "Discrete",
                                             React.createElement("tr", null, 
                                                 React.createElement("td", {className: "col-md-6 col-sm-6 col-xs-6"}, React.createElement("span", {id: "A3"}, "X number")), 
                                                 React.createElement("td", {className: "col-md-6 col-sm-6 col-xs-6"}, 
-                                                    React.createElement("span", {contentEditable: "true", 
-                                                        onKeyUp: self.handleKeyPress, 
-                                                        onBlur: self.handleBlur, 
-                                                        ref: "n_x"}, 
-                                                        self.state.tracking.n_x
-                                                    )
+                                                    
+                                                        /*
+                                                        <span contentEditable="true"
+                                                              onKeyUp={self.handleKeyPress}
+                                                              onBlur={self.handleBlur}
+                                                              ref="n_x">
+                                                        {self.state.tracking.n_x}
+                                                        </span>
+                                                        */
+                                                    
+                                                    React.createElement(InteractiveLabel, {
+                                                        onKeyPress: self.handleKeyPress, 
+                                                        onValueChange: self.handleModifyAttribute, 
+                                                        labelName: "value", 
+                                                        labelValue: self.state.tracking.n_x, 
+                                                        labelKey: "n_x"})
                                                 )
                                             ), 
                                             React.createElement("tr", null, 
                                                 React.createElement("td", {className: "col-md-6 col-sm-6 col-xs-6"}, React.createElement("span", {id: "A3"}, "Y number")), 
                                                 React.createElement("td", {className: "col-md-6 col-sm-6 col-xs-6"}, 
-                                                    React.createElement("span", {contentEditable: "true", 
-                                                          onKeyUp: self.handleKeyPress, 
-                                                          onBlur: self.handleBlur, 
-                                                          ref: "n_y"}, 
-                                                        self.state.tracking.n_y
-                                                    )
+                                                    React.createElement(InteractiveLabel, {
+                                                        onKeyPress: self.handleKeyPress, 
+                                                        onValueChange: self.handleModifyAttribute, 
+                                                        labelName: "value", 
+                                                        labelValue: self.state.tracking.n_y, 
+                                                        labelKey: "n_y"})
                                                 )
                                             ), 
                                             React.createElement("tr", null, 
                                                 React.createElement("td", {className: "col-md-6 col-sm-6 col-xs-6"}, React.createElement("span", {id: "A3"}, "Width")), 
                                                 React.createElement("td", {className: "col-md-6 col-sm-6 col-xs-6"}, 
-                                                    React.createElement("span", {contentEditable: "true", 
-                                                          onKeyUp: self.handleKeyPress, 
-                                                          onBlur: self.handleBlur, 
-                                                          ref: "width"}, 
-                                                        self.state.tracking.width
-                                                    )
+                                                    React.createElement(InteractiveLabel, {
+                                                        onKeyPress: self.handleKeyPress, 
+                                                        onValueChange: self.handleModifyAttribute, 
+                                                        labelName: "value", 
+                                                        labelValue: self.state.tracking.width.toFixed(2), 
+                                                        labelKey: "width"})
                                                 )
                                             ), 
                                             React.createElement("tr", null, 
                                                 React.createElement("td", {className: "col-md-6 col-sm-6 col-xs-6"}, React.createElement("span", {id: "A3"}, "Height")), 
                                                 React.createElement("td", {className: "col-md-6 col-sm-6 col-xs-6"}, 
-                                                    React.createElement("span", {contentEditable: "true", 
-                                                          onKeyUp: self.handleKeyPress, 
-                                                          onBlur: self.handleBlur, 
-                                                          ref: "height"}, 
-                                                        self.state.tracking.height
-                                                    )
+                                                    React.createElement(InteractiveLabel, {
+                                                        onKeyPress: self.handleKeyPress, 
+                                                        onValueChange: self.handleModifyAttribute, 
+                                                        labelName: "value", 
+                                                        labelValue: self.state.tracking.height.toFixed(2), 
+                                                        labelKey: "height"})
                                                 )
                                             ), 
                                             React.createElement("tr", null, 
                                                 React.createElement("td", {className: "col-md-6 col-sm-6 col-xs-6"}, React.createElement("span", {id: "A3"}, "X origin")), 
                                                 React.createElement("td", {className: "col-md-6 col-sm-6 col-xs-6"}, 
-                                                    React.createElement("span", {contentEditable: "true", 
-                                                          onKeyUp: self.handleKeyPress, 
-                                                          onBlur: self.handleBlur, 
-                                                          ref: "x"}, 
-                                                        self.state.tracking.x
-                                                    )
+                                                    React.createElement(InteractiveLabel, {
+                                                        onKeyPress: self.handleKeyPress, 
+                                                        onValueChange: self.handleModifyAttribute, 
+                                                        labelName: "value", 
+                                                        labelValue: self.state.tracking.x.toFixed(2), 
+                                                        labelKey: "x"})
                                                 )
                                             ), 
                                             React.createElement("tr", null, 
                                                 React.createElement("td", {className: "col-md-6 col-sm-6 col-xs-6"}, React.createElement("span", {id: "A3"}, "Y origin")), 
                                                 React.createElement("td", {className: "col-md-6 col-sm-6 col-xs-6"}, 
-                                                    React.createElement("span", {contentEditable: "true", 
-                                                          onKeyUp: self.handleKeyPress, 
-                                                          onBlur: self.handleBlur, 
-                                                          ref: "y"}, 
-                                                        self.state.tracking.y
-                                                    )
+                                                    React.createElement(InteractiveLabel, {
+                                                        onKeyPress: self.handleKeyPress, 
+                                                        onValueChange: self.handleModifyAttribute, 
+                                                        labelName: "value", 
+                                                        labelValue: self.state.tracking.y.toFixed(2), 
+                                                        labelKey: "y"})
                                                 )
                                             ), 
                                             React.createElement("tr", null, 
@@ -237,7 +253,7 @@ var Discrete = React.createClass({displayName: "Discrete",
                                                 )
                                             ), 
                                             React.createElement("tr", null, 
-                                                React.createElement("td", {className: "col-md-6 col-sm-6 col-xs-6"}, React.createElement("span", {id: "A3"}, "Y type")), 
+                                                React.createElement("td", {className: "col-md-6 col-sm-6 col-xs-6", style: {height: "48px"}}, React.createElement("span", {id: "A3"}, "Y type")), 
                                                 React.createElement("td", {className: "col-md-6 col-sm-6 col-xs-6"}, 
                                                     React.createElement("div", {className: "btn-group dropup"}, 
                                                         React.createElement("a", {className: "btn btn-default btn-sm", href: "#"}, t_y), 

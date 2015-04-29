@@ -32,6 +32,7 @@ var Resource = React.createClass({
         if(resource.discrete != undefined) {
             if(resource.discrete.x != undefined) {
                 var value = $("#"+this.props.resource.rid+"_parameter_x").attr("v");
+                value = value || $("#"+this.props.resource.rid+"_parameter_x").attr("value");
                 var number = parseFloat(value);
                 if(!isNaN(number))
                     resource.discrete.x = number;
@@ -39,7 +40,9 @@ var Resource = React.createClass({
                     resource.discrete.x = value;
             }
             if(resource.discrete.y != undefined) {
-                var number = parseFloat($("#"+this.props.resource.rid+"_parameter_y").attr("v"));
+                var value = $("#"+this.props.resource.rid+"_parameter_y").attr("v");
+                value = value || $("#"+this.props.resource.rid+"_parameter_y").attr("value");
+                var number = parseFloat(value);
                 if(!isNaN(number))
                     resource.discrete.y = number;
                 else if(value.length > 0)
@@ -291,7 +294,10 @@ var Resource = React.createClass({
                                 labelName="value"
                                 labelValue={self.props.resource.parameters[key]}
                                 labelKey={key}/>
-                            <button type="button" onClick={self.handleDeleteKey} id={key} className="btn btn-default btn-xs right">
+                            <button
+                                type="button"
+                                onClick={self.handleDeleteKey}
+                                id={key} className="btn btn-default btn-xs right">
                                 <span className="glyphicon glyphicon-remove" id={key} aria-hidden="true"></span>
                             </button>
                         </td>

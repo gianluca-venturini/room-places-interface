@@ -47,17 +47,23 @@ var Discrete = React.createClass({
             event.target.blur();
         }
     },
-    handleBlur: function () {
-        this.updateTracking();
-    },
-    updateTracking: function () {
+    handleModifyAttribute: function (name, key, value) {
+
         var tracking = this.state.tracking;
-        tracking.x = parseFloat(this.refs.x.getDOMNode().textContent);
-        tracking.y = parseFloat(this.refs.y.getDOMNode().textContent);
-        tracking.width = parseFloat(this.refs.width.getDOMNode().textContent);
-        tracking.height = parseFloat(this.refs.height.getDOMNode().textContent);
-        tracking.n_x = parseInt(this.refs.n_x.getDOMNode().textContent);
-        tracking.n_y = parseInt(this.refs.n_y.getDOMNode().textContent);
+
+        switch(key) {
+            case "n_x":
+            case "n_y":
+                tracking[key] = parseInt(value);
+                break;
+
+            case "width":
+            case "height":
+            case "x":
+            case "y":
+                tracking[key] = parseFloat(value);
+                break;
+        }
 
         nutella.net.publish("location/tracking/discrete/update", {tracking: tracking});
 
@@ -159,67 +165,77 @@ var Discrete = React.createClass({
                                             <tr>
                                                 <td className="col-md-6 col-sm-6 col-xs-6"><span id="A3">X number</span></td>
                                                 <td className="col-md-6 col-sm-6 col-xs-6">
-                                                    <span contentEditable="true"
-                                                        onKeyUp={self.handleKeyPress}
-                                                        onBlur={self.handleBlur}
-                                                        ref="n_x">
+                                                    {
+                                                        /*
+                                                        <span contentEditable="true"
+                                                              onKeyUp={self.handleKeyPress}
+                                                              onBlur={self.handleBlur}
+                                                              ref="n_x">
                                                         {self.state.tracking.n_x}
-                                                    </span>
+                                                        </span>
+                                                        */
+                                                    }
+                                                    <InteractiveLabel
+                                                        onKeyPress={self.handleKeyPress}
+                                                        onValueChange={self.handleModifyAttribute}
+                                                        labelName="value"
+                                                        labelValue={self.state.tracking.n_x}
+                                                        labelKey="n_x"/>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td className="col-md-6 col-sm-6 col-xs-6"><span id="A3">Y number</span></td>
                                                 <td className="col-md-6 col-sm-6 col-xs-6">
-                                                    <span contentEditable="true"
-                                                          onKeyUp={self.handleKeyPress}
-                                                          onBlur={self.handleBlur}
-                                                          ref="n_y">
-                                                        {self.state.tracking.n_y}
-                                                    </span>
+                                                    <InteractiveLabel
+                                                        onKeyPress={self.handleKeyPress}
+                                                        onValueChange={self.handleModifyAttribute}
+                                                        labelName="value"
+                                                        labelValue={self.state.tracking.n_y}
+                                                        labelKey="n_y"/>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td className="col-md-6 col-sm-6 col-xs-6"><span id="A3">Width</span></td>
                                                 <td className="col-md-6 col-sm-6 col-xs-6">
-                                                    <span contentEditable="true"
-                                                          onKeyUp={self.handleKeyPress}
-                                                          onBlur={self.handleBlur}
-                                                          ref="width">
-                                                        {self.state.tracking.width}
-                                                    </span>
+                                                    <InteractiveLabel
+                                                        onKeyPress={self.handleKeyPress}
+                                                        onValueChange={self.handleModifyAttribute}
+                                                        labelName="value"
+                                                        labelValue={self.state.tracking.width.toFixed(2)}
+                                                        labelKey="width"/>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td className="col-md-6 col-sm-6 col-xs-6"><span id="A3">Height</span></td>
                                                 <td className="col-md-6 col-sm-6 col-xs-6">
-                                                    <span contentEditable="true"
-                                                          onKeyUp={self.handleKeyPress}
-                                                          onBlur={self.handleBlur}
-                                                          ref="height">
-                                                        {self.state.tracking.height}
-                                                    </span>
+                                                    <InteractiveLabel
+                                                        onKeyPress={self.handleKeyPress}
+                                                        onValueChange={self.handleModifyAttribute}
+                                                        labelName="value"
+                                                        labelValue={self.state.tracking.height.toFixed(2)}
+                                                        labelKey="height"/>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td className="col-md-6 col-sm-6 col-xs-6"><span id="A3">X origin</span></td>
                                                 <td className="col-md-6 col-sm-6 col-xs-6">
-                                                    <span contentEditable="true"
-                                                          onKeyUp={self.handleKeyPress}
-                                                          onBlur={self.handleBlur}
-                                                          ref="x">
-                                                        {self.state.tracking.x}
-                                                    </span>
+                                                    <InteractiveLabel
+                                                        onKeyPress={self.handleKeyPress}
+                                                        onValueChange={self.handleModifyAttribute}
+                                                        labelName="value"
+                                                        labelValue={self.state.tracking.x.toFixed(2)}
+                                                        labelKey="x"/>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td className="col-md-6 col-sm-6 col-xs-6"><span id="A3">Y origin</span></td>
                                                 <td className="col-md-6 col-sm-6 col-xs-6">
-                                                    <span contentEditable="true"
-                                                          onKeyUp={self.handleKeyPress}
-                                                          onBlur={self.handleBlur}
-                                                          ref="y">
-                                                        {self.state.tracking.y}
-                                                    </span>
+                                                    <InteractiveLabel
+                                                        onKeyPress={self.handleKeyPress}
+                                                        onValueChange={self.handleModifyAttribute}
+                                                        labelName="value"
+                                                        labelValue={self.state.tracking.y.toFixed(2)}
+                                                        labelKey="y"/>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -237,7 +253,7 @@ var Discrete = React.createClass({
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td className="col-md-6 col-sm-6 col-xs-6"><span id="A3">Y type</span></td>
+                                                <td className="col-md-6 col-sm-6 col-xs-6" style={{height: "48px"}}><span id="A3">Y type</span></td>
                                                 <td className="col-md-6 col-sm-6 col-xs-6">
                                                     <div className="btn-group dropup">
                                                         <a className="btn btn-default btn-sm" href="#">{t_y}</a>
