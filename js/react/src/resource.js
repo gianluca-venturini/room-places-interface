@@ -377,7 +377,7 @@ var Resource = React.createClass({
                             <li onClick={this.handleContinousPressed}><a href="#"><i className="fa fa-arrows fa-fw"></i> Continuous</a></li>
                             <li onClick={this.handleDiscretePressed}><a href="#"><i className="fa fa-th-large fa-fw"></i> Discrete</a></li>
                             {proximity}
-                            <li onClick={this.handleDisablePressed}><a href="#"><i className="fa fa-ban fa-fw"></i> Disable</a></li>
+                            {/*<li onClick={this.handleDisablePressed}><a href="#"><i className="fa fa-ban fa-fw"></i> Disable</a></li>*/}
                             <li className="divider"></li>
                             <li onClick={this.handleDeletePressed}><a href="#"><i className="fa fa-trash-o fa-fw"></i> Delete</a></li>
                         </ul>

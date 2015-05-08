@@ -377,7 +377,7 @@ var Resource = React.createClass({displayName: "Resource",
                             React.createElement("li", {onClick: this.handleContinousPressed}, React.createElement("a", {href: "#"}, React.createElement("i", {className: "fa fa-arrows fa-fw"}), " Continuous")), 
                             React.createElement("li", {onClick: this.handleDiscretePressed}, React.createElement("a", {href: "#"}, React.createElement("i", {className: "fa fa-th-large fa-fw"}), " Discrete")), 
                             proximity, 
-                            React.createElement("li", {onClick: this.handleDisablePressed}, React.createElement("a", {href: "#"}, React.createElement("i", {className: "fa fa-ban fa-fw"}), " Disable")), 
+                            /*<li onClick={this.handleDisablePressed}><a href="#"><i className="fa fa-ban fa-fw"></i> Disable</a></li>*/
                             React.createElement("li", {className: "divider"}), 
                             React.createElement("li", {onClick: this.handleDeletePressed}, React.createElement("a", {href: "#"}, React.createElement("i", {className: "fa fa-trash-o fa-fw"}), " Delete"))
                         )
