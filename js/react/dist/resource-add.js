@@ -15,7 +15,7 @@ var ResourceAdd = React.createClass({displayName: "ResourceAdd",
 
         if(this.state.tracking == "CONTINUOUS") {
             if(this.state.type == "STATIC")
-                resource.proximity_range = 1;
+                resource.proximity_range = 0;
             resource.continuous = {x: this.props.room.x/2, y: this.props.room.y/2};
         }
         else if(this.state.tracking == "DISCRETE") {

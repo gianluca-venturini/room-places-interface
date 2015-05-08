@@ -53,13 +53,13 @@
 
 			var query_parameters = NUTELLA.parseURLParameters();
 
-            nutella = NUTELLA.init(query_parameters.broker, query_parameters.app_id, query_parameters.run_id, 'room-places-interface-map');
+            nutella = NUTELLA.init(query_parameters.broker, query_parameters.app_id, query_parameters.run_id, 'room-places-interface');
 
             var room = Room();
 
             var map = Map("#map", room);
 
-			var nutella = NUTELLA.init(query_parameters.broker, query_parameters.app_id, query_parameters.run_id, 'room-places-interface-react');
+			var nutella = NUTELLA.init(query_parameters.broker, query_parameters.app_id, query_parameters.run_id, 'room-places-interface');
 
             React.render(
 				<ResourceTable room={room}/>,
