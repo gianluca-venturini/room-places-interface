@@ -127,7 +127,18 @@ var ResourceTable = React.createClass({displayName: "ResourceTable",
 
         // Order the resource list
         var resources = this.state.resourceData;
-        resources = resources.sort(function(a, b) {return a.rid.localeCompare(b.rid)});
+        resources = resources.sort(function(a, b) {
+            console.log(a);
+            if(a.type == "STATIC" && b.type == "DYNAMIC") {
+                return -1;
+            }
+            else if(a.type == "DYNAMIC" && b.type == "STATIC") {
+                return 1;
+            }
+            else {
+                return a.rid.localeCompare(b.rid);
+            }
+        });
 
         var resourceRows = resources.map(function (resource, index) {
             return (
@@ -141,7 +152,9 @@ var ResourceTable = React.createClass({displayName: "ResourceTable",
 
         // Order the resource list
         var beacons = this.state.beaconData;
-        beacons = beacons.sort(function(a, b) {return a.rid.localeCompare(b.rid)});
+        beacons = beacons.sort(function(a, b) {
+            return a.rid.localeCompare(b.rid)
+        });
         beacons = beacons.filter(function(b) {
 
             return $.inArray(b.rid, resources.map(function(r) {
