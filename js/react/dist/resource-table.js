@@ -164,7 +164,8 @@ var ResourceTable = React.createClass({displayName: "ResourceTable",
             return (
                 React.createElement(Beacon, {beacon: beacon, 
                     key: beacon.rid, 
-                    addResource: self.addResource})
+                    addResource: self.addResource, 
+                    updateResource: self.updateResource})
             );
         });
 

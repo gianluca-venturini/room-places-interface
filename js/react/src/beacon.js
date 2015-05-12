@@ -4,9 +4,10 @@ var Beacon = React.createClass({
 
     },
     handleAddPressed: function() {
-        var resource = {rid: this.props.beacon.rid, type: "DYNAMIC", model: "IBEACON"};
+        var resource = {rid: this.props.beacon.rid, type: "DYNAMIC", model: "IBEACON", proximity: {}};
 
         this.props.addResource(resource);
+        this.props.updateResource(resource);
     },
     render: function () {
         var self = this;
