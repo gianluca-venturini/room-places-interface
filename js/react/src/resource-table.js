@@ -104,11 +104,9 @@ var ResourceTable = React.createClass({
         });
     },
     updateResource: function(resource) {
-        console.log("update resource "+resource.rid);
         nutella.net.publish("location/resource/update", resource);
     },
     removeResource: function(resource) {
-        console.log("remove resource "+resource.rid);
         nutella.net.publish("location/resource/remove", resource);
     },
     addResource: function(resource) {
@@ -128,7 +126,6 @@ var ResourceTable = React.createClass({
         // Order the resource list
         var resources = this.state.resourceData;
         resources = resources.sort(function(a, b) {
-            console.log(a);
             if(a.type == "STATIC" && b.type == "DYNAMIC") {
                 return -1;
             }

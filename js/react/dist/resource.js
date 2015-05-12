@@ -147,8 +147,6 @@ var Resource = React.createClass({displayName: "Resource",
 
         var resource = this.props.resource;
 
-        console.log(name, _key, _value);
-
         switch(name) {
             case "key":
                 key = _value;
@@ -363,41 +361,44 @@ var Resource = React.createClass({displayName: "Resource",
 
             React.createElement("tr", null, 
                 React.createElement("td", {className: "col-md-12 col-sm-12 col-xs-12"}, 
-                    React.createElement("div", {className: "col-md-4 col-sm-4 col-xs-4"}, React.createElement("div", {className: "vertical-center"}, React.createElement("span", null, this.props.resource.rid))), 
-
-                    React.createElement("div", {className: "col-md-1 col-sm-1 col-xs-1", style: {marginRight: "40px", marginTop: "8px"}}, 
-                        React.createElement("span", {className: model, style: {fontSize: "20"}})
-                    ), 
-
-                    React.createElement("div", {className: "btn-group"}, 
-                        React.createElement("a", {className: "btn btn-default", href: "#"}, trackingSystem), 
-                        React.createElement("a", {className: "btn btn-default dropdown-toggle", "data-toggle": "dropdown", href: "#"}, 
-                            React.createElement("span", {className: "fa fa-caret-down"})), 
-                        React.createElement("ul", {className: "dropdown-menu"}, 
-                            React.createElement("li", {onClick: this.handleContinousPressed}, React.createElement("a", {href: "#"}, React.createElement("i", {className: "fa fa-arrows fa-fw"}), " Continuous")), 
-                            React.createElement("li", {onClick: this.handleDiscretePressed}, React.createElement("a", {href: "#"}, React.createElement("i", {className: "fa fa-th-large fa-fw"}), " Discrete")), 
-                            proximity, 
-                            /*<li onClick={this.handleDisablePressed}><a href="#"><i className="fa fa-ban fa-fw"></i> Disable</a></li>*/
-                            React.createElement("li", {className: "divider"}), 
-                            React.createElement("li", {onClick: this.handleDeletePressed}, React.createElement("a", {href: "#"}, React.createElement("i", {className: "fa fa-trash-o fa-fw"}), " Delete"))
+                    React.createElement("div", {className: "col-md-4 col-sm-4 col-xs-4"}, 
+                        React.createElement("div", {className: "vertical-center"}, 
+                            React.createElement("span", {className: model, style: {fontSize: "20"}}), 
+                            React.createElement("span", null, "  ", this.props.resource.rid)
                         )
                     ), 
 
-                    React.createElement("div", {className: "btn-group", role: "group"}, 
-                        React.createElement("div", {className: "btn-group", role: "group"}, 
-                            React.createElement("button", {type: "button", className: "btn btn-default dropdown-toggle", "data-toggle": "dropdown", "aria-expanded": "false"}, 
-                                type, 
-                                React.createElement("span", {className: "caret"})
-                            ), 
-                            React.createElement("ul", {className: "dropdown-menu", role: "menu"}, 
-                                React.createElement("li", {onClick: this.handleStaticPressed}, React.createElement("a", {href: "#"}, React.createElement("b", null, "S"), " Static")), 
-                                React.createElement("li", {onClick: this.handleDynamicPressed}, React.createElement("a", {href: "#"}, React.createElement("b", null, "D"), " Dynamic"))
+                    React.createElement("div", {className: "col-md-8 col-sm-8 col-xs-8 right"}, 
+                        React.createElement("div", {className: "btn-group"}, 
+                            React.createElement("a", {className: "btn btn-default", href: "#"}, trackingSystem), 
+                            React.createElement("a", {className: "btn btn-default dropdown-toggle", "data-toggle": "dropdown", href: "#"}, 
+                                React.createElement("span", {className: "fa fa-caret-down"})), 
+                            React.createElement("ul", {className: "dropdown-menu"}, 
+                                React.createElement("li", {onClick: this.handleContinousPressed}, React.createElement("a", {href: "#"}, React.createElement("i", {className: "fa fa-arrows fa-fw"}), " Continuous")), 
+                                React.createElement("li", {onClick: this.handleDiscretePressed}, React.createElement("a", {href: "#"}, React.createElement("i", {className: "fa fa-th-large fa-fw"}), " Discrete")), 
+                                proximity, 
+                                /*<li onClick={this.handleDisablePressed}><a href="#"><i className="fa fa-ban fa-fw"></i> Disable</a></li>*/
+                                React.createElement("li", {className: "divider"}), 
+                                React.createElement("li", {onClick: this.handleDeletePressed}, React.createElement("a", {href: "#"}, React.createElement("i", {className: "fa fa-trash-o fa-fw"}), " Delete"))
                             )
-                        )
-                    ), 
+                        ), 
 
-                    React.createElement("div", {className: "right", "data-toggle": "collapse", "data-target": "#collapse-"+this.props.resource.rid}, 
-                        React.createElement("button", {type: "button", className: "btn btn-default"}, React.createElement("span", {className: "glyphicon glyphicon-chevron-down", "aria-hidden": "true"}))
+                        React.createElement("div", {className: "btn-group", role: "group"}, 
+                            React.createElement("div", {className: "btn-group", role: "group"}, 
+                                React.createElement("button", {type: "button", className: "btn btn-default dropdown-toggle", "data-toggle": "dropdown", "aria-expanded": "false"}, 
+                                    type, 
+                                    React.createElement("span", {className: "caret"})
+                                ), 
+                                React.createElement("ul", {className: "dropdown-menu", role: "menu"}, 
+                                    React.createElement("li", {onClick: this.handleStaticPressed}, React.createElement("a", {href: "#"}, React.createElement("b", null, "S"), " Static")), 
+                                    React.createElement("li", {onClick: this.handleDynamicPressed}, React.createElement("a", {href: "#"}, React.createElement("b", null, "D"), " Dynamic"))
+                                )
+                            )
+                        ), 
+
+                        React.createElement("div", {className: "right", "data-toggle": "collapse", "data-target": "#collapse-"+this.props.resource.rid}, 
+                            React.createElement("button", {type: "button", className: "btn btn-default"}, React.createElement("span", {className: "glyphicon glyphicon-chevron-down", "aria-hidden": "true"}))
+                        )
                     ), 
 
                     React.createElement("div", {className: "collapse", id: "collapse-"+this.props.resource.rid}, 
